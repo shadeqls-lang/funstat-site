@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ахаххааххахах</title>
+    <style>
+        body {
+            /* === СЮДА ВСТАВЛЯЙ СВОЮ КАРТИНКУ ДЛЯ ЗАДНЕГО ФОНА === */
+            background-image: url('https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MGdlaW4xcGVmNzRocGp2dzQwZDBybWlwa3hkbXNjcmx4d2ZhbjBzcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/du2blShdOu5pe/giphy.gif'); 
+            
+            background-color: #000;
+            background-attachment: fixed;
+            color: #8b0000; /* более темный, запекшийся красный */
+            font-family: "Courier New", Courier, monospace;
+            text-transform: lowercase; /* принудительно всё в нижнем регистре на всякий случай */
+        }
+
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 3px double #8b0000;
+            box-shadow: 0 0 10px #550000;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            text-shadow: 2px 2px #330000;
+            letter-spacing: 3px;
+        }
+
+        h2 {
+            border-bottom: 1px dashed #8b0000;
+            padding-bottom: 5px;
+            font-size: 1.5em;
+        }
+
+        .blink {
+            animation: blinker 2s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+            51% { opacity: 1; }
+            70% { opacity: 1; }
+            71% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        a {
+            color: #8b0000;
+            text-decoration: none;
+            font-size: 1.2em;
+            padding: 5px;
+            border: 1px solid #8b0000;
+            display: inline-block;
+            margin: 5px;
+        }
+        
+        a:hover {
+            color: #000;
+            background-color: #8b0000;
+            cursor: crosshair;
+        }
+
+        .section {
+            border: 1px dotted #550000;
+            margin: 20px 0;
+            padding: 15px;
+        }
+
+        .media-gallery img {
+            max-width: 180px;
+            border: 1px solid #8b0000;
+            margin: 10px;
+            filter: grayscale(50%) contrast(120%); /* делает картинки чуть более мрачными */
+            transition: transform 0.1s;
+        }
+        .media-gallery img:hover {
+            transform: scale(1.05);
+            filter: grayscale(0%) invert(100%); /* жуткая инверсия при наведении */
+        }
+
+        .ip-box {
+            font-size: 1.8em;
+            color: #000;
+            background: #8b0000;
+            display: inline-block;
+            padding: 5px 15px;
+            margin: 10px 0;
+            text-decoration: line-through; /* зачеркнутый текст для стиля */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <h1 class="blink">майнкрафт сервер</h1>
+        <p>майнкрафт сервер 2</p>
+        
+        <div class="section">
+            <h2>> ip <</h2>
+            <div class="ip-box">funstat.exatoron.me</div>
+            <p>аахаах</p>
+        </div>
+
+        <div class="section">
+            <h2>> подарки 100 посетителю <</h2>
+            <p>123</p>
+            <br>
+            <a href="#">получить в ебало</a>
+            <br>
+            <a href="#">заказные убийства</a>
+            <br>
+            <a href="#">продаться</a>
+        </div>
+
+        <div class="section">
+            <h2>> файлы для выживания <</h2>
+            <p></p>
+            <br>
+            <!-- СЮДА ВСТАВЛЯЙ ССЫЛКИ НА СВОЙ GOOGLE DISK -->
+            <a href="https://drive.google.com/file/d/1ipVvwcyXO_4DBObe4N5osPrzOD2xBJoB/view?usp=drive_link" target="_blank">[ скачать шейдеры .zip ]</a>
+            <a href="https://minecraft-inside.ru/download/493107/" target="_blank">[ скачать войсчат .rar ]</a>
+        </div>
+
+        <div class="section">
+            <h2>> галерея <</h2>
+            <p>тут фото</p>
+            <div class="media-gallery">
+                <!-- СЮДА ВСТАВЛЯЙ СВОИ КАРТИНКИ И ГИФКИ -->
+                <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MGdlaW4xcGVmNzRocGp2dzQwZDBybWlwa3hkbXNjcmx4d2ZhbjBzcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/eq0mqeC8b42HCnCRmN/giphy.gif" alt="noise">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnY4ZHJxYzhieWh6cjA1d3F0aDh1MDBrOW5tN3NtcTg4OHc5OTBoMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/IcifS1qG3YFlS/giphy.gif" alt="[noise]">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnY4ZHJxYzhieWh6cjA1d3F0aDh1MDBrOW5tN3NtcTg4OHc5OTBoMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/5oWpOD8Thsmo8/giphy.gif" alt="[ошибка 404]">
+            </div>
+        </div>
+
+        <hr style="border-color: #550000;">
+        <p style="font-size: 10px;">2026 funstat</p>
+
+    </div>
+
+</body>
+</html>
