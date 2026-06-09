@@ -3,135 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ахаххааххахах</title>
+    <title>ahah</title>
     <style>
-        body {
-            /* завали ебало пдир */
-            background-image: url('https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MGdlaW4xcGVmNzRocGp2dzQwZDBybWlwa3hkbXNjcmx4d2ZhbjBzcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/du2blShdOu5pe/giphy.gif'); 
-            
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
             background-color: #000;
-            background-attachment: fixed;
-            color: #8b0000; 
-            font-family: "Courier New", Courier, monospace;
-            text-transform: lowercase; 
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
         }
 
-        .container {
-            width: 80%;
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.9);
-            border: 3px double #8b0000;
-            box-shadow: 0 0 10px #550000;
+        #bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bg-gif {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .bg-gif.active {
+            opacity: 1;
+        }
+
+        #content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
             text-align: center;
-        }
-
-        h1 {
-            font-size: 3em;
-            text-shadow: 2px 2px #330000;
-            letter-spacing: 3px;
-        }
-
-        h2 {
-            border-bottom: 1px dashed #8b0000;
-            padding-bottom: 5px;
-            font-size: 1.5em;
-        }
-
-        .blink {
-            animation: blinker 2s linear infinite;
-        }
-        @keyframes blinker {
-            50% { opacity: 0; }
-            51% { opacity: 1; }
-            70% { opacity: 1; }
-            71% { opacity: 0; }
-            100% { opacity: 1; }
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         a {
-            color: #8b0000;
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
-            font-size: 1.2em;
-            padding: 5px;
-            border: 1px solid #8b0000;
-            display: inline-block;
-            margin: 5px;
+            font-size: 24px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 1);
+            transition: color 0.3s;
         }
-        
+
         a:hover {
-            color: #000;
-            background-color: #8b0000;
-            cursor: crosshair;
-        }
-
-        .section {
-            border: 1px dotted #550000;
-            margin: 20px 0;
-            padding: 15px;
-        }
-
-        .media-gallery img {
-            max-width: 180px;
-            border: 1px solid #8b0000;
-            margin: 10px;
-            filter: grayscale(50%) contrast(120%); 
-            transition: transform 0.1s;
-        }
-        .media-gallery img:hover {
-            transform: scale(1.05);
-            filter: grayscale(0%) invert(100%);
-        }
-
-        .ip-box {
-            font-size: 1.8em;
-            color: #000;
-            background: #8b0000;
-            display: inline-block;
-            padding: 5px 15px;
-            margin: 10px 0;
-            text-decoration: li; 
+            color: #fff;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <h1 class="blink">майнкрафт сервер</h1>
-        <p>майнкрафт сервер 2</p>
-        
-        <div class="section">
-            <h2>> ip <</h2>
-            <div class="ip-box">funstat.exaroton.me</div>
-            <p>аахаах</p>
-        </div>
+    <div id="bg-container"></div>
 
-        <div class="section">
-            <h2>> файлы для выживания <</h2>
-            <p></p>
-            <br>
-            
-            <a href="https://drive.google.com/file/d/1ppekXJbEpcPgRIOkaTmGF_E25CarHk_2/view?usp=sharing" target="_blank">[ скачать сборку на фабрик.zip ]</a>
-            <a href="https://minecraft-inside.ru/download/493107/" target="_blank">[ скачать войсчат .rar ]</a>
-        </div>
-
-        <div class="section">
-            <h2>> галерея <</h2>
-            <p>тут фото</p>
-            <div class="media-gallery">
-                
-                <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MGdlaW4xcGVmNzRocGp2dzQwZDBybWlwa3hkbXNjcmx4d2ZhbjBzcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/eq0mqeC8b42HCnCRmN/giphy.gif" alt="noise">
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnY4ZHJxYzhieWh6cjA1d3F0aDh1MDBrOW5tN3NtcTg4OHc5OTBoMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/IcifS1qG3YFlS/giphy.gif" alt="[noise]">
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnY4ZHJxYzhieWh6cjA1d3F0aDh1MDBrOW5tN3NtcTg4OHc5OTBoMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/5oWpOD8Thsmo8/giphy.gif" alt="[ошибка 404]">
-            </div>
-        </div>
-
-        <hr style="border-color: #550000;">
-        <p style="font-size: 10px;">2026 funstat</p>
-
+    <div id="content">
+        <a href="https://t.me/emopunk" target="_blank">me</a>
+        <a href="https://t.me/contined" target="_blank">diary</a>
+        <a href="https://soundcloud.com/gameleaf" target="_blank">music</a>
     </div>
 
+    <script>
+        const gifs = [
+            "https://tenor.com/nYaybbLwXOm.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MTA0dXRsdm1naW56aHcwYjh3bGhlbGxpcHhyZTl2bXkxeWllenJwdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/2vs8rSilWauHJUqM5l/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cW8wdXB4NDZzNzExaXlwd25yaTBjZnZ2djU4eDBzenZtcDh4YWtqeCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LWH5axJkuS0ZdO0Upl/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NzY3Y2drYWd5Y3EzMGxrYXY1eWVwazR3am02Y3Jjejc1eTQyMWFjaCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3og0Iw1jlHwfl9Q5MY/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3eGNyN2s1YWJrOGNob213bnloc25oNHA2a25pbmw3M29wMmc2cnFleSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/adJkQdRCsyAVdGQdF6/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cW8wdXB4NDZzNzExaXlwd25yaTBjZnZ2djU4eDBzenZtcDh4YWtqeCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LWH5axJkuS0ZdO0Upl/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cjRkdWh1bXViOGZ6cXU3djA5Zm8wdmNxYWl0YjU1bXlqcXpud2l6MCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/du2blShdOu5pe/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3andvanVmZm9ldXZlOHVvamd6MXcyZWdvaHNmNHl6cWx6bzdrNzQwaCZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/l46Cvwo9PphGJjico/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExanh4OTVhODNka3FtcnJnanA5Yjg2cnZwZG9taXp6dnR0dmpweTBvMCZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/F27RNcNqYR2FjcY29d/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M3BlZ2tuYXQ1N3Nsa2hmczd0cDdvOTg5aHZ1ejg1Mm93bWMwM2RsZyZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/26n6OuU2HDUNQzFV6/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGJzMjlvM3NmNDN6NXNhdTB1aG9heWZ0MGpwMXo0ZXIzOGR0ZTJmMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/rAeYDYIafXdF6/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGJzMjlvM3NmNDN6NXNhdTB1aG9heWZ0MGpwMXo0ZXIzOGR0ZTJmMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/VXluml3lugeIw/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWxoeHl2b3dyY3E5cm9sdjJ3b2xlczNtcXV3Mnp0NG5uYXVoemo3ayZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/M69bHillPDcpG/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWxoeHl2b3dyY3E5cm9sdjJ3b2xlczNtcXV3Mnp0NG5uYXVoemo3ayZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/3o7bucSgnyC9KUJbOw/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cHl1aWt1M2N0NjZqYzBid25kM3pscHJibmhjaWtseDF2dDl4Njd2cyZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/jBy5Rdrw0nmFO/giphy.gif"
+        ];
+
+        const container = document.getElementById('bg-container');
+        let currentIndex = 0;
+
+        gifs.forEach((src, index) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.className = 'bg-gif';
+            if (index === 0) img.classList.add('active');
+            container.appendChild(img);
+        });
+
+        const images = document.querySelectorAll('.bg-gif');
+
+        setInterval(() => {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].classList.add('active');
+        }, 4000);
+    </script>
 </body>
 </html>
