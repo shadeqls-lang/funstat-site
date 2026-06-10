@@ -61,7 +61,6 @@
             height: 100%;
             object-fit: cover;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
         }
 
         .bg-gif.active {
@@ -181,13 +180,13 @@
             analyser.getByteFrequencyData(dataArray);
             
             let bassSum = 0;
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 2; i++) {
                 bassSum += dataArray[i];
             }
-            const bassAvg = bassSum / 5;
+            const bassAvg = bassSum / 2;
             
             const now = Date.now();
-            if (bassAvg > 210 && now - lastBeatTime > 400) {
+            if (bassAvg > 230 && now - lastBeatTime > 400) {
                 lastBeatTime = now;
                 images[currentIndex].classList.remove('active');
                 currentIndex = (currentIndex + 1) % images.length;
