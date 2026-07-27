@@ -13,7 +13,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=VT323&family=Permanent+Marker&family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 /* ═══════════════════════════════════════════════════════
@@ -37,7 +37,7 @@
   --news:     #C4B692;
   --dim:      rgba(214, 206, 182, .45);
 
-  --display: 'Anton', 'Arial Narrow', Impact, sans-serif;
+  --display: 'Pixelify Sans', 'Press Start 2P', 'Courier New', monospace;
   --hand:    'Permanent Marker', 'Comic Sans MS', cursive;
   --pixel:   'Press Start 2P', 'Courier New', monospace;
   --mono:    'Space Mono', 'Courier New', Courier, monospace;
@@ -60,6 +60,7 @@ body {
   background: var(--asphalt);
   color: var(--bone);
   font-family: var(--mono);
+  text-transform: lowercase;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -166,48 +167,117 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
 #banner {
   position: relative;
   margin: 0 0 clamp(14px, 3vh, 40px) clamp(0px, 1.5vw, 20px);
-  padding: 14px clamp(20px, 3vw, 44px) 18px clamp(16px, 2.4vw, 34px);
-  background: rgba(9, 7, 4, .93);
+  padding: clamp(14px, 2vh, 20px) clamp(24px, 3.2vw, 48px) clamp(16px, 2.2vh, 24px) clamp(20px, 2.6vw, 38px);
+  background: linear-gradient(180deg, #1C1610 0%, #100C08 58%, #0B0906 100%);
+  border: 3px solid #3A2A12;
   transform: rotate(-1.4deg) translateZ(46px);
-  filter: drop-shadow(10px 12px 0 rgba(0,0,0,.6));
+  filter: drop-shadow(10px 12px 0 rgba(0,0,0,.6)) drop-shadow(0 0 26px rgba(224,138,44,.14));
   clip-path: polygon(
-    0.6% 5%, 9% 0%, 21% 4%, 34% 0.5%, 47% 5%, 61% 0%, 74% 4%, 87% 0.5%, 100% 4%,
-    99% 94%, 88% 100%, 75% 95%, 61% 100%, 47% 95%, 33% 100%, 20% 95%, 8% 100%, 0% 96%
+    0 14px, 14px 0, calc(100% - 14px) 0, 100% 14px,
+    100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px)
   );
+  animation: sign-short 7.3s steps(1) infinite;
 }
 #banner::before {
   content: ''; position: absolute; inset: 0;
   background-image: var(--paper-tex);
   opacity: .5; mix-blend-mode: overlay; pointer-events: none;
 }
+/* внутренняя пунктирная рамка + заклёпки по углам */
+#banner .frame {
+  position: absolute; inset: 7px;
+  border: 2px dashed rgba(183, 162, 114, .3);
+  pointer-events: none;
+  background:
+    radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) left 3px top 3px / 11px 11px no-repeat,
+    radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) right 3px top 3px / 11px 11px no-repeat,
+    radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) left 3px bottom 3px / 11px 11px no-repeat,
+    radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) right 3px bottom 3px / 11px 11px no-repeat;
+}
+/* блик, пробегающий слева направо раз в ~5 сек, покадрово */
+#banner .shine {
+  position: absolute; inset: 0;
+  pointer-events: none; overflow: hidden;
+}
+#banner .shine::before {
+  content: ''; position: absolute;
+  top: -25%; bottom: -25%; left: 0; width: 22%;
+  background: linear-gradient(100deg,
+    transparent 0%, rgba(237,229,200,.22) 42%,
+    rgba(224,138,44,.34) 56%, transparent 100%);
+  transform: skewX(-16deg) translateX(-160%);
+  mix-blend-mode: screen;
+  animation: sheen 5.2s steps(9) infinite;
+}
+@keyframes sheen {
+  0%   { transform: skewX(-16deg) translateX(-160%); opacity: 0; }
+  3%   { opacity: 1; }
+  21%  { transform: skewX(-16deg) translateX(560%); opacity: 1; }
+  22%  { opacity: 0; }
+  100% { transform: skewX(-16deg) translateX(560%); opacity: 0; }
+}
+/* вывеску иногда коротит */
+@keyframes sign-short {
+  0%, 90%, 96%, 100% { transform: rotate(-1.4deg) translateZ(46px); }
+  91% { transform: rotate(-1.1deg) translateZ(46px) translateX(2px); }
+  93% { transform: rotate(-1.7deg) translateZ(46px) translateX(-2px) translateY(1px); }
+  95% { transform: rotate(-1.3deg) translateZ(46px) translateX(1px); }
+}
 
 .kicker {
-  display: block; margin: 0 0 -6px 3px;
-  font-family: var(--hand);
-  font-size: clamp(16px, 2.2vw, 27px);
-  color: var(--rust);
-  transform: rotate(-2.5deg);
+  position: relative;
+  display: block; width: fit-content;
+  margin: 0 0 7px -4px;
+  padding: 5px 8px 4px;
+  font-family: var(--pixel);
+  font-size: clamp(7px, .9vw, 9px);
+  letter-spacing: .08em;
+  color: #17110A;
+  background: var(--rust);
+  box-shadow: 2px 3px 0 rgba(0,0,0,.7);
+  transform: rotate(-2deg);
   transform-origin: left bottom;
-  text-shadow: 2px 2px 0 rgba(0,0,0,.8);
+  clip-path: polygon(0 3px, 3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px));
+  animation: kicker-swing 3.2s steps(1) infinite;
+}
+@keyframes kicker-swing {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(-.8deg) translateY(-1px); }
 }
 
 .title {
   margin: 0;
-  font-family: var(--display);
+  font-family: 'VT323', 'Press Start 2P', 'Courier New', monospace;
   font-weight: 400;
-  font-size: clamp(38px, 7vw, 86px);
-  line-height: .84;
-  text-transform: uppercase;
+  font-size: clamp(46px, 8.4vw, 104px);
+  line-height: .82;
+  letter-spacing: .015em;
+  text-transform: lowercase;
   color: #EDE5C8;
-  transform: skewX(-7deg);
-  transform-origin: left bottom;
   text-shadow:
-    2px 2px 0 #6B4A20, 4px 4px 0 #3A2A12,
-    6px 6px 0 var(--tar), 9px 9px 0 rgba(0,0,0,.85),
-    0 0 30px rgba(138,74,28,.35);
-  -webkit-mask-image: var(--erode);
-  mask-image: var(--erode);
-  -webkit-mask-size: 360px; mask-size: 360px;
+    3px 3px 0 var(--brown), 6px 6px 0 var(--tar),
+    0 0 10px rgba(224,138,44,.5), 0 0 34px rgba(138,74,28,.35);
+  animation: title-short 7.3s steps(1) infinite;
+}
+/* цвет рвётся в те же кадры, что и короткое замыкание вывески */
+@keyframes title-short {
+  0%, 90%, 96%, 100% {
+    text-shadow: 3px 3px 0 var(--brown), 6px 6px 0 var(--tar),
+                 0 0 10px rgba(224,138,44,.5), 0 0 34px rgba(138,74,28,.35);
+    opacity: 1;
+  }
+  91% {
+    text-shadow: -3px 0 0 var(--rust), 3px 0 0 var(--moss), 3px 3px 0 var(--tar);
+    opacity: .9;
+  }
+  93% {
+    text-shadow: 3px 0 0 var(--ember), -3px 0 0 var(--moss), 3px 3px 0 var(--tar);
+    opacity: .96;
+  }
+  95% {
+    text-shadow: 3px 3px 0 var(--brown), 6px 6px 0 var(--tar), 0 0 22px rgba(224,138,44,.8);
+    opacity: .88;
+  }
 }
 .title span { display: block; }
 .title .l2 { color: var(--nicotine); margin-left: .05em; }
@@ -294,11 +364,11 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
 .name {
   position: relative;
   font-family: var(--display);
-  font-size: clamp(23px, 3.4vw, 36px);
-  line-height: 1.04;
-  text-transform: uppercase;
+  font-weight: 600;
+  font-size: clamp(21px, 3vw, 32px);
+  line-height: 1.05;
+  text-transform: lowercase;
   text-shadow: 2px 2px 0 var(--tar);
-  transform: skewX(-6deg);
 }
 
 .host {
@@ -307,15 +377,14 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
   font-family: var(--pixel);
   font-size: 7px;
   letter-spacing: .04em;
-  text-transform: uppercase;
+ 
   color: var(--nicotine);
   opacity: .6; white-space: nowrap;
   transition: color .14s steps(3), opacity .14s steps(3);
 }
 
 .scrap.on {
-  --rot: calc(var(--rot) * .3);
-  transform: translateZ(calc(var(--z) + 30px)) rotate(var(--rot)) translateX(calc(var(--dx) + 16px)) scale(1.045);
+  transform: translateZ(calc(var(--z) + 30px)) rotate(calc(var(--rot) * .3)) translateX(calc(var(--dx) + 16px)) scale(1.045);
   filter: drop-shadow(3px 5px 0 rgba(0,0,0,.85)) drop-shadow(0 0 24px rgba(138,74,28,.4));
   z-index: 4;
 }
@@ -325,14 +394,28 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
 .scrap:focus-visible { outline: 2px dashed var(--nicotine); outline-offset: 8px; }
 
 @keyframes arcade-float {
-  0%, 100% { transform: translateZ(calc(var(--z) + 30px)) rotate(var(--rot)) translateX(calc(var(--dx) + 16px)) scale(1.045) translateY(0px); }
-  50% { transform: translateZ(calc(var(--z) + 35px)) rotate(calc(var(--rot) * 1.5)) translateX(calc(var(--dx) + 18px)) scale(1.06) translateY(-4px); }
+  0%, 100% { transform: translateZ(calc(var(--z) + 30px)) rotate(calc(var(--rot) * .3)) translateX(calc(var(--dx) + 16px)) scale(1.045) translateY(0px); }
+  50% { transform: translateZ(calc(var(--z) + 35px)) rotate(calc(var(--rot) * .45)) translateX(calc(var(--dx) + 18px)) scale(1.06) translateY(-4px); }
 }
 
-body:not(.nocrt) .scrap.on {
-  animation: arcade-float 2.2s ease-in-out infinite;
+/* покадровый флоат на всех четырёх, у каждой свой темп */
+.scrap.on {
+  animation: arcade-float 1.6s steps(2, jump-none) infinite;
   border-left: 2px solid var(--ember);
 }
+.slot:nth-child(1) .scrap.on { animation-duration: 1.5s; }
+.slot:nth-child(2) .scrap.on { animation-duration: 1.9s; }
+.slot:nth-child(3) .scrap.on { animation-duration: 1.65s; }
+.slot:nth-child(4) .scrap.on { animation-duration: 2.1s; }
+
+/* двухкадровый джиттер названия, как спрайт */
+.scrap.on .name { animation: name-jitter .46s steps(1) infinite; }
+@keyframes name-jitter {
+  0%, 100% { transform: translate(0, 0); text-shadow: 2px 2px 0 rgba(0,0,0,.7); }
+  50%      { transform: translate(1px, -1px); text-shadow: 3px 3px 0 rgba(0,0,0,.7), 0 0 10px rgba(224,138,44,.5); }
+}
+.scrap.on .host { animation: host-blink 1.1s steps(1) infinite; }
+@keyframes host-blink { 0%, 100% { opacity: .95; } 50% { opacity: .55; } }
 
 .scrap.on .paper::after {
   background-image: repeating-linear-gradient(45deg, rgba(224, 138, 44, 0.15) 0 2px, transparent 2px 4px);
@@ -370,10 +453,22 @@ body:not(.nocrt) .scrap.on {
   width: 44px; height: 15px;
   pointer-events: none; opacity: 0;
   image-rendering: pixelated;
+  transform: rotate(var(--brot, 0deg));
 }
 #board.live { opacity: 1; }
-#board.ride { animation: ride .5s linear; }
-@keyframes ride { from { transform: translateX(0); } to { transform: translateX(var(--run, 200px)); } }
+#board.ride { animation: ride .5s linear forwards; }
+/* едет вдоль края под углом бумажки, в конце — олли с края */
+@keyframes ride {
+  0%   { transform: rotate(var(--brot, 0deg)) translate(0, 0); opacity: 1; }
+  78%  { transform: rotate(var(--brot, 0deg)) translate(calc(var(--run, 200px) * .78), 0); opacity: 1; }
+  90%  { transform: rotate(calc(var(--brot, 0deg) - 8deg)) translate(calc(var(--run, 200px) * .9), -9px); opacity: 1; }
+  100% { transform: rotate(calc(var(--brot, 0deg) - 14deg)) translate(var(--run, 200px), -4px); opacity: 0; }
+}
+#board.grinding { animation: grindwobble .5s ease-in-out infinite; }
+@keyframes grindwobble {
+  0%, 100% { transform: rotate(var(--brot, 0deg)) translateY(0); }
+  50%      { transform: rotate(calc(var(--brot, 0deg) + 1.6deg)) translateY(1px); }
+}
 
 .spark {
   position: absolute; z-index: 7;
@@ -410,8 +505,8 @@ body:not(.nocrt) .scrap.on {
   clip-path: polygon(0% 4%, 14% 0%, 30% 5%, 48% 0%, 66% 5%, 82% 0%, 100% 4%,
                      99% 95%, 84% 100%, 67% 95%, 50% 100%, 33% 95%, 16% 100%, 0.5% 96%);
 }
-.sticker--news .big { display: block; font-family: var(--display); font-size: 30px; line-height: .92; text-transform: uppercase; }
-.sticker--news .small { display: block; margin-top: 6px; font-family: var(--pixel); font-size: 6px; line-height: 1.6; text-transform: uppercase; opacity: .75; }
+.sticker--news .big { display: block; font-family: var(--display); font-size: 30px; line-height: .92; }
+.sticker--news .small { display: block; margin-top: 6px; font-family: var(--pixel); font-size: 6px; line-height: 1.6; opacity: .75; }
 .sticker--news::after {
   content: ''; position: absolute; inset: 0;
   background-image: radial-gradient(rgba(0,0,0,.5) .9px, transparent 1.1px);
@@ -465,9 +560,24 @@ body:not(.nocrt) .scrap.on {
   animation: btn-glitch 0.25s steps(2) infinite;
   border-color: var(--rust);
 }
-.btn:active { transform: translateY(4px); box-shadow: 0 0 0 var(--tar), inset 0 2px 0 rgba(240,225,180,.15); }
+.btn:active { transform: translateY(4px) rotate(var(--btilt, 0deg)); box-shadow: 0 0 0 var(--tar), inset 0 2px 0 rgba(240,225,180,.15); }
 .btn:focus-visible { outline: 2px dashed var(--nicotine); outline-offset: 3px; }
 .btn.off { opacity: .45; }
+
+/* кнопки чуть кривые, как наклейки */
+.btn { transform: rotate(var(--btilt, 0deg)); }
+#prompts .group .btn:nth-child(odd)  { --btilt: -1.1deg; }
+#prompts .group .btn:nth-child(even) { --btilt: .9deg; }
+#tapehud .btn:nth-of-type(1) { --btilt: -1deg; }
+#tapehud .btn:nth-of-type(3) { --btilt: 1.2deg; }
+
+/* отскок после клика */
+.btn.pop { animation: btn-pop .3s cubic-bezier(.3, 1.7, .5, 1); }
+@keyframes btn-pop {
+  0%   { transform: translateY(4px) scale(.9, .82) rotate(var(--btilt, 0deg)); }
+  55%  { transform: translateY(-3px) scale(1.05, 1.1) rotate(calc(var(--btilt, 0deg) * -1.6)); }
+  100% { transform: translateY(0) scale(1) rotate(var(--btilt, 0deg)); }
+}
 
 
 #score {
@@ -479,6 +589,70 @@ body:not(.nocrt) .scrap.on {
 }
 #score .label { display: block; font-size: 6px; color: var(--dim); letter-spacing: .1em; margin-bottom: 5px; }
 #score .val   { display: block; font-size: clamp(13px, 1.8vw, 19px); color: #F0E3B8; }
+#score .best  { display: block; margin-top: 4px; font-size: 6px; color: var(--nicotine); opacity: .7; letter-spacing: .08em; }
+
+/* ── SPECIAL как в тони хоуке: комбо x4+ ── */
+#special {
+  margin-top: 10px;
+  font-size: 8px; letter-spacing: .12em;
+  color: var(--ember);
+  opacity: 0; transition: opacity .15s;
+}
+#special.live {
+  opacity: 1;
+  animation: special-flash .42s steps(2) infinite;
+}
+@keyframes special-flash {
+  0%   { color: var(--ember); text-shadow: 2px 2px 0 var(--tar), 0 0 12px rgba(224,138,44,.8); }
+  50%  { color: #FFD27A;      text-shadow: 2px 2px 0 var(--tar), 0 0 18px rgba(255,210,122,.9); }
+}
+#score.special .val { color: #FFD27A; text-shadow: 2px 2px 0 var(--tar), 0 0 14px rgba(224,138,44,.55); }
+
+/* ── tip of the day: советы как на загрузочных экранах ── */
+#tip {
+  position: fixed; z-index: 5;
+  right: var(--pad); bottom: calc(var(--pad) + 64px);
+  max-width: min(300px, 38vw);
+  text-align: right;
+  pointer-events: none; user-select: none;
+  opacity: 0;
+}
+#tip .now {
+  display: block; margin-bottom: 5px;
+  font-family: var(--hand); font-size: clamp(13px, 1.5vw, 17px);
+  color: var(--rust);
+  transform: rotate(-2deg);
+  text-shadow: 2px 2px 0 rgba(0,0,0,.8);
+}
+#tip .zone {
+  display: block;
+  font-family: var(--pixel);
+  font-size: 8px; line-height: 1.85;
+  color: var(--news);
+  text-shadow: 2px 2px 0 var(--tar);
+}
+#tip.show { animation: tip-in 5s steps(12) forwards; }
+@keyframes tip-in {
+  0%   { opacity: 0; transform: translateX(22px); }
+  6%   { opacity: 1; transform: translateX(0); }
+  82%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-8px); }
+}
+
+/* ── счёт: подпрыгивание при банке ── */
+#score .val { transform-origin: left center; }
+#score .val.bump { animation: score-bump .34s steps(2); }
+@keyframes score-bump {
+  0%   { transform: scale(1.3); color: #FFD27A; }
+  100% { transform: scale(1); }
+}
+
+/* ── шкала комбо мигает, когда время на исходе ── */
+#combo .meter.low { animation: meter-flash .24s steps(1) infinite; }
+@keyframes meter-flash {
+  0%, 100% { border-color: var(--tar); }
+  50%      { border-color: #E2624A; }
+}
 
 #combo {
   margin-top: 9px;
@@ -500,9 +674,9 @@ body:not(.nocrt) .scrap.on {
 
 #tricks {
   position: fixed; z-index: 5;
-  top: calc(var(--pad) + 92px); left: var(--pad);
+  top: calc(var(--pad) + 150px); left: var(--pad);
   width: 260px;
-  display: flex; flex-direction: column; gap: 6px;
+  display: flex; flex-direction: column; gap: 7px;
   pointer-events: none;
 }
 .trick {
@@ -510,7 +684,7 @@ body:not(.nocrt) .scrap.on {
   font-size: 8px;
   color: #FFD9A0;
   text-shadow: 2px 2px 0 var(--tar);
-  animation: trick .95s ease-out forwards;
+  animation: trick .95s steps(8) forwards;
   white-space: nowrap;
 }
 .trick b { color: #FFF0C8; }
@@ -524,32 +698,45 @@ body:not(.nocrt) .scrap.on {
 
 #balance {
   position: fixed; z-index: 6;
-  left: 50%; bottom: calc(var(--pad) + 58px);
+  left: 50%; bottom: calc(var(--pad) + 64px);
   transform: translateX(-50%);
-  width: min(260px, 70vw);
+  width: min(280px, 72vw);
   opacity: 0; transition: opacity .15s;
   pointer-events: none;
 }
 #balance.live { opacity: 1; }
 #balance .track {
-  position: relative; height: 14px;
+  position: relative; height: 16px;
   border: 2px solid var(--tar);
   background: linear-gradient(90deg, #4A1A10 0%, #2A2317 22%, #2A2317 78%, #4A1A10 100%);
   box-shadow: inset 0 2px 0 rgba(240,225,180,.15);
 }
+#balance .track::after {
+  content: ''; position: absolute;
+  left: 50%; top: 2px; bottom: 2px; width: 2px;
+  margin-left: -1px;
+  background: rgba(214,206,182,.28);
+}
 #balance .pin {
-  position: absolute; top: -3px; left: 50%;
-  width: 8px; height: 16px;
+  position: absolute; top: -4px; left: 50%;
+  width: 9px; height: 20px;
   margin-left: -4px;
   background: var(--ember);
   box-shadow: 0 0 0 2px var(--tar);
   transition: left .07s linear;
 }
+#balance.danger .pin { animation: pin-flash .18s steps(1) infinite; }
+@keyframes pin-flash {
+  0%, 100% { background: #E2624A; box-shadow: 0 0 0 2px var(--tar), 0 0 12px rgba(226,98,74,.8); }
+  50%      { background: var(--ember); box-shadow: 0 0 0 2px var(--tar); }
+}
 #balance .cap {
-  margin-top: 6px; text-align: center;
+  margin-top: 8px; text-align: center;
   font-family: var(--pixel); font-size: 6px;
+  letter-spacing: .06em;
   color: var(--ember); text-shadow: 2px 2px 0 var(--tar);
 }
+#balance.danger .cap { color: #E2624A; }
 
 
 #tapehud {
@@ -580,7 +767,7 @@ body:not(.nocrt) .scrap.on {
   border-top: 1px solid rgba(183,162,114,.22);
   font-family: var(--pixel); font-size: 7px;
   letter-spacing: .04em;
-  text-transform: uppercase;
+ 
   color: var(--dim);
   user-select: none;
 }
@@ -601,7 +788,7 @@ body:not(.nocrt) .scrap.on {
   background: var(--tar);
   text-align: center;
   font-family: var(--pixel); font-size: 8px;
-  letter-spacing: .1em; text-transform: uppercase;
+  letter-spacing: .1em;
   color: var(--nicotine);
   cursor: pointer;
   transition: opacity .55s ease;
@@ -666,8 +853,8 @@ body.live .sticker--stamp { opacity: .6; }
   .slot:nth-child(2) .scrap { --dx: 10px; }
   .slot:nth-child(3) .scrap { --dx: 4px; }
   .slot:nth-child(4) .scrap { --dx: 12px; }
-  .scrap.on { transform: translateZ(calc(var(--z) + 20px)) rotate(var(--rot)) translateX(calc(var(--dx) + 6px)) scale(1.02); }
-  #arrow, .sticker--scrawl, #tricks { display: none; }
+  .scrap.on { transform: translateZ(calc(var(--z) + 20px)) rotate(calc(var(--rot) * .3)) translateX(calc(var(--dx) + 6px)) scale(1.02); }
+  #arrow, .sticker--scrawl, #tricks, #tip { display: none; }
   #prompts .key { display: none; }
   #prompts .touch { display: inline; }
   #blurb { margin-left: 2px; max-width: none; }
@@ -681,17 +868,24 @@ body.live .sticker--stamp { opacity: .6; }
 }
 
 
-@media (prefers-reduced-motion: reduce) {
-  .grain, .dot, #boot .bar i, #boot .start, .tracking { animation: none; }
-  .tracking { display: none; }
-  #stage.switching .flash { animation: none; }
-  .scrap, .host, .paper, #tilt { transition: none; }
-  #tilt { transform: none !important; }
-  body.live .slot { animation: none; opacity: 1; }
-  #marker.draw path, #blurb.flip, .trick, #board.ride { animation: none; }
-  .trick { opacity: 1; }
-  body.shake { animation: none; }
-}
+/* режим без анимаций — управляется кнопкой fx, а не системной настройкой */
+body.noanim .grain, body.noanim .dot, body.noanim #boot .bar i,
+body.noanim #boot .start, body.noanim .tracking { animation: none; }
+body.noanim .tracking { display: none; }
+body.noanim #stage.switching .flash { animation: none; }
+body.noanim .scrap, body.noanim .host, body.noanim .paper, body.noanim #tilt { transition: none; }
+body.noanim #tilt { transform: none !important; }
+body.noanim.live .slot { animation: none; opacity: 1; }
+body.noanim #marker.draw path, body.noanim #blurb.flip, body.noanim .trick,
+body.noanim #board.ride, body.noanim #board.grinding { animation: none; }
+body.noanim .btn.pop, body.noanim #special.live, body.noanim #tip.show, body.noanim .kicker,
+body.noanim .scrap.on, body.noanim .scrap.on .name, body.noanim .scrap.on .host { animation: none; }
+body.noanim #score .val.bump, body.noanim #combo .meter.low, body.noanim #balance.danger .pin { animation: none; }
+body.noanim #banner, body.noanim .title, body.noanim #banner .shine::before { animation: none; }
+body.noanim #banner .shine { display: none; }
+body.noanim #tip.show { opacity: .85; }
+body.noanim .trick { opacity: 1; }
+body.noanim.shake { animation: none; }
 </style>
 </head>
 <body class="pixel">
@@ -714,6 +908,8 @@ body.live .sticker--stamp { opacity: .6; }
 <div id="score">
   <span class="label">score</span>
   <span class="val" id="scoreVal">0</span>
+  <span class="best">best <b id="bestVal">0</b></span>
+  <div id="special">★ special</div>
   <div id="combo">
     <div class="row"><span id="comboVal">0</span><span class="mult" id="multVal">x1</span></div>
     <div class="meter"><i id="comboBar"></i></div>
@@ -727,13 +923,15 @@ body.live .sticker--stamp { opacity: .6; }
   <span>tape <b id="ch">01</b>/<span id="total">--</span></span>
   <button class="btn" id="prevTape" type="button" aria-label="предыдущая плёнка">◀</button>
   <button class="btn" id="nextTape" type="button" aria-label="следующая плёнка">▶</button>
-  <button class="btn" id="shuffle" type="button" aria-label="случайная плёнка">RND</button>
+  <button class="btn" id="shuffle" type="button" aria-label="случайная плёнка">rnd</button>
 </div>
 
 <div id="wall">
   <div id="tilt">
 
     <div id="banner">
+      <span class="frame" aria-hidden="true"></span>
+      <span class="shine" aria-hidden="true"></span>
       <span class="tape t-a" aria-hidden="true"></span>
       <span class="tape t-b" aria-hidden="true"></span>
       <h1 class="title">
@@ -809,6 +1007,11 @@ body.live .sticker--stamp { opacity: .6; }
 <div class="sticker sticker--stamp" aria-hidden="true">55256<br>5424652225</div>
 <div class="sticker sticker--scrawl" aria-hidden="true">← бинды</div>
 
+<div id="tip" aria-hidden="true">
+  <span class="now">tip of the day</span>
+  <span class="zone" id="tipText"></span>
+</div>
+
 <div id="balance" aria-hidden="true">
   <div class="track"><span class="pin" id="pin"></span></div>
   <div class="cap" id="balCap">hold to grind</div>
@@ -818,14 +1021,15 @@ body.live .sticker--stamp { opacity: .6; }
   <span class="key"><kbd>↑↓</kbd>select</span>
   <span class="key"><kbd>enter</kbd>open</span>
   <span class="key"><kbd>←→</kbd>tape</span>
-  <span class="key"><kbd>G</kbd>grind</span>
-  <span class="touch">tap = open · swipe = tape · hold card = grind</span>
+  <span class="key"><kbd>G</kbd>grind · <kbd>←→</kbd>balance</span>
+  <span class="touch">tap = open · swipe = tape · hold card = grind · tap sides = balance</span>
   <span class="group">
-    <button class="btn" id="grindBtn" type="button">GRIND</button>
-    <button class="btn" id="pixelBtn" type="button" aria-pressed="true">PIXEL</button>
-    <button class="btn" id="crtBtn"   type="button" aria-pressed="true">CRT</button>
-    <button class="btn" id="sfxBtn"   type="button" aria-pressed="true">SFX</button>
-    <button class="btn" id="deck"     type="button" aria-pressed="false">HOLD</button>
+    <button class="btn" id="grindBtn" type="button">grind</button>
+    <button class="btn" id="fxBtn"    type="button" aria-pressed="true">fx</button>
+    <button class="btn" id="pixelBtn" type="button" aria-pressed="true">pixel</button>
+    <button class="btn" id="crtBtn"   type="button" aria-pressed="true">crt</button>
+    <button class="btn" id="sfxBtn"   type="button" aria-pressed="true">sfx</button>
+    <button class="btn" id="deck"     type="button" aria-pressed="false">hold</button>
   </span>
   <span class="ver">v2.0 · build 0726</span>
 </div>
@@ -842,7 +1046,7 @@ body.live .sticker--stamp { opacity: .6; }
 
   /* ═══════════ ИСТОЧНИКИ ═══════════ */
   const SOURCES = [...new Set([
-    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2E0Y3U4OTg5eWFtZTVmcHhyZm5zbDhmYm5odzl5dm04aWh1amQ1ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o6ZsS9CYscAuuw7Is/giphy.gif",
+    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcG14M3gxbTViZmoxMDhnanJxYzJtcHRibGxlbHk0dGJiaTFlZnlpNCZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/l2JIhq7AR3J7Qq9Hy/giphy.gif",
     "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MTA0dXRsdm1naW56aHcwYjh3bGhlbGxpcHhyZTl2bXkxeWllenJwdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/2vs8rSilWauHJUqM5l/giphy.gif",
     "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cW8wdXB4NDZzNzExaXlwd25yaTBjZnZ2djU4eDBzenZtcDh4YWtqeCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LWH5axJkuS0ZdO0Upl/giphy.gif",
     "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NzY3Y2drYWd5Y3EzMGxrYXY1eWVwazR3am02Y3Jjejc1eTQyMWFjaCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3og0Iw1jlHwfl9Q5MY/giphy.gif",
@@ -859,7 +1063,17 @@ body.live .sticker--stamp { opacity: .6; }
   ])];
 
   const DWELL  = 5200;
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* анимации включены по умолчанию на любом устройстве;
+     кнопка fx выключает, выбор запоминается */
+  let motionOn = true;
+  try {
+    const s = localStorage.getItem('emopunk_fx');
+    if (s !== null) motionOn = s === '1';
+  } catch (e) {}
+  let reduce = !motionOn;
+  document.body.classList.toggle('noanim', reduce);
+
   const coarse = matchMedia('(pointer: coarse)').matches;
 
   const $ = id => document.getElementById(id);
@@ -954,22 +1168,61 @@ body.live .sticker--stamp { opacity: .6; }
   let score = 0, shownScore = 0, combo = 0, mult = 0, comboUntil = 0;
   const COMBO_MS = 3200;
 
-  const GRINDS = ['nigga grind', 'nose slide', 'board slide', '5-0 grind', 'crooked grind', 'smith grind'];
+  /* ── best score (тихо переживает перезагрузку, если браузер даёт) ── */
+  const bestEl = $('bestVal'), scoreBox = $('score'), specialEl = $('special');
+  let best = 0;
+  try { best = parseInt(localStorage.getItem('emopunk_best') || '0', 10) || 0; } catch (e) {}
+  if (bestEl) bestEl.textContent = best.toLocaleString('ru-RU');
+
+  function saveBest() {
+    if (score <= best) return;
+    best = score;
+    if (bestEl) bestEl.textContent = best.toLocaleString('ru-RU');
+    try { localStorage.setItem('emopunk_best', String(best)); } catch (e) {}
+  }
+
+  function setSpecial(v) {
+    specialEl.classList.toggle('live', v);
+    scoreBox.classList.toggle('special', v);
+  }
+
+  const GRINDS = ['50-50 grind', 'nose slide', 'board slide', '5-0 grind', 'crooked grind', 'smith grind',
+                  'bert slide', 'boneless', 'no comply', 'natas spin', 'wallride', 'feeble grind'];
   const SURFS  = ['channel surf', 'tape flip', 'static slam', 'vhs 360'];
+
+  /* советы как на загрузочных экранах */
+  const TIPS = [
+    'посмотри в правый левый угол',
+    'изначально тут было 4 кнопки',
+    'держи g у карточки — гринд качает счёт',
+    'стрелки ← → держат баланс кста.',
+    'special x4 платит в полтора раза больше. как контракт Кое - какой, только честный',
+    'возможно я не настоящий',
+    'чё',
+    'sad bart slide bruh',
+    'r — случайная плёнка.',
+    'кнопки бабло нет',
+    'ЧЕЛ ТУТ ТОП ЗВУКИ и снизу кнопка sfx если заебали',
+    'секретной плёнки нет. или есть. проверь все 14',
+    'банкуй комбо до конца шкалы',
+    'wallride по краю экрана пока в разработке. с 2027 года мб появится'
+  ];
 
   function popTrick(text, pts, bad) {
     if (!tricksBox) return;
     const el = document.createElement('div');
     el.className = 'trick' + (bad ? ' bad' : '');
-    el.innerHTML = text.toUpperCase() + (pts ? ' <b>+' + pts + '</b>' : '');
+    el.innerHTML = text.toLowerCase() + (pts ? ' <b>+' + pts + '</b>' : '');
     tricksBox.appendChild(el);
     while (tricksBox.children.length > 6) tricksBox.removeChild(tricksBox.firstChild);
     setTimeout(() => el.remove(), 1000);
   }
 
   function trick(name, pts) {
+    if (mult >= 4) pts = Math.round(pts * 1.5); /* special платит больше */
     combo += pts;
     mult += 1;
+    if (mult >= 4) setSpecial(true);
     comboUntil = performance.now() + COMBO_MS;
     comboBox.classList.add('live');
     comboVal.textContent = combo;
@@ -985,6 +1238,7 @@ body.live .sticker--stamp { opacity: .6; }
       const rate = got > 6000 ? 'sick!' : got > 2500 ? 'nice' : 'landed';
       popTrick(rate + ' ' + combo + ' x' + mult, got);
       sBank();
+      scoreVal.classList.remove('bump'); void scoreVal.offsetWidth; scoreVal.classList.add('bump');
     } else {
       popTrick('bailed', 0, true);
       sBail();
@@ -995,13 +1249,16 @@ body.live .sticker--stamp { opacity: .6; }
     }
     combo = 0; mult = 0;
     comboBox.classList.remove('live');
+    setSpecial(false);
+    saveBest();
   }
 
   function comboTick(now) {
     if (mult > 0) {
       const left = clamp((comboUntil - now) / COMBO_MS, 0, 1);
       comboBar.style.transform = 'scaleX(' + left + ')';
-      if (left <= 0) bank(false);
+      comboBar.parentElement.classList.toggle('low', left > 0 && left < .35);
+      if (left <= 0) { comboBar.parentElement.classList.remove('low'); bank(false); }
     }
     if (shownScore !== score) {
       const diff = score - shownScore;
@@ -1028,24 +1285,41 @@ body.live .sticker--stamp { opacity: .6; }
     }
   }
 
-  function ridePast(box, ref) {
+  /* угол наклона карточки, чтобы доска ехала вдоль её края */
+  function scrapAngle(el) {
+    const rot = parseFloat(getComputedStyle(el).getPropertyValue('--rot')) || 0;
+    return el.classList.contains('on') ? rot * .3 : rot;
+  }
+
+  let rideIv = null, rideTo = null;
+
+  function ridePast(box, ref, el) {
     if (reduce) { board.classList.remove('live'); return; }
-    const startX = box.left - ref.left - 30;
-    const y = box.top - ref.top - 9;
+    clearInterval(rideIv); clearTimeout(rideTo);
+    board.classList.remove('grinding');
+
+    const eff = el ? scrapAngle(el) : 0;
+    const rad = eff * Math.PI / 180;
+    const startX = box.left - ref.left - 26;
+    const y = box.top - ref.top - 14;
+    const run = box.width + 52;
+
     board.style.left = startX + 'px';
     board.style.top = y + 'px';
-    board.style.setProperty('--run', (box.width + 44) + 'px');
+    board.style.setProperty('--brot', eff.toFixed(2) + 'deg');
+    board.style.setProperty('--run', run + 'px');
     board.classList.add('live');
     board.classList.remove('ride'); void board.offsetWidth; board.classList.add('ride');
 
     let t = 0;
-    const iv = setInterval(() => {
+    rideIv = setInterval(() => {
       t += 1;
       const p = t / 8;
-      sparks(startX + 6 + (box.width + 44) * p, y + 13, 2);
-      if (t >= 8) clearInterval(iv);
-    }, 60);
-    setTimeout(() => board.classList.remove('live'), 560);
+      /* искры из-под задних колёс, вдоль наклона края */
+      sparks(startX + 6 + run * p * Math.cos(rad), y + 15 + run * p * Math.sin(rad), 2);
+      if (t >= 8) clearInterval(rideIv);
+    }, 55);
+    rideTo = setTimeout(() => board.classList.remove('live', 'ride'), 540);
   }
 
   let pick = 0;
@@ -1083,7 +1357,7 @@ body.live .sticker--stamp { opacity: .6; }
       if (!reduce) { marker.classList.remove('draw'); void marker.offsetWidth; marker.classList.add('draw'); }
       if (!quiet && prev !== pick) {
         const { box, ref } = boxes();
-        ridePast(box, ref);
+        ridePast(box, ref, scraps[pick]);
       }
     });
 
@@ -1119,14 +1393,17 @@ body.live .sticker--stamp { opacity: .6; }
     bal = 0; balVel = 0;
     grindStart = performance.now();
     balance.classList.add('live');
-    balCap.textContent = 'let go before you bail';
+    balCap.textContent = '← → keep balance · let go to land';
     board.classList.add('live');
     grindSoundOn();
 
     const { box, ref } = boxes();
+    clearInterval(rideIv); clearTimeout(rideTo);
     board.style.left = (box.left - ref.left + 10) + 'px';
-    board.style.top = (box.top - ref.top - 9) + 'px';
+    board.style.top = (box.top - ref.top - 16) + 'px';
+    board.style.setProperty('--brot', scrapAngle(scraps[pick]).toFixed(2) + 'deg');
     board.classList.remove('ride');
+    if (!reduce) board.classList.add('grinding');
 
     grindIv = setInterval(() => {
       const held = performance.now() - grindStart;
@@ -1141,6 +1418,7 @@ body.live .sticker--stamp { opacity: .6; }
       balVel = clamp(balVel, -4.5, 4.5);
       bal = clamp(bal + balVel, -60, 60);
       pin.style.left = 'calc(50% + ' + bal + '%)';
+      balance.classList.toggle('danger', Math.abs(bal) >= 40);
       if (Math.abs(bal) >= 58) endGrind(true);
     }, 70);
   }
@@ -1151,8 +1429,8 @@ body.live .sticker--stamp { opacity: .6; }
     lastGrindEnd = performance.now();
     clearInterval(grindIv); clearInterval(balIv);
     grindSoundOff();
-    balance.classList.remove('live');
-    board.classList.remove('live');
+    balance.classList.remove('live', 'danger');
+    board.classList.remove('live', 'grinding');
     pin.style.left = '50%';
     balCap.textContent = 'hold to grind';
     bank(bailed);
@@ -1184,10 +1462,25 @@ body.live .sticker--stamp { opacity: .6; }
     }
   }
 
+  const tipBox = $('tip'), tipText = $('tipText');
+  let tipCount = 0, lastTip = -1;
+
+  function showTip(force) {
+    if (!tipBox || !started) return;
+    tipCount++;
+    if (!force && tipCount % 3 !== 0) return;
+    let i, guard = 0;
+    do { i = (Math.random() * TIPS.length) | 0; guard++; } while (i === lastTip && guard < 8);
+    lastTip = i;
+    tipText.textContent = TIPS[i];
+    tipBox.classList.remove('show'); void tipBox.offsetWidth; tipBox.classList.add('show');
+  }
+
   function show(i) {
     if (tapes[index] && tapes[index].ready) { prevIndex = index; mix = 0; }
     index = i;
     chEl.textContent = pad2(i + 1);
+    showTip(false);
     load(i);
     load((i + 1) % tapes.length);
     if (tapes[i].ready) ready();
@@ -1234,7 +1527,7 @@ body.live .sticker--stamp { opacity: .6; }
   function setPlaying(v) {
     playing = v;
     const b = $('deck');
-    b.textContent = playing ? 'HOLD' : 'PLAY';
+    b.textContent = playing ? 'hold' : 'play';
     b.classList.toggle('off', !playing);
     b.setAttribute('aria-pressed', String(!playing));
     schedule();
@@ -1281,8 +1574,9 @@ body.live .sticker--stamp { opacity: .6; }
 
   addEventListener('resize', sizeCanvas);
 
-  if (!reduce && !coarse) {
+  if (!coarse) {
     addEventListener('pointermove', e => {
+      if (reduce) return;
       const x = (e.clientX / innerWidth - .5) * 2;
       const y = (e.clientY / innerHeight - .5) * 2;
       document.documentElement.style.setProperty('--ry', (x * 3.4).toFixed(2) + 'deg');
@@ -1300,6 +1594,22 @@ body.live .sticker--stamp { opacity: .6; }
     e.currentTarget.classList.toggle('off', !sfxOn);
     e.currentTarget.setAttribute('aria-pressed', String(sfxOn));
     if (sfxOn) sMove();
+  });
+
+  const fxBtn = $('fxBtn');
+  if (!motionOn) { fxBtn.classList.add('off'); fxBtn.setAttribute('aria-pressed', 'false'); }
+  fxBtn.addEventListener('click', e => {
+    motionOn = !motionOn;
+    reduce = !motionOn;
+    document.body.classList.toggle('noanim', reduce);
+    if (reduce) {
+      document.documentElement.style.setProperty('--rx', '0deg');
+      document.documentElement.style.setProperty('--ry', '0deg');
+    }
+    e.currentTarget.classList.toggle('off', !motionOn);
+    e.currentTarget.setAttribute('aria-pressed', String(motionOn));
+    try { localStorage.setItem('emopunk_fx', motionOn ? '1' : '0'); } catch (err) {}
+    sMove();
   });
 
   $('pixelBtn').addEventListener('click', e => {
@@ -1345,6 +1655,12 @@ body.live .sticker--stamp { opacity: .6; }
     const k = e.key.toLowerCase();
     if ((k === 'g' || k === 'п') && !e.repeat) { e.preventDefault(); startGrind(); return; }
 
+    /* во время гринда стрелки — это баланс, а не переключение плёнок */
+    if (grinding) {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); balVel -= 1.6; return; }
+      if (e.key === 'ArrowRight') { e.preventDefault(); balVel += 1.6; return; }
+    }
+
     switch (e.key) {
       case 'ArrowDown': e.preventDefault(); select(pick + 1, true); break;
       case 'ArrowUp':   e.preventDefault(); select(pick - 1, true); break;
@@ -1368,7 +1684,13 @@ body.live .sticker--stamp { opacity: .6; }
   addEventListener('blur', () => endGrind(false));
 
   let touchX = null;
-  addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+  addEventListener('touchstart', e => {
+    if (grinding) {
+      balVel += e.changedTouches[0].clientX < innerWidth / 2 ? -1.8 : 1.8;
+      return;
+    }
+    touchX = e.changedTouches[0].clientX;
+  }, { passive: true });
   addEventListener('touchend', e => {
     if (touchX === null || !started) return;
     const dx = e.changedTouches[0].clientX - touchX;
@@ -1377,6 +1699,13 @@ body.live .sticker--stamp { opacity: .6; }
   }, { passive: true });
 
   stage.addEventListener('click', () => { if (started) { next(); schedule(); } });
+
+  /* отскок у всех кнопок при клике */
+  document.querySelectorAll('.btn').forEach(b => {
+    b.addEventListener('click', () => {
+      b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+    });
+  });
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { clearInterval(timer); endGrind(false); } else schedule();
@@ -1390,6 +1719,7 @@ body.live .sticker--stamp { opacity: .6; }
     document.body.classList.add('live');
     setTimeout(() => boot.remove(), 700);
     setTimeout(() => { select(0, false, true); }, reduce ? 0 : 420);
+    setTimeout(() => showTip(true), 1400);
     schedule();
   }
 
