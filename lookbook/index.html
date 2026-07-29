@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>lookbook — emopunk's testing place</title>
+<meta name="description" content="emopunk's wardrobe archive — lookbook.">
+<meta name="theme-color" content="#0B0906">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230B0906'/><path d='M3 19h26v6H3z' fill='%236B4A20'/><path d='M3 8h26v10H3z' fill='%2324351A'/><path d='M1 26l30-4v5L1 30z' fill='%238A4A1C'/></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=VT323&family=Permanent+Marker&family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   emopunk's lookbook — wardrobe
+   ═══════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --tar:      #0B0906;
+  --asphalt:  #12100A;
+  --card:     #241E14;
+  --card-dk:  #16130C;
+  --brown:    #6B4A20;
+  --moss:     #24351A;
+  --rust:     #8A4A1C;
+  --spray:    #A6551D;
+  --ember:    #E08A2C;
+  --bone:     #D6CEB6;
+  --nicotine: #B7A272;
+  --news:     #C4B692;
+  --dim:      rgba(214, 206, 182, .45);
+
+  --display: 'Pixelify Sans', 'Press Start 2P', 'Courier New', monospace;
+  --hand:    'Permanent Marker', 'Comic Sans MS', cursive;
+  --pixel:   'Press Start 2P', 'Courier New', monospace;
+  --mono:    'Space Mono', 'Courier New', Courier, monospace;
+
+  --pad: clamp(12px, 2.2vw, 30px);
+
+  --erode: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='e'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.4' numOctaves='4'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 -1.45 1.1'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23e)'/%3E%3C/svg%3E");
+
+  --paper-tex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035' numOctaves='5'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .09 0 0 0 0 .05 0 0 0 -.55 .38'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23p)'/%3E%3C/svg%3E");
+}
+
+html { scrollbar-color: var(--brown) var(--tar); }
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--tar); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--brown), var(--moss));
+  border: 2px solid var(--tar);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--rust); }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 66% -10%, rgba(58,46,20,.5) 0%, transparent 55%),
+    var(--asphalt);
+  color: var(--bone);
+  font-family: var(--mono);
+  text-transform: lowercase;
+  cursor: crosshair;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── CRT-слои поверх всего ── */
+.layer { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+.halftone { background-image: radial-gradient(rgba(0,0,0,.6) .9px, transparent 1.1px);
+            background-size: 4px 4px; opacity: .28; mix-blend-mode: multiply; }
+.scanlines{ background: repeating-linear-gradient(to bottom, rgba(0,0,0,.3) 0 1px, transparent 1px 3px);
+            opacity: .5; mix-blend-mode: multiply; }
+.grime {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.011' numOctaves='5'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .28 0 0 0 0 .12 0 0 0 -1.2 .95'/%3E%3C/filter%3E%3Crect width='700' height='700' filter='url(%23d)'/%3E%3C/svg%3E");
+  background-size: cover; opacity: .4; mix-blend-mode: overlay;
+}
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: .14; animation: shift .55s steps(4) infinite;
+}
+@keyframes shift {
+  0%{transform:translate3d(0,0,0)} 25%{transform:translate3d(-3%,2%,0)}
+  50%{transform:translate3d(2%,-3%,0)} 75%{transform:translate3d(-2%,-2%,0)}
+  100%{transform:translate3d(3%,1%,0)}
+}
+.vignette { background: radial-gradient(ellipse at 50% 30%, transparent 40%, rgba(0,0,0,.7) 100%); }
+.tracking {
+  height: 22%; top: -22%;
+  background: linear-gradient(to bottom, transparent, rgba(214,206,182,.04) 42%,
+              rgba(214,206,182,.08) 50%, rgba(214,206,182,.04) 58%, transparent);
+  animation: roll 9s linear infinite; mix-blend-mode: screen;
+}
+@keyframes roll { from { transform: translateY(0); } to { transform: translateY(560%); } }
+
+body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .halftone { display: none; }
+
+/* ═══════════ ШАПКА-ВЫВЕСКА ═══════════ */
+
+header {
+  position: relative;
+  z-index: 2;
+  padding: calc(var(--pad) + 24px) var(--pad) 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: clamp(18px, 4vw, 60px);
+  justify-content: center;
+}
+
+#banner {
+  position: relative;
+  padding: clamp(14px, 2vh, 20px) clamp(24px, 3.2vw, 48px) clamp(16px, 2.2vh, 24px) clamp(20px, 2.6vw, 38px);
+  background: linear-gradient(180deg, #1C1610 0%, #100C08 58%, #0B0906 100%);
+  border: 3px solid #3A2A12;
+  transform: rotate(-1.4deg);
+  filter: drop-shadow(10px 12px 0 rgba(0,0,0,.6)) drop-shadow(0 0 26px rgba(224,138,44,.14));
+  clip-path: polygon(
+    0 14px, 14px 0, calc(100% - 14px) 0, 100% 14px,
+    100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px)
+  );
+  animation: sign-short 7.3s steps(1) infinite;
+}
+#banner::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: var(--paper-tex);
+  opacity: .5; mix-blend-mode: overlay; pointer-events: none;
+}
+#banner .frame {
+  position: absolute; inset: 7px;
+  border: 2px dashed rgba(183, 162, 114, .3);
+  pointer-events: none;
+  background:
+    radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) left 3px top 3px / 11px 11px no-repeat,
+    radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) right 3px top 3px / 11px 11px no-repeat,
+    radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) left 3px bottom 3px / 11px 11px no-repeat,
+    radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) right 3px bottom 3px / 11px 11px no-repeat;
+}
+#banner .shine { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+#banner .shine::before {
+  content: ''; position: absolute;
+  top: -25%; bottom: -25%; left: 0; width: 22%;
+  background: linear-gradient(100deg,
+    transparent 0%, rgba(237,229,200,.22) 42%,
+    rgba(224,138,44,.34) 56%, transparent 100%);
+  transform: skewX(-16deg) translateX(-160%);
+  mix-blend-mode: screen;
+  animation: sheen 5.2s steps(9) infinite;
+}
+@keyframes sheen {
+  0%   { transform: skewX(-16deg) translateX(-160%); opacity: 0; }
+  3%   { opacity: 1; }
+  21%  { transform: skewX(-16deg) translateX(560%); opacity: 1; }
+  22%  { opacity: 0; }
+  100% { transform: skewX(-16deg) translateX(560%); opacity: 0; }
+}
+@keyframes sign-short {
+  0%, 90%, 96%, 100% { transform: rotate(-1.4deg); }
+  91% { transform: rotate(-1.1deg) translateX(2px); }
+  93% { transform: rotate(-1.7deg) translateX(-2px) translateY(1px); }
+  95% { transform: rotate(-1.3deg) translateX(1px); }
+}
+
+.kicker {
+  position: relative;
+  display: block; width: fit-content;
+  margin: 0 0 7px -4px;
+  padding: 5px 8px 4px;
+  font-family: var(--pixel);
+  font-size: clamp(7px, .9vw, 9px);
+  letter-spacing: .08em;
+  color: #17110A;
+  background: var(--rust);
+  box-shadow: 2px 3px 0 rgba(0,0,0,.7);
+  transform: rotate(-2deg);
+  transform-origin: left bottom;
+  clip-path: polygon(0 3px, 3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px));
+  animation: kicker-swing 3.2s steps(1) infinite;
+}
+@keyframes kicker-swing {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(-.8deg) translateY(-1px); }
+}
+
+.title {
+  margin: 0;
+  font-family: 'VT323', 'Press Start 2P', 'Courier New', monospace;
+  font-weight: 400;
+  font-size: clamp(46px, 7.4vw, 92px);
+  line-height: .82;
+  letter-spacing: .015em;
+  text-transform: lowercase;
+  color: #EDE5C8;
+  text-shadow:
+    3px 3px 0 var(--brown), 6px 6px 0 var(--tar),
+    0 0 10px rgba(224,138,44,.5), 0 0 34px rgba(138,74,28,.35);
+  animation: title-short 7.3s steps(1) infinite;
+}
+@keyframes title-short {
+  0%, 90%, 96%, 100% {
+    text-shadow: 3px 3px 0 var(--brown), 6px 6px 0 var(--tar),
+                 0 0 10px rgba(224,138,44,.5), 0 0 34px rgba(138,74,28,.35);
+    opacity: 1;
+  }
+  91% {
+    text-shadow: -3px 0 0 var(--rust), 3px 0 0 var(--moss), 3px 3px 0 var(--tar);
+    opacity: .9;
+  }
+  93% {
+    text-shadow: 3px 0 0 var(--ember), -3px 0 0 var(--moss), 3px 3px 0 var(--tar);
+    opacity: .96;
+  }
+  95% {
+    text-shadow: 3px 3px 0 var(--brown), 6px 6px 0 var(--tar), 0 0 22px rgba(224,138,44,.8);
+    opacity: .88;
+  }
+}
+.title span { display: block; }
+.title .l2 { color: var(--nicotine); margin-left: .05em; }
+
+.tape {
+  position: absolute;
+  width: 96px; height: 26px;
+  background: linear-gradient(180deg, rgba(214,201,163,.24), rgba(160,148,116,.18));
+  border-left: 1px solid rgba(0,0,0,.25);
+  border-right: 1px solid rgba(0,0,0,.25);
+  box-shadow: 0 2px 6px rgba(0,0,0,.4);
+  pointer-events: none; z-index: 3;
+}
+.tape::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 2px, transparent 2px 5px);
+}
+.tape.t-a { top: -12px; left: 8%; transform: rotate(-6deg); }
+.tape.t-b { bottom: -11px; right: 12%; transform: rotate(4deg); }
+
+/* ── стикер со статистикой (как sticker--news) ── */
+.stats {
+  position: relative;
+  align-self: center;
+  width: 196px; padding: 14px 16px 16px;
+  background: var(--news); color: #17130B;
+  transform: rotate(5deg);
+  filter: drop-shadow(5px 6px 0 rgba(0,0,0,.55));
+  clip-path: polygon(0% 4%, 14% 0%, 30% 5%, 48% 0%, 66% 5%, 82% 0%, 100% 4%,
+                     99% 95%, 84% 100%, 67% 95%, 50% 100%, 33% 95%, 16% 100%, 0.5% 96%);
+  user-select: none;
+}
+.stats::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(0,0,0,.5) .9px, transparent 1.1px);
+  background-size: 3px 3px; opacity: .5; mix-blend-mode: multiply; pointer-events: none;
+}
+.stats .big { display: block; font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1; }
+.stats .small { display: block; margin-top: 8px; font-family: var(--pixel); font-size: 7px; line-height: 2.1; opacity: .8; }
+.stats .small b { color: #000; }
+
+/* ── назад в пустоту ── */
+#backrow {
+  position: relative; z-index: 2;
+  display: flex; justify-content: center;
+  margin: 4px 0 0;
+}
+.btn {
+  font-family: var(--pixel);
+  font-size: 7px;
+  line-height: 1;
+  padding: 8px 10px 7px;
+  color: #EDE2BE;
+  background: linear-gradient(180deg, #4A3E28 0%, #2A2317 100%);
+  border: 2px solid var(--tar);
+  box-shadow: 0 4px 0 var(--tar), inset 0 2px 0 rgba(240,225,180,.22), inset 0 -2px 0 rgba(0,0,0,.5);
+  cursor: crosshair;
+  user-select: none;
+  text-decoration: none;
+  text-transform: lowercase;
+  display: inline-block;
+  transform: rotate(var(--btilt, 0deg));
+  transition: background .12s, transform .05s steps(1), box-shadow .05s steps(1), color .12s;
+}
+@keyframes btn-glitch {
+  0% { transform: translate(0); text-shadow: -1px 0 0 var(--rust), 1px 0 0 var(--moss); }
+  25% { transform: translate(-2px, 1px); text-shadow: 2px 0 0 var(--ember), -2px 0 0 var(--tar); }
+  50% { transform: translate(2px, -1px); text-shadow: -2px 0 0 var(--moss), 2px 0 0 var(--rust); border-color: var(--ember); }
+  75% { transform: translate(-1px, -1px); }
+  100% { transform: translate(0); text-shadow: none; }
+}
+.btn:hover {
+  background: linear-gradient(180deg, var(--brown) 0%, var(--moss) 100%);
+  color: #FFF3D2;
+  animation: btn-glitch 0.25s steps(2) infinite;
+  border-color: var(--rust);
+}
+.btn:active { transform: translateY(4px) rotate(var(--btilt, 0deg)); box-shadow: 0 0 0 var(--tar), inset 0 2px 0 rgba(240,225,180,.15); }
+.btn:focus-visible { outline: 2px dashed var(--nicotine); outline-offset: 3px; }
+
+/* ═══════════ СЕТКА ШМОТА ═══════════ */
+
+#rack {
+  position: relative;
+  z-index: 2;
+  max-width: 1180px;
+  margin: clamp(24px, 4vh, 52px) auto clamp(40px, 7vh, 80px);
+  padding: 0 var(--pad);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 3vw, 38px) clamp(16px, 2.6vw, 32px);
+}
+@media (max-width: 940px) { #rack { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 580px) { #rack { grid-template-columns: 1fr; max-width: 420px; } }
+
+/* разделитель бренда — маркерная надпись поперёк сетки */
+.brandmark {
+  grid-column: 1 / -1;
+  display: flex; align-items: baseline; gap: 14px;
+  margin-top: clamp(6px, 1.6vh, 16px);
+  user-select: none;
+}
+.brandmark:first-child { margin-top: 0; }
+.brandmark .no {
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: #17110A;
+  background: var(--rust);
+  padding: 5px 7px 4px;
+  box-shadow: 2px 3px 0 rgba(0,0,0,.7);
+  transform: rotate(-2deg);
+  clip-path: polygon(0 3px, 3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px));
+}
+.brandmark .nm {
+  font-family: var(--hand);
+  font-size: clamp(18px, 2.4vw, 26px);
+  color: rgba(183,162,114,.75);
+  transform: rotate(-1.2deg);
+  text-shadow: 2px 2px 0 rgba(0,0,0,.8);
+}
+.brandmark .line {
+  flex: 1; height: 0;
+  border-bottom: 2px dashed rgba(183,162,114,.22);
+  transform: translateY(-6px);
+}
+
+/* ── карточка = полароид, прилепленный скотчем ── */
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(30px) rotate(var(--rot, 0deg)); }
+  to   { opacity: 1; transform: translateY(0) rotate(var(--rot, 0deg)); }
+}
+
+.card {
+  --rot: 0deg;
+  position: relative;
+  padding: 10px 10px 12px;
+  background: linear-gradient(178deg, var(--card) 0%, var(--card-dk) 100%);
+  border: 2px solid #3A2A12;
+  transform: rotate(var(--rot));
+  filter: drop-shadow(7px 8px 0 rgba(0,0,0,.55));
+  cursor: crosshair;
+  opacity: 0;
+  animation: card-in .5s steps(6) forwards;
+  transition: transform .14s steps(3), filter .14s steps(3), border-color .14s steps(3);
+}
+.card:nth-of-type(3n)   { --rot: -1.8deg; }
+.card:nth-of-type(3n+1) { --rot:  1.4deg; }
+.card:nth-of-type(3n+2) { --rot: -1deg; }
+.card:nth-of-type(4n)   { --rot:  2.1deg; }
+
+.card::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: var(--paper-tex);
+  opacity: .55; mix-blend-mode: overlay; pointer-events: none; z-index: 2;
+}
+
+.card .tape { width: 78px; height: 22px; top: -11px; left: 50%; transform: translateX(-50%) rotate(-4deg); }
+.card:nth-of-type(even) .tape { transform: translateX(-50%) rotate(5deg); }
+
+.shot {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--tar);
+  border: 2px solid var(--tar);
+}
+.shot img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: sepia(.6) saturate(.75) hue-rotate(-8deg) contrast(1.18) brightness(.72);
+  transition: filter .3s steps(4), transform .3s steps(4);
+}
+.shot::after { /* халфтон поверх фотки */
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(0,0,0,.5) .8px, transparent 1px);
+  background-size: 3px 3px; opacity: .4; mix-blend-mode: multiply;
+  pointer-events: none;
+  transition: opacity .3s steps(4);
+}
+
+.card:hover, .card:focus-visible {
+  transform: rotate(calc(var(--rot) * .3)) translateY(-5px) scale(1.03);
+  filter: drop-shadow(4px 6px 0 rgba(0,0,0,.85)) drop-shadow(0 0 24px rgba(138,74,28,.45));
+  border-color: var(--rust);
+  z-index: 4;
+}
+.card:hover .shot img, .card:focus-visible .shot img {
+  filter: sepia(.15) saturate(.95) contrast(1.08) brightness(.95);
+  transform: scale(1.06);
+}
+.card:hover .shot::after { opacity: .15; }
+.card:focus-visible { outline: 2px dashed var(--nicotine); outline-offset: 6px; }
+
+.card .info {
+  position: relative;
+  padding: 11px 4px 2px;
+  display: grid;
+  gap: 3px;
+}
+.card .brand {
+  font-family: var(--pixel);
+  font-size: 6px;
+  letter-spacing: .08em;
+  color: var(--nicotine);
+  opacity: .65;
+}
+.card .name {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(17px, 1.9vw, 21px);
+  line-height: 1.05;
+  color: var(--bone);
+  text-shadow: 2px 2px 0 var(--tar);
+}
+.card .price {
+  font-family: 'VT323', monospace;
+  font-size: 21px;
+  line-height: 1;
+  color: var(--ember);
+  text-shadow: 2px 2px 0 var(--tar);
+}
+.card:hover .name { color: #F8EFD2; animation: name-jitter .46s steps(1) infinite; }
+.card:hover .price { color: #FFD27A; text-shadow: 2px 2px 0 var(--tar), 0 0 12px rgba(224,138,44,.6); }
+@keyframes name-jitter {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(1px, -1px); }
+}
+
+/* ═══════════ МОДАЛКА ═══════════ */
+
+#modal {
+  position: fixed; inset: 0;
+  z-index: 60;
+  display: flex; justify-content: center; align-items: center;
+  padding: var(--pad);
+  background: rgba(11, 9, 6, .82);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s steps(3);
+}
+#modal.active { opacity: 1; pointer-events: all; }
+
+.modal-content {
+  position: relative;
+  max-width: 480px; width: 100%;
+  padding: 34px 34px 30px;
+  background: linear-gradient(178deg, var(--card) 0%, var(--card-dk) 100%);
+  color: var(--bone);
+  transform: rotate(-1deg) translateY(24px);
+  filter: drop-shadow(10px 12px 0 rgba(0,0,0,.6)) drop-shadow(0 0 30px rgba(224,138,44,.12));
+  clip-path: polygon(
+    0.5% 3%, 10% 0%, 23% 2.5%, 37% 0.5%, 52% 3%, 66% 0%, 80% 2.5%, 92% 0.5%, 100% 2.5%,
+    99.5% 97%, 90% 100%, 77% 97.5%, 63% 100%, 48% 97%, 34% 100%, 21% 97.5%, 9% 100%, 0% 97%
+  );
+  transition: transform .2s steps(4);
+}
+#modal.active .modal-content { transform: rotate(-1deg) translateY(0); }
+.modal-content::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: var(--paper-tex);
+  opacity: .55; mix-blend-mode: overlay; pointer-events: none;
+}
+.modal-content .frame {
+  position: absolute; inset: 9px;
+  border: 2px dashed rgba(183,162,114,.25);
+  pointer-events: none;
+}
+.modal-content .tape { top: -12px; left: 50%; transform: translateX(-50%) rotate(-3deg); }
+
+.close-btn {
+  position: absolute; top: 14px; right: 16px;
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--nicotine);
+  cursor: crosshair;
+  user-select: none;
+  z-index: 3;
+  padding: 6px;
+  transition: color .12s;
+}
+.close-btn:hover { color: #FFD27A; animation: btn-glitch .25s steps(2) infinite; }
+
+.m-brand {
+  position: relative;
+  width: fit-content;
+  font-family: var(--pixel);
+  font-size: 7px; letter-spacing: .1em;
+  color: #17110A;
+  background: var(--rust);
+  padding: 5px 7px 4px;
+  box-shadow: 2px 3px 0 rgba(0,0,0,.7);
+  transform: rotate(-1.6deg);
+  margin-bottom: 14px;
+}
+.m-title {
+  position: relative;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(22px, 3.4vw, 30px);
+  line-height: 1.05;
+  color: #F8EFD2;
+  text-shadow: 2px 2px 0 var(--tar);
+  margin-bottom: 20px;
+}
+.m-meta {
+  position: relative;
+  font-size: 13px;
+  line-height: 2.1;
+  color: var(--dim);
+  border-top: 2px dashed rgba(183,162,114,.25);
+  border-bottom: 2px dashed rgba(183,162,114,.25);
+  padding: 14px 2px;
+  margin-bottom: 24px;
+}
+.m-meta span { color: var(--bone); }
+.m-meta .price { color: #FFD27A; font-family: 'VT323', monospace; font-size: 19px; text-shadow: 1px 1px 0 var(--tar); }
+
+.buy-btn {
+  position: relative;
+  display: block;
+  text-align: center;
+  font-family: var(--pixel);
+  font-size: 9px;
+  letter-spacing: .06em;
+  padding: 14px 20px 13px;
+  color: #EDE2BE;
+  background: linear-gradient(180deg, #4A3E28 0%, #2A2317 100%);
+  border: 2px solid var(--tar);
+  box-shadow: 0 4px 0 var(--tar), inset 0 2px 0 rgba(240,225,180,.22), inset 0 -2px 0 rgba(0,0,0,.5);
+  text-decoration: none;
+  cursor: crosshair;
+  transition: background .12s, color .12s, transform .05s steps(1), box-shadow .05s steps(1);
+}
+.buy-btn:hover {
+  background: linear-gradient(180deg, var(--brown) 0%, var(--moss) 100%);
+  color: #FFF3D2;
+  animation: btn-glitch .25s steps(2) infinite;
+  border-color: var(--rust);
+}
+.buy-btn:active { transform: translateY(4px); box-shadow: 0 0 0 var(--tar); }
+
+/* ═══════════ СТИКЕРЫ И ПОДВАЛ ═══════════ */
+
+.sticker { position: fixed; z-index: 3; pointer-events: none; user-select: none; }
+.sticker--stamp {
+  bottom: 12%; right: 4%;
+  width: 118px; height: 118px;
+  display: grid; place-content: center;
+  border: 3px solid var(--rust); border-radius: 50%;
+  color: var(--rust); font-family: var(--hand);
+  font-size: 15px; text-align: center; line-height: 1.15;
+  transform: rotate(-13deg); opacity: .5;
+  -webkit-mask-image: var(--erode); mask-image: var(--erode);
+  -webkit-mask-size: 190px; mask-size: 190px;
+}
+.sticker--scrawl {
+  top: 30%; left: 2.5%;
+  font-family: var(--hand); font-size: 15px;
+  color: rgba(183,162,114,.4);
+  transform: rotate(-6deg);
+  writing-mode: vertical-rl;
+}
+@media (max-width: 940px) { .sticker { display: none; } }
+
+footer {
+  position: relative; z-index: 2;
+  padding: 0 var(--pad) calc(var(--pad) + 18px);
+  text-align: center;
+  font-family: var(--pixel);
+  font-size: 6px;
+  letter-spacing: .1em;
+  color: var(--dim);
+}
+footer .scrawl {
+  display: block;
+  margin-bottom: 12px;
+  font-family: var(--hand);
+  font-size: 15px;
+  color: rgba(183,162,114,.45);
+  transform: rotate(-2deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .card { opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<div class="layer grime" aria-hidden="true"></div>
+<div class="layer halftone" aria-hidden="true"></div>
+<div class="layer scanlines" aria-hidden="true"></div>
+<div class="layer grain" aria-hidden="true"></div>
+<div class="layer tracking" aria-hidden="true"></div>
+<div class="layer vignette" aria-hidden="true"></div>
+
+<header>
+  <div id="banner">
+    <span class="frame" aria-hidden="true"></span>
+    <span class="shine" aria-hidden="true"></span>
+    <span class="tape t-a" aria-hidden="true"></span>
+    <span class="tape t-b" aria-hidden="true"></span>
+    <h1 class="title">
+      <span class="kicker">emopunk's</span>
+      <span class="l1">lookbook</span>
+      <span class="l2">archive</span>
+    </h1>
+  </div>
+
+  <div class="stats" aria-label="статистика гардероба">
+    <span class="big">[ wardrobe archive ]</span>
+    <span class="small">
+      total items: <b>13</b><br>
+      est. value: <b>~$10,925</b><br>
+      condition: worn &amp; loved
+    </span>
+  </div>
+</header>
+
+<div id="backrow">
+  <a class="btn" style="--btilt:-1.1deg" href="../index.html">◀ return to void</a>
+</div>
+
+<main id="rack">
+
+  <!-- RICK OWENS -->
+  <div class="brandmark" aria-hidden="true">
+    <span class="no">01</span><span class="nm">rick owens</span><span class="line"></span>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="01 / RICK OWENS" data-title="Geobasket 'Triple Black'" data-price="$1,100" data-season="SS15" data-material="Suede">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://i.ebayimg.com/images/g/NMoAAeSwu2RpgQch/s-l1600.jpg" alt="Geobasket Triple Black" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">rick owens</span>
+      <span class="name">geobasket 'triple black'</span>
+      <span class="price">$1,100</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="01 / RICK OWENS" data-title="Geobasket 'Black/Milk'" data-price="$990" data-season="SS22" data-material="Classic Leather">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/4881f6af4aa54ac2b84ed1cd979d0383?w=880" alt="Geobasket Black/Milk" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">rick owens</span>
+      <span class="name">geobasket 'black/milk'</span>
+      <span class="price">$990</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="01 / RICK OWENS" data-title="Mainline Low Sneakers 'Triple Black'" data-price="$850" data-season="N/A" data-material="Low-top">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/8943f19dde5544e8aba11904b1b07f42?w=880" alt="Mainline Low Sneakers" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">rick owens</span>
+      <span class="name">mainline low sneakers</span>
+      <span class="price">$850</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="01 / RICK OWENS" data-title="Cargo Pants 'Sand'" data-price="$750" data-season="N/A" data-material="Cargo pockets">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/aa339007c2754ccbbc6c801874c2331c?w=880" alt="Cargo Pants Sand" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">rick owens</span>
+      <span class="name">cargo pants 'sand'</span>
+      <span class="price">$750</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="01 / RICK OWENS" data-title="DRKSHDW Pods Shorts" data-price="$450" data-season="Core / Multi" data-material="Cotton">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/c01952e3f73749199d9ee99471c1dbd5?w=880" alt="DRKSHDW Pods Shorts" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">rick owens</span>
+      <span class="name">drkshdw pods shorts</span>
+      <span class="price">$450</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="01 / RICK OWENS" data-title="Bolan Bootcut Denim Pants" data-price="$850" data-season="Multi" data-material="Denim">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/b7170a79021a48bb8eef167f19174b43?w=880" alt="Bolan Bootcut Denim" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">rick owens</span>
+      <span class="name">bolan bootcut denim</span>
+      <span class="price">$850</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="01 / RICK OWENS" data-title="Slim Fit Tyrone Jeans" data-price="$550" data-season="SS19" data-material="Denim">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/fcd00dcf659c4296929e48897bb65099?w=880" alt="Slim Fit Tyrone Jeans" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">rick owens</span>
+      <span class="name">slim fit tyrone jeans</span>
+      <span class="price">$550</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="01 / RICK OWENS" data-title="DRKSHDW Hexagram Sneakers" data-price="$650" data-season="SS21" data-material="High-top">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/41f32350d6ed4e799f8c1f75d77ca485?w=880" alt="Hexagram Sneakers" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">rick owens</span>
+      <span class="name">hexagram sneakers</span>
+      <span class="price">$650</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="01 / RICK OWENS" data-title="Abstract Sneakers" data-price="$800" data-season="Multi" data-material="Mainline Sole">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/60e7624ce67243d68094346473f5bd2b?w=880" alt="Abstract Sneakers" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">rick owens</span>
+      <span class="name">abstract sneakers</span>
+      <span class="price">$800</span>
+    </div>
+  </div>
+
+  <!-- BALENCIAGA -->
+  <div class="brandmark" aria-hidden="true">
+    <span class="no">02</span><span class="nm">balenciaga</span><span class="line"></span>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="02 / BALENCIAGA" data-title="Incognito Unity Sports Over-Oversized Hoodie" data-price="$1,450" data-season="FW24" data-material="Heavy Cotton">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/55dbbd7e64694a3c9c4c33bd30f1abac?w=880" alt="Incognito Unity Hoodie" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">balenciaga</span>
+      <span class="name">incognito unity hoodie</span>
+      <span class="price">$1,450</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="02 / BALENCIAGA" data-title="Skiwear Logo Graphic T-Shirt" data-price="$550" data-season="FW23" data-material="Cotton">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/98301178/5b5c02fdb87e4565a5467851b3a2e2fe?w=880" alt="Skiwear Logo T-Shirt" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">balenciaga</span>
+      <span class="name">skiwear logo t-shirt</span>
+      <span class="price">$550</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="02 / BALENCIAGA" data-title="Paris Soccer Jersey T-Shirt" data-price="$950" data-season="SS24" data-material="Jersey / Mesh">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/36a8542ca40c4dc993c86f0f27b930f8?w=880" alt="Paris Soccer Jersey" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">balenciaga</span>
+      <span class="name">paris soccer jersey</span>
+      <span class="price">$950</span>
+    </div>
+  </div>
+
+  <!-- ARCHIVE & OTHER -->
+  <div class="brandmark" aria-hidden="true">
+    <span class="no">03</span><span class="nm">archive &amp; other</span><span class="line"></span>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="03 / ARCHIVE" data-title="Dirk Bikkembergs 'Metal Heel' Wire Boots" data-price="$900" data-season="Archival" data-material="Lace-through heel / Leather">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/8973cf4b20e64b67ae7320dd996e1846?w=880" alt="Metal Heel Wire Boots" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">dirk bikkembergs</span>
+      <span class="name">metal heel wire boots</span>
+      <span class="price">$900</span>
+    </div>
+  </div>
+
+  <div class="card" tabindex="0" role="button" data-brand="03 / OTHER" data-title="Affliction Graphic Grunge T-Shirt" data-price="$40" data-season="N/A" data-material="Cotton (Shipping included)">
+    <span class="tape" aria-hidden="true"></span>
+    <div class="shot"><img src="https://media-assets.grailed.com/prd/listing/temp/e56afdab34fd478d8b3d3a705d1e67ef?w=880" alt="Affliction Graphic Grunge T-Shirt" loading="lazy"></div>
+    <div class="info">
+      <span class="brand">affliction</span>
+      <span class="name">graphic grunge t-shirt</span>
+      <span class="price">$40</span>
+    </div>
+  </div>
+
+</main>
+
+<div class="sticker sticker--stamp" aria-hidden="true">55256<br>5424652225</div>
+<div class="sticker sticker--scrawl" aria-hidden="true">← жми на карточку</div>
+
+<footer>
+  <span class="scrawl">не для продажи. хотя пиши</span>
+  lookbook v1 · build 0728 · @emopunk
+</footer>
+
+<!-- модалка -->
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="modal-content">
+    <span class="frame" aria-hidden="true"></span>
+    <span class="tape" aria-hidden="true"></span>
+    <div class="close-btn" role="button" tabindex="0" aria-label="закрыть">[ x ]</div>
+    <div class="m-brand" id="m-brand"></div>
+    <div class="m-title" id="m-title"></div>
+    <div class="m-meta">
+      season: <span id="m-season"></span><br>
+      detail/material: <span id="m-material"></span><br>
+      price: <span class="price" id="m-price"></span>
+    </div>
+    <a href="https://t.me/emopunk" target="_blank" rel="noopener noreferrer" class="buy-btn">inquire / purchase ▶</a>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── каскад появления карточек, покадрово ── */
+  const cards = [...document.querySelectorAll('.card')];
+  cards.forEach((card, i) => { card.style.animationDelay = (i * 0.07) + 's'; });
+
+  /* ── лёгкий 3d-тилт на ховере (пропускаем на тач/reduce) ── */
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  if (!coarse && !reduce) {
+    cards.forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - .5;
+        const y = (e.clientY - r.top) / r.height - .5;
+        card.style.setProperty('transform',
+          `rotate(calc(var(--rot) * .3)) translateY(-5px) scale(1.03) perspective(700px) rotateX(${(-y * 6).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg)`);
+      });
+      card.addEventListener('mouseleave', () => { card.style.removeProperty('transform'); });
+    });
+  }
+
+  /* ── звуки как на главной (тихие, ломаются молча если нельзя) ── */
+  let ac = null;
+  function audio() {
+    if (!ac) {
+      const C = window.AudioContext || window.webkitAudioContext;
+      if (!C) return null;
+      ac = new C();
+    }
+    if (ac.state === 'suspended') ac.resume();
+    return ac;
+  }
+  function tone(freq, dur, gain, type) {
+    const c = audio(); if (!c) return;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type || 'square';
+    o.frequency.setValueAtTime(freq, c.currentTime);
+    g.gain.setValueAtTime(gain, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(.0001, c.currentTime + dur);
+    o.connect(g).connect(c.destination);
+    o.start(); o.stop(c.currentTime + dur);
+  }
+  const sMove    = () => tone(220, .04, .04);
+  const sConfirm = () => { tone(330, .07, .07); setTimeout(() => tone(494, .1, .06), 55); };
+
+  cards.forEach(c => c.addEventListener('mouseenter', sMove));
+
+  /* ── модалка ── */
+  const modal = document.getElementById('modal');
+  const closeBtn = modal.querySelector('.close-btn');
+  let lastFocus = null;
+
+  function openModal(card) {
+    document.getElementById('m-brand').textContent = card.dataset.brand;
+    document.getElementById('m-title').textContent = card.dataset.title;
+    document.getElementById('m-season').textContent = card.dataset.season;
+    document.getElementById('m-material').textContent = card.dataset.material;
+    document.getElementById('m-price').textContent = card.dataset.price;
+    lastFocus = card;
+    modal.classList.add('active');
+    closeBtn.focus();
+    sConfirm();
+  }
+  function closeModal() {
+    modal.classList.remove('active');
+    if (lastFocus) lastFocus.focus();
+    sMove();
+  }
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => openModal(card));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(card); }
+    });
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  closeBtn.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); closeModal(); }
+  });
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+  });
+})();
+</script>
+</body>
+</html>
