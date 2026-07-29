@@ -16,9 +16,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=VT323&family=Permanent+Marker&family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════════════════
-   emopunk's testing place bitch
-   ═══════════════════════════════════════════════════════ */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -66,7 +63,7 @@ body {
 }
 
 body.shake { animation: shake .3s steps(2) 2; }
-/* ── ЭФФЕКТ ПЕРЕГРУЗКИ МОНИТОРА ── */
+
 body.glitch-hit #px {
   filter: sepia(1) saturate(3) hue-rotate(50deg) contrast(2) brightness(1.2) !important;
   transform: scale(1.02) skewX(2deg);
@@ -100,7 +97,6 @@ body.pixel #px { image-rendering: pixelated; image-rendering: crisp-edges; }
 .scrim    { background: linear-gradient(to top, rgba(11,9,6,.86) 0%, rgba(11,9,6,.25) 42%, rgba(11,9,6,0) 72%),
                         linear-gradient(to right, rgba(11,9,6,.5) 0%, rgba(11,9,6,0) 66%); }
 .vignette { background: radial-gradient(ellipse at 66% 40%, transparent 28%, rgba(0,0,0,.85) 100%); }
-
 
 .dither {
   background-image:
@@ -141,7 +137,6 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
 #stage.switching .flash { animation: pop .26s steps(3); }
 @keyframes pop { 0% { opacity: .6; } 100% { opacity: 0; } }
 
-
 #wall {
   position: fixed;
   z-index: 2;
@@ -163,7 +158,6 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
 }
 #tilt > *, .scrap { pointer-events: auto; }
 
-
 #banner {
   position: relative;
   margin: 0 0 clamp(14px, 3vh, 40px) clamp(0px, 1.5vw, 20px);
@@ -183,7 +177,7 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
   background-image: var(--paper-tex);
   opacity: .5; mix-blend-mode: overlay; pointer-events: none;
 }
-/* внутренняя пунктирная рамка + заклёпки по углам */
+
 #banner .frame {
   position: absolute; inset: 7px;
   border: 2px dashed rgba(183, 162, 114, .3);
@@ -194,7 +188,7 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
     radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) left 3px bottom 3px / 11px 11px no-repeat,
     radial-gradient(circle, var(--nicotine) 0 2px, rgba(0,0,0,.65) 2px 3.5px, transparent 4px) right 3px bottom 3px / 11px 11px no-repeat;
 }
-/* блик, пробегающий слева направо раз в ~5 сек, покадрово */
+
 #banner .shine {
   position: absolute; inset: 0;
   pointer-events: none; overflow: hidden;
@@ -216,7 +210,7 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
   22%  { opacity: 0; }
   100% { transform: skewX(-16deg) translateX(560%); opacity: 0; }
 }
-/* вывеску иногда коротит */
+
 @keyframes sign-short {
   0%, 90%, 96%, 100% { transform: rotate(-1.4deg) translateZ(46px); }
   91% { transform: rotate(-1.1deg) translateZ(46px) translateX(2px); }
@@ -259,7 +253,7 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
     0 0 10px rgba(224,138,44,.5), 0 0 34px rgba(138,74,28,.35);
   animation: title-short 7.3s steps(1) infinite;
 }
-/* цвет рвётся в те же кадры, что и короткое замыкание вывески */
+
 @keyframes title-short {
   0%, 90%, 96%, 100% {
     text-shadow: 3px 3px 0 var(--brown), 6px 6px 0 var(--tar),
@@ -297,8 +291,6 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
 }
 .tape.t-a { top: -12px; left: 8%; transform: rotate(-6deg); }
 .tape.t-b { bottom: -11px; right: 12%; transform: rotate(4deg); }
-
-/* ── меню ── */
 
 #menu {
   position: relative;
@@ -377,7 +369,7 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
   font-family: var(--pixel);
   font-size: 7px;
   letter-spacing: .04em;
- 
+
   color: var(--nicotine);
   opacity: .6; white-space: nowrap;
   transition: color .14s steps(3), opacity .14s steps(3);
@@ -398,7 +390,6 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
   50% { transform: translateZ(calc(var(--z) + 35px)) rotate(calc(var(--rot) * .45)) translateX(calc(var(--dx) + 18px)) scale(1.06) translateY(-4px); }
 }
 
-/* покадровый флоат на всех четырёх, у каждой свой темп */
 .scrap.on {
   animation: arcade-float 1.6s steps(2, jump-none) infinite;
   border-left: 2px solid var(--ember);
@@ -408,7 +399,6 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
 .slot:nth-child(3) .scrap.on { animation-duration: 1.65s; }
 .slot:nth-child(4) .scrap.on { animation-duration: 2.1s; }
 
-/* двухкадровый джиттер названия, как спрайт */
 .scrap.on .name { animation: name-jitter .46s steps(1) infinite; }
 @keyframes name-jitter {
   0%, 100% { transform: translate(0, 0); text-shadow: 2px 2px 0 rgba(0,0,0,.7); }
@@ -422,7 +412,6 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
   opacity: .6;
 }
 
-/* ── подменю кнопки me: dm + lookbook выпрыгивают вправо ── */
 .submenu {
   position: absolute;
   top: 50%; left: 0;
@@ -531,7 +520,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 #arrow.live { opacity: .95; }
 #arrow path { fill: none; stroke: var(--rust); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
 
-
 #board {
   position: absolute; z-index: 6;
   width: 44px; height: 15px;
@@ -541,7 +529,7 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 }
 #board.live { opacity: 1; }
 #board.ride { animation: ride .5s linear forwards; }
-/* едет вдоль края под углом бумажки, в конце — олли с края */
+
 @keyframes ride {
   0%   { transform: rotate(var(--brot, 0deg)) translate(0, 0); opacity: 1; }
   78%  { transform: rotate(var(--brot, 0deg)) translate(calc(var(--run, 200px) * .78), 0); opacity: 1; }
@@ -576,7 +564,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 }
 #blurb.flip { animation: flip .2s steps(2); }
 @keyframes flip { from { opacity: 0; transform: translateZ(8px) translateX(-7px); } to { opacity: 1; } }
-
 
 .sticker { position: fixed; z-index: 2; pointer-events: none; user-select: none; }
 
@@ -616,7 +603,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
   transform: rotate(-5deg);
 }
 
-
 .btn {
   font-family: var(--pixel);
   font-size: 7px;
@@ -638,9 +624,9 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
   100% { transform: translate(0); text-shadow: none; }
 }
 
-.btn:hover { 
-  background: linear-gradient(180deg, var(--brown) 0%, var(--moss) 100%); 
-  color: #FFF3D2; 
+.btn:hover {
+  background: linear-gradient(180deg, var(--brown) 0%, var(--moss) 100%);
+  color: #FFF3D2;
   animation: btn-glitch 0.25s steps(2) infinite;
   border-color: var(--rust);
 }
@@ -648,21 +634,18 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 .btn:focus-visible { outline: 2px dashed var(--nicotine); outline-offset: 3px; }
 .btn.off { opacity: .45; }
 
-/* кнопки чуть кривые, как наклейки */
 .btn { transform: rotate(var(--btilt, 0deg)); }
 #prompts .group .btn:nth-child(odd)  { --btilt: -1.1deg; }
 #prompts .group .btn:nth-child(even) { --btilt: .9deg; }
 #tapehud .btn:nth-of-type(1) { --btilt: -1deg; }
 #tapehud .btn:nth-of-type(3) { --btilt: 1.2deg; }
 
-/* отскок после клика */
 .btn.pop { animation: btn-pop .3s cubic-bezier(.3, 1.7, .5, 1); }
 @keyframes btn-pop {
   0%   { transform: translateY(4px) scale(.9, .82) rotate(var(--btilt, 0deg)); }
   55%  { transform: translateY(-3px) scale(1.05, 1.1) rotate(calc(var(--btilt, 0deg) * -1.6)); }
   100% { transform: translateY(0) scale(1) rotate(var(--btilt, 0deg)); }
 }
-
 
 #score {
   position: fixed; z-index: 5;
@@ -675,7 +658,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 #score .val   { display: block; font-size: clamp(13px, 1.8vw, 19px); color: #F0E3B8; }
 #score .best  { display: block; margin-top: 4px; font-size: 6px; color: var(--nicotine); opacity: .7; letter-spacing: .08em; }
 
-/* ── SPECIAL как в тони хоуке: комбо x4+ ── */
 #special {
   margin-top: 10px;
   font-size: 8px; letter-spacing: .12em;
@@ -692,7 +674,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 }
 #score.special .val { color: #FFD27A; text-shadow: 2px 2px 0 var(--tar), 0 0 14px rgba(224,138,44,.55); }
 
-/* ── tip of the day: советы как на загрузочных экранах ── */
 #tip {
   position: fixed; z-index: 5;
   right: var(--pad); bottom: calc(var(--pad) + 64px);
@@ -723,7 +704,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
   100% { opacity: 0; transform: translateX(-8px); }
 }
 
-/* ── счёт: подпрыгивание при банке ── */
 #score .val { transform-origin: left center; }
 #score .val.bump { animation: score-bump .34s steps(2); }
 @keyframes score-bump {
@@ -731,7 +711,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
   100% { transform: scale(1); }
 }
 
-/* ── шкала комбо мигает, когда время на исходе ── */
 #combo .meter.low { animation: meter-flash .24s steps(1) infinite; }
 @keyframes meter-flash {
   0%, 100% { border-color: var(--tar); }
@@ -822,7 +801,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 }
 #balance.danger .cap { color: #E2624A; }
 
-
 #tapehud {
   position: fixed; z-index: 5;
   top: var(--pad); right: var(--pad);
@@ -840,7 +818,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 }
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .2; } }
 
-
 #prompts {
   position: fixed; z-index: 8;
   left: 0; right: 0; bottom: 0;
@@ -851,7 +828,7 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
   border-top: 1px solid rgba(183,162,114,.22);
   font-family: var(--pixel); font-size: 7px;
   letter-spacing: .04em;
- 
+
   color: var(--dim);
   user-select: none;
 }
@@ -863,7 +840,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 #prompts .touch { display: none; }
 #prompts .ver { margin-left: auto; opacity: .5; }
 #prompts .group { display: flex; gap: 6px; }
-
 
 #boot {
   position: fixed; z-index: 9; inset: 0;
@@ -899,7 +875,6 @@ body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rota
 #boot.ready .bar { display: none; }
 #boot:not(.ready) .start { display: none; }
 
-/* появление */
 .slot { opacity: 0; }
 body.live .slot { animation: deal .42s cubic-bezier(.16,.9,.3,1) forwards; }
 body.live .slot:nth-child(1) { animation-delay: .04s; }
@@ -921,7 +896,6 @@ body.live .sticker--stamp { opacity: .6; }
   font-family: var(--pixel); font-size: 7px;
   color: var(--rust);
 }
-
 
 @media (max-width: 1100px) {
   .sticker--news, .sticker--stamp { display: none; }
@@ -951,8 +925,6 @@ body.live .sticker--stamp { opacity: .6; }
   .paper { padding: 8px 16px 9px 14px; }
 }
 
-
-/* режим без анимаций — управляется кнопкой fx, а не системной настройкой */
 body.noanim .grain, body.noanim .dot, body.noanim #boot .bar i,
 body.noanim #boot .start, body.noanim .tracking { animation: none; }
 body.noanim .tracking { display: none; }
@@ -970,6 +942,54 @@ body.noanim #banner .shine { display: none; }
 body.noanim #tip.show { opacity: .85; }
 body.noanim .trick { opacity: 1; }
 body.noanim.shake { animation: none; }
+.web{position:fixed;z-index:3;width:180px;height:180px;pointer-events:none;opacity:0;transition:opacity .7s;background-repeat:no-repeat;background-size:contain;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23C8BEA0' stroke-opacity='.55' stroke-width='1.2'%3E%3Cpath d='M0 0L158 26M0 0L136 74M0 0L92 118M0 0L44 148M0 0L8 158'/%3E%3Cpath d='M52 0Q54 24 38 38Q24 54 0 52'/%3E%3Cpath d='M96 0Q99 45 68 68Q45 99 0 96'/%3E%3Cpath d='M138 0Q141 63 100 100Q63 141 0 138'/%3E%3C/g%3E%3C/svg%3E")}
+.w-a{top:-6px;left:-6px}
+.w-b{right:-8px;bottom:34px;transform:scaleX(-1)}
+body.era .web{opacity:.55}
+body.era{--ember:#97672C;--bone:#B3A78C;--rust:#5E3A1E;--spray:#6E4A22;--nicotine:#8A7C5E;--news:#8F846B;--card:#1C1710;--card-dk:#0F0C08;--brown:#4A3418;--moss:#1A2412;--dim:rgba(179,167,140,.4)}
+body.era #px{filter:sepia(.85) saturate(.42) hue-rotate(-14deg) contrast(1.12) brightness(.42)}
+body.era .grime{opacity:.8}
+body.era .grain{opacity:.3}
+body.era .scanlines{opacity:.75}
+body.era .vignette{background:radial-gradient(ellipse at 60% 40%,transparent 18%,rgba(0,0,0,.94) 100%)}
+body.era .tracking{display:none}
+body.era #stage::after{content:'';position:absolute;inset:0;background:#0A0703;opacity:0;mix-blend-mode:multiply;pointer-events:none;animation:lampdie 4.7s steps(1) infinite}
+@keyframes lampdie{0%,86%,92%,100%{opacity:0}87%{opacity:.55}89%{opacity:.2}91%{opacity:.6}}
+body.era #banner{animation:none;transform:rotate(-3.4deg) translateZ(46px) translateY(5px);border-color:#241A0E;filter:drop-shadow(8px 11px 0 rgba(0,0,0,.75))}
+body.era #banner .shine{display:none}
+body.era #banner .frame{border-color:rgba(138,124,94,.18)}
+body.era .title{animation:none;color:#A99E85;text-shadow:3px 3px 0 #33250F,6px 6px 0 var(--tar)}
+body.era .kicker{animation:none;transform:rotate(-4deg) translateY(2px)}
+body.era .tape{opacity:.5}
+body.era .tape.t-a{transform:rotate(-26deg) translateY(7px)}
+body.era .tape.t-b{transform:rotate(19deg) translateY(6px)}
+body.era .slot:nth-child(1) .scrap{--rot:-6.6deg;--dx:0px}
+body.era .slot:nth-child(2) .scrap{--rot:5.2deg;--dx:34px}
+body.era .slot:nth-child(3) .scrap{--rot:-4.6deg;--dx:8px}
+body.era .slot:nth-child(4) .scrap{--rot:7.4deg;--dx:46px}
+body.era .scrap{filter:drop-shadow(6px 9px 0 rgba(0,0,0,.7)) sepia(.35) saturate(.7) brightness(.82)}
+body.era .paper{box-shadow:inset 0 0 34px rgba(0,0,0,.55)}
+body.era .paper::before{opacity:.85}
+body.era .scrap::after{content:'';position:absolute;top:3px;right:5px;width:24px;height:24px;background:linear-gradient(225deg,rgba(10,7,3,.9) 0 46%,#0E0B07 47% 55%,#2A1F12 56% 100%);clip-path:polygon(100% 0,0 0,100% 100%);opacity:.85}
+body.era #marker path{stroke:#6E4A22;filter:none;opacity:.6}
+body.era #arrow path{stroke:#4A3418}
+body.era .btn{color:#8F846B;background:linear-gradient(180deg,#332A1B 0%,#1A1510 100%);border-color:#000;box-shadow:0 4px 0 #000,inset 0 2px 0 rgba(179,167,140,.08),inset 0 -2px 0 rgba(0,0,0,.6);-webkit-mask-image:var(--erode);mask-image:var(--erode);-webkit-mask-size:260px;mask-size:260px}
+body.era .btn:hover{background:linear-gradient(180deg,#4A3418 0%,#1A2412 100%);color:#C4B692}
+body.era #score .val{color:#B3A78C}
+body.era #score .best{color:#8A7C5E}
+body.era .sticker--news{background:#8F846B;transform:rotate(11deg) translateY(6px);filter:drop-shadow(5px 6px 0 rgba(0,0,0,.6)) brightness(.8)}
+body.era .sticker--stamp{opacity:.28}
+body.era .sticker--scrawl{color:rgba(138,124,94,.3)}
+body.era #prompts{background:linear-gradient(180deg,rgba(8,6,3,.5),rgba(5,3,1,.97));border-top-color:rgba(138,124,94,.18);color:#6E6350}
+body.era #prompts kbd{color:#8A7C5E;border-color:rgba(138,124,94,.3)}
+body.era #tapehud{color:#6E6350}
+body.era #tapehud b{color:#8A7C5E}
+body.era .dot{background:#5E3A1E;box-shadow:0 0 5px #5E3A1E;animation-duration:5.6s}
+body.era #blurb{color:rgba(179,167,140,.36)}
+body.grav .slot{animation:none;opacity:1}
+body.grav #banner{animation:none}
+body.grav #banner .shine{display:none}
+body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav #tapehud,body.grav #prompts{transition:none;will-change:transform}
 </style>
 </head>
 <body class="pixel">
@@ -1051,13 +1071,13 @@ body.noanim.shake { animation: none; }
       </svg>
 
       <div class="slot">
-        <a class="scrap" id="meScrap" href="https://t.me/emopunk"
+        <a class="scrap" id="meScrap" href="https://telegram.me/emopunk"
            data-blurb="the goat and dev" data-gap="telegram"
            aria-haspopup="true" aria-expanded="false" aria-controls="meSub">
           <span class="paper"><span class="name">me</span><span class="host">telegram</span></span>
         </a>
         <div class="submenu" id="meSub" aria-hidden="true">
-          <a class="subbtn" href="https://t.me/emopunk" target="_blank" rel="noopener noreferrer">
+          <a class="subbtn" href="https://telegram.me/emopunk" target="_blank" rel="noopener noreferrer">
             <span class="sname">dm</span><span class="shost">telegram</span>
           </a>
           <a class="subbtn" href="https://funstat.xyz/lookbook" target="_blank" rel="noopener noreferrer">
@@ -1067,7 +1087,7 @@ body.noanim.shake { animation: none; }
       </div>
 
       <div class="slot">
-        <a class="scrap" href="https://t.me/contined" target="_blank" rel="noopener noreferrer"
+        <a class="scrap" href="https://telegram.me/contined" target="_blank" rel="noopener noreferrer"
            data-blurb="diary bruh" data-gap="diary">
           <span class="paper"><span class="name">diary</span><span class="host">telegram</span></span>
         </a>
@@ -1099,6 +1119,8 @@ body.noanim.shake { animation: none; }
 </div>
 <div class="sticker sticker--stamp" aria-hidden="true">55256<br>5424652225</div>
 <div class="sticker sticker--scrawl" aria-hidden="true">← бинды</div>
+<div class="web w-a" aria-hidden="true"></div>
+<div class="web w-b" aria-hidden="true"></div>
 
 <div id="tip" aria-hidden="true">
   <span class="now">tip of the day</span>
@@ -1137,7 +1159,6 @@ body.noanim.shake { animation: none; }
 (() => {
   'use strict';
 
-  /* ═══════════ ИСТОЧНИКИ ═══════════ */
   const SOURCES = [...new Set([
     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcG14M3gxbTViZmoxMDhnanJxYzJtcHRibGxlbHk0dGJiaTFlZnlpNCZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/l2JIhq7AR3J7Qq9Hy/giphy.gif",
     "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MTA0dXRsdm1naW56aHcwYjh3bGhlbGxpcHhyZTl2bXkxeWllenJwdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/2vs8rSilWauHJUqM5l/giphy.gif",
@@ -1157,8 +1178,6 @@ body.noanim.shake { animation: none; }
 
   const DWELL  = 5200;
 
-  /* анимации включены по умолчанию на любом устройстве;
-     кнопка fx выключает, выбор запоминается */
   let motionOn = true;
   try {
     const s = localStorage.getItem('emopunk_fx');
@@ -1261,7 +1280,6 @@ body.noanim.shake { animation: none; }
   let score = 0, shownScore = 0, combo = 0, mult = 0, comboUntil = 0;
   const COMBO_MS = 3200;
 
-  /* ── best score (тихо переживает перезагрузку, если браузер даёт) ── */
   const bestEl = $('bestVal'), scoreBox = $('score'), specialEl = $('special');
   let best = 0;
   try { best = parseInt(localStorage.getItem('emopunk_best') || '0', 10) || 0; } catch (e) {}
@@ -1283,7 +1301,6 @@ body.noanim.shake { animation: none; }
                   'bert slide', 'boneless', 'no comply', 'natas spin', 'wallride', 'feeble grind'];
   const SURFS  = ['channel surf', 'tape flip', 'static slam', 'vhs 360'];
 
-  /* советы как на загрузочных экранах */
   const TIPS = [
     'посмотри в правый левый угол',
     'изначально тут было 4 кнопки',
@@ -1312,7 +1329,7 @@ body.noanim.shake { animation: none; }
   }
 
   function trick(name, pts) {
-    if (mult >= 4) pts = Math.round(pts * 1.5); /* special платит больше */
+    if (mult >= 4) pts = Math.round(pts * 1.5);
     combo += pts;
     mult += 1;
     if (mult >= 4) setSpecial(true);
@@ -1378,7 +1395,6 @@ body.noanim.shake { animation: none; }
     }
   }
 
-  /* угол наклона карточки, чтобы доска ехала вдоль её края */
   function scrapAngle(el) {
     const rot = parseFloat(getComputedStyle(el).getPropertyValue('--rot')) || 0;
     return el.classList.contains('on') ? rot * .3 : rot;
@@ -1408,7 +1424,7 @@ body.noanim.shake { animation: none; }
     rideIv = setInterval(() => {
       t += 1;
       const p = t / 8;
-      /* искры из-под задних колёс, вдоль наклона края */
+
       sparks(startX + 6 + run * p * Math.cos(rad), y + 15 + run * p * Math.sin(rad), 2);
       if (t >= 8) clearInterval(rideIv);
     }, 55);
@@ -1473,7 +1489,6 @@ body.noanim.shake { animation: none; }
     });
   });
 
-  /* ── подменю me: dm + lookbook ── */
   const meScrap = $('meScrap'), meSub = $('meSub');
   let meOpen = false, meSubTo = null;
 
@@ -1490,7 +1505,7 @@ body.noanim.shake { animation: none; }
     meSub.classList.add('open');
     meSub.setAttribute('aria-hidden', 'false');
     meScrap.setAttribute('aria-expanded', 'true');
-    /* искры из-под кнопки, откуда выпрыгивают */
+
     const b = meScrap.getBoundingClientRect(), r = menu.getBoundingClientRect();
     sparks(b.right - r.left + 6, b.top - r.top + b.height / 2, 9);
   }
@@ -1505,11 +1520,10 @@ body.noanim.shake { animation: none; }
   }
 
   if (meScrap && meSub) {
-    /* клик по me не уводит в телегу, а выкидывает две кнопки;
-       общий обработчик выше уже дал sConfirm + glitch-hit + trick */
+
     meScrap.addEventListener('click', e => {
       e.preventDefault();
-      if (performance.now() - lastGrindEnd < 300) return; /* это был гринд, не клик */
+      if (performance.now() - lastGrindEnd < 300) return;
       meOpen ? closeSub() : openSub();
     });
 
@@ -1524,7 +1538,6 @@ body.noanim.shake { animation: none; }
       });
     });
 
-    /* клик мимо / другой скрап / esc — прячем */
     document.addEventListener('click', e => {
       if (meOpen && !e.target.closest('#meScrap') && !e.target.closest('#meSub')) closeSub();
     });
@@ -1808,7 +1821,6 @@ body.noanim.shake { animation: none; }
     const k = e.key.toLowerCase();
     if ((k === 'g' || k === 'п') && !e.repeat) { e.preventDefault(); startGrind(); return; }
 
-    /* во время гринда стрелки — это баланс, а не переключение плёнок */
     if (grinding) {
       if (e.key === 'ArrowLeft')  { e.preventDefault(); balVel -= 1.6; return; }
       if (e.key === 'ArrowRight') { e.preventDefault(); balVel += 1.6; return; }
@@ -1853,7 +1865,6 @@ body.noanim.shake { animation: none; }
 
   stage.addEventListener('click', () => { if (started) { next(); schedule(); } });
 
-  /* отскок у всех кнопок при клике */
   document.querySelectorAll('.btn').forEach(b => {
     b.addEventListener('click', () => {
       b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
@@ -1877,6 +1888,149 @@ body.noanim.shake { animation: none; }
   }
 
   boot.addEventListener('click', () => { if (firstReady) begin(); });
+
+  const verEl = document.querySelector('#prompts .ver');
+  const verBase = verEl ? verEl.textContent : '';
+  let eraOn = false, gravOn = false, gravBack = false, gravItems = null, gravIv = null, lastThud = 0, gravShook = false;
+
+  function verUpd() {
+    if (!verEl) return;
+    verEl.textContent = eraOn ? 'v0.1 · build 0000' : gravOn ? 'v2.0 · build dropped' : verBase;
+  }
+
+  function setEra(v) {
+    eraOn = v;
+    document.body.classList.toggle('era', v);
+    document.body.classList.add('glitch-hit');
+    setTimeout(() => document.body.classList.remove('glitch-hit'), 200);
+    if (v) { tone(52, .7, .12, 'sawtooth'); noise(.6, 240, .6, .12, 70); popTrick('где все?', 0, true); }
+    else { sStart(); popTrick('свет дали', 0); }
+    verUpd();
+  }
+
+  function rotOf(el) {
+    const t = getComputedStyle(el).transform;
+    if (!t || t === 'none') return 0;
+    const m = t.match(/matrix(?:3d)?\(([^)]+)\)/);
+    if (!m) return 0;
+    const p = m[1].split(',').map(parseFloat);
+    return Math.atan2(p[1], p[0]) * 180 / Math.PI;
+  }
+
+  function puff(x, y, n) {
+    if (reduce) return;
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement('span');
+      s.className = 'spark';
+      s.style.position = 'fixed';
+      s.style.zIndex = 9;
+      s.style.left = x + 'px';
+      s.style.top = y + 'px';
+      s.style.background = SPARK_COLORS[(Math.random() * SPARK_COLORS.length) | 0];
+      s.style.setProperty('--sx', ((Math.random() - .5) * 56) + 'px');
+      s.style.setProperty('--sy', (-4 - Math.random() * 20) + 'px');
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 480);
+    }
+  }
+
+  function gApply(it) {
+    it.el.style.transform = 'translate(0px,' + (Math.round(it.y / 2) * 2) + 'px) rotate(' + (Math.round(it.r * 2) / 2) + 'deg)';
+  }
+
+  function gStep() {
+    const now = performance.now();
+    let busy = false;
+    for (const it of gravItems) {
+      if (!it.live) continue;
+      if (gravBack) {
+        it.y *= .78;
+        it.r = it.r0 + (it.r - it.r0) * .78;
+        if (Math.abs(it.y) < 1 && Math.abs(it.r - it.r0) < .5) {
+          it.y = 0; it.r = it.r0; it.live = false;
+          it.el.style.transform = '';
+        } else { busy = true; gApply(it); }
+        continue;
+      }
+      if (now < it.delay) { busy = true; continue; }
+      it.v += 1.15;
+      it.y += it.v;
+      it.r += it.vr;
+      if (it.y >= it.floor) {
+        it.y = it.floor;
+        if (Math.abs(it.v) > 3.4) {
+          it.v = -it.v * .38;
+          it.vr *= .55;
+          busy = true;
+          if (now - lastThud > 60) {
+            lastThud = now;
+            tone(58 + Math.random() * 24, .08, .09, 'square');
+            noise(.05, 160, .9, .07);
+          }
+          const rr = it.el.getBoundingClientRect();
+          puff(rr.left + rr.width * (.2 + Math.random() * .6), rr.bottom - 4, 4);
+          if (!gravShook && !reduce) {
+            gravShook = true;
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 620);
+          }
+        } else { it.v = 0; it.vr = 0; it.live = false; gApply(it); }
+      } else { busy = true; }
+      if (it.live) gApply(it);
+    }
+    if (!busy) {
+      clearInterval(gravIv); gravIv = null;
+      if (gravBack) {
+        gravBack = false; gravOn = false; gravItems = null;
+        document.body.classList.remove('grav');
+        verUpd();
+      }
+    }
+  }
+
+  function startGrav() {
+    gravOn = true; gravBack = false; gravShook = false;
+    document.body.classList.add('grav');
+    closeSub();
+    endGrind(false);
+    const els = [...document.querySelectorAll('#banner,.slot,#blurb,#score,#tapehud,.sticker--news,.sticker--stamp,.sticker--scrawl,#prompts')]
+      .filter(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
+    const now = performance.now();
+    gravItems = els.map((el, i) => {
+      const r = el.getBoundingClientRect();
+      const r0 = rotOf(el);
+      return {
+        el, y: 0, v: -(1 + Math.random() * 3), r: r0, r0,
+        vr: (Math.random() - .5) * 7,
+        floor: Math.max(0, innerHeight - r.bottom - 2 - Math.random() * 8),
+        delay: now + i * 70 + Math.random() * 220,
+        live: true
+      };
+    });
+    sBail();
+    trick('gravity check', 500);
+    verUpd();
+    clearInterval(gravIv);
+    gravIv = setInterval(gStep, 33);
+  }
+
+  function endGrav() {
+    gravBack = true;
+    gravItems.forEach(it => { it.live = true; });
+    sStart();
+    popTrick('гравитация чинится', 0);
+    clearInterval(gravIv);
+    gravIv = setInterval(gStep, 33);
+  }
+
+  let seq = '';
+  addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key.length !== 1 || !/[a-z]/i.test(e.key)) return;
+    seq = (seq + e.key.toLowerCase()).slice(-6);
+    if (seq.endsWith('xmr')) { seq = ''; setEra(!eraOn); }
+    else if (seq.endsWith('dths')) { seq = ''; if (!gravOn) startGrav(); else if (!gravBack) endGrav(); }
+  });
 
   sizeCanvas();
   requestAnimationFrame(frame);
