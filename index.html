@@ -422,6 +422,90 @@ body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .half
   opacity: .6;
 }
 
+/* ── подменю кнопки me: dm + lookbook выпрыгивают вправо ── */
+.submenu {
+  position: absolute;
+  top: 50%; left: 0;
+  transform: translateY(-50%) translateZ(30px);
+  display: flex; gap: 12px;
+  pointer-events: none;
+  z-index: 6;
+}
+.submenu.open { pointer-events: auto; }
+
+.subbtn {
+  --srot: -2.4deg;
+  position: relative;
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 9px 16px 10px 14px;
+  text-decoration: none;
+  color: var(--bone);
+  background: linear-gradient(178deg, var(--card) 0%, var(--card-dk) 100%);
+  clip-path: polygon(
+    1% 10%, 12% 0%, 26% 8%, 41% 1%, 56% 9%, 70% 0%, 84% 7%, 100% 3%,
+    99% 90%, 86% 100%, 71% 92%, 55% 100%, 40% 91%, 25% 100%, 11% 93%, 0% 98%
+  );
+  filter: drop-shadow(5px 6px 0 rgba(0,0,0,.55));
+  opacity: 0;
+  transform: translateX(-52px) scale(.2) rotate(calc(var(--srot) * 3));
+  transition: filter .14s steps(3), background .14s steps(3);
+}
+.subbtn:nth-child(2) {
+  --srot: 2.1deg;
+  clip-path: polygon(
+    0% 6%, 13% 1%, 27% 8%, 43% 0%, 58% 7%, 73% 1%, 87% 8%, 100% 2%,
+    99% 94%, 85% 100%, 70% 93%, 54% 100%, 39% 94%, 24% 100%, 10% 94%, 0.5% 99%
+  );
+}
+.subbtn::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: var(--paper-tex);
+  opacity: .55; mix-blend-mode: overlay; pointer-events: none;
+}
+.subbtn .sname {
+  position: relative;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(16px, 2vw, 21px);
+  line-height: 1;
+  text-shadow: 2px 2px 0 var(--tar);
+}
+.subbtn .shost {
+  position: relative;
+  font-family: var(--pixel);
+  font-size: 6px;
+  letter-spacing: .04em;
+  color: var(--nicotine);
+  opacity: .6;
+  white-space: nowrap;
+}
+.submenu.open .subbtn { animation: sub-pop .32s steps(4) forwards; }
+.submenu.open .subbtn:nth-child(2) { animation-delay: .09s; }
+@keyframes sub-pop {
+  0%   { opacity: 0; transform: translateX(-52px) scale(.2) rotate(calc(var(--srot) * 3)); }
+  55%  { opacity: 1; transform: translateX(7px) scale(1.14) rotate(calc(var(--srot) * -1.2)); }
+  80%  { transform: translateX(-2px) scale(.96) rotate(calc(var(--srot) * 1.4)); }
+  100% { opacity: 1; transform: translateX(0) scale(1) rotate(var(--srot)); }
+}
+.submenu.closing .subbtn { animation: sub-out .16s steps(3) forwards; }
+.submenu.closing .subbtn:nth-child(2) { animation-delay: .04s; }
+@keyframes sub-out {
+  from { opacity: 1; transform: translateX(0) scale(1) rotate(var(--srot)); }
+  to   { opacity: 0; transform: translateX(-36px) scale(.25) rotate(calc(var(--srot) * 4)); }
+}
+.subbtn:hover, .subbtn:focus-visible {
+  background: linear-gradient(102deg, var(--brown) 0%, #4C3B18 50%, var(--moss) 100%);
+  filter: drop-shadow(3px 4px 0 rgba(0,0,0,.85)) drop-shadow(0 0 20px rgba(138,74,28,.45));
+  border-left: 2px solid var(--ember);
+}
+.subbtn:hover .sname, .subbtn:focus-visible .sname {
+  color: #F8EFD2;
+  animation: name-jitter .46s steps(1) infinite;
+}
+.subbtn:hover .shost { color: #E4D09A; opacity: .95; }
+.subbtn:focus-visible { outline: 2px dashed var(--nicotine); outline-offset: 6px; }
+body.noanim .submenu.open .subbtn { animation: none; opacity: 1; transform: rotate(var(--srot)); }
+
 #marker {
   position: absolute; z-index: 5;
   pointer-events: none; overflow: visible;
@@ -967,10 +1051,19 @@ body.noanim.shake { animation: none; }
       </svg>
 
       <div class="slot">
-        <a class="scrap" href="https://t.me/emopunk" target="_blank" rel="noopener noreferrer"
-           data-blurb="the goat and dev" data-gap="telegram">
+        <a class="scrap" id="meScrap" href="https://t.me/emopunk"
+           data-blurb="the goat and dev" data-gap="telegram"
+           aria-haspopup="true" aria-expanded="false" aria-controls="meSub">
           <span class="paper"><span class="name">me</span><span class="host">telegram</span></span>
         </a>
+        <div class="submenu" id="meSub" aria-hidden="true">
+          <a class="subbtn" href="https://t.me/emopunk" target="_blank" rel="noopener noreferrer">
+            <span class="sname">dm</span><span class="shost">telegram</span>
+          </a>
+          <a class="subbtn" href="https://funstat.xyz/lookbook" target="_blank" rel="noopener noreferrer">
+            <span class="sname">lookbook</span><span class="shost">archive</span>
+          </a>
+        </div>
       </div>
 
       <div class="slot">
@@ -1379,6 +1472,66 @@ body.noanim.shake { animation: none; }
       setTimeout(() => bank(false), 60);
     });
   });
+
+  /* ── подменю me: dm + lookbook ── */
+  const meScrap = $('meScrap'), meSub = $('meSub');
+  let meOpen = false, meSubTo = null;
+
+  function placeSub() {
+    if (!meScrap || !meSub) return;
+    meSub.style.left = (meScrap.offsetLeft + meScrap.offsetWidth + 16) + 'px';
+  }
+
+  function openSub() {
+    meOpen = true;
+    clearTimeout(meSubTo);
+    placeSub();
+    meSub.classList.remove('closing');
+    meSub.classList.add('open');
+    meSub.setAttribute('aria-hidden', 'false');
+    meScrap.setAttribute('aria-expanded', 'true');
+    /* искры из-под кнопки, откуда выпрыгивают */
+    const b = meScrap.getBoundingClientRect(), r = menu.getBoundingClientRect();
+    sparks(b.right - r.left + 6, b.top - r.top + b.height / 2, 9);
+  }
+
+  function closeSub() {
+    if (!meOpen) return;
+    meOpen = false;
+    meSub.classList.add('closing');
+    meSub.setAttribute('aria-hidden', 'true');
+    meScrap.setAttribute('aria-expanded', 'false');
+    meSubTo = setTimeout(() => meSub.classList.remove('open', 'closing'), 220);
+  }
+
+  if (meScrap && meSub) {
+    /* клик по me не уводит в телегу, а выкидывает две кнопки;
+       общий обработчик выше уже дал sConfirm + glitch-hit + trick */
+    meScrap.addEventListener('click', e => {
+      e.preventDefault();
+      if (performance.now() - lastGrindEnd < 300) return; /* это был гринд, не клик */
+      meOpen ? closeSub() : openSub();
+    });
+
+    meSub.querySelectorAll('.subbtn').forEach(a => {
+      a.addEventListener('mouseenter', sMove);
+      a.addEventListener('click', () => {
+        sConfirm();
+        document.body.classList.add('glitch-hit');
+        setTimeout(() => document.body.classList.remove('glitch-hit'), 180);
+        trick('gap: ' + (a.querySelector('.sname').textContent || 'link'), 1000);
+        setTimeout(() => bank(false), 60);
+      });
+    });
+
+    /* клик мимо / другой скрап / esc — прячем */
+    document.addEventListener('click', e => {
+      if (meOpen && !e.target.closest('#meScrap') && !e.target.closest('#meSub')) closeSub();
+    });
+    addEventListener('keydown', e => { if (e.key === 'Escape') closeSub(); });
+    addEventListener('resize', placeSub);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeSub);
+  }
 
   addEventListener('resize', placeMarker);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeMarker);
