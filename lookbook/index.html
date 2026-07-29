@@ -14,7 +14,7 @@
 
 <style>
 /* ═══════════════════════════════════════════════════════
-   emopunk's lookbook — wardrobe
+   emopunk's lookbook — wardrobe archive
    ═══════════════════════════════════════════════════════ */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -69,7 +69,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── CRT-слои поверх всего ── */
 .layer { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
 .halftone { background-image: radial-gradient(rgba(0,0,0,.6) .9px, transparent 1.1px);
             background-size: 4px 4px; opacity: .28; mix-blend-mode: multiply; }
@@ -99,7 +98,6 @@ body {
 
 body.nocrt .scanlines, body.nocrt .grain, body.nocrt .tracking, body.nocrt .halftone { display: none; }
 
-/* ═══════════ ШАПКА-ВЫВЕСКА ═══════════ */
 
 header {
   position: relative;
@@ -238,7 +236,6 @@ header {
 .tape.t-a { top: -12px; left: 8%; transform: rotate(-6deg); }
 .tape.t-b { bottom: -11px; right: 12%; transform: rotate(4deg); }
 
-/* ── стикер со статистикой (как sticker--news) ── */
 .stats {
   position: relative;
   align-self: center;
@@ -259,7 +256,6 @@ header {
 .stats .small { display: block; margin-top: 8px; font-family: var(--pixel); font-size: 7px; line-height: 2.1; opacity: .8; }
 .stats .small b { color: #000; }
 
-/* ── назад в пустоту ── */
 #backrow {
   position: relative; z-index: 2;
   display: flex; justify-content: center;
@@ -298,7 +294,6 @@ header {
 .btn:active { transform: translateY(4px) rotate(var(--btilt, 0deg)); box-shadow: 0 0 0 var(--tar), inset 0 2px 0 rgba(240,225,180,.15); }
 .btn:focus-visible { outline: 2px dashed var(--nicotine); outline-offset: 3px; }
 
-/* ═══════════ СЕТКА ШМОТА ═══════════ */
 
 #rack {
   position: relative;
@@ -313,7 +308,6 @@ header {
 @media (max-width: 940px) { #rack { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 580px) { #rack { grid-template-columns: 1fr; max-width: 420px; } }
 
-/* разделитель бренда — маркерная надпись поперёк сетки */
 .brandmark {
   grid-column: 1 / -1;
   display: flex; align-items: baseline; gap: 14px;
@@ -344,7 +338,6 @@ header {
   transform: translateY(-6px);
 }
 
-/* ── карточка = полароид, прилепленный скотчем ── */
 @keyframes card-in {
   from { opacity: 0; transform: translateY(30px) rotate(var(--rot, 0deg)); }
   to   { opacity: 1; transform: translateY(0) rotate(var(--rot, 0deg)); }
@@ -446,8 +439,6 @@ header {
   0%, 100% { transform: translate(0, 0); }
   50%      { transform: translate(1px, -1px); }
 }
-
-/* ═══════════ МОДАЛКА ═══════════ */
 
 #modal {
   position: fixed; inset: 0;
@@ -560,7 +551,6 @@ header {
 }
 .buy-btn:active { transform: translateY(4px); box-shadow: 0 0 0 var(--tar); }
 
-/* ═══════════ СТИКЕРЫ И ПОДВАЛ ═══════════ */
 
 .sticker { position: fixed; z-index: 3; pointer-events: none; user-select: none; }
 .sticker--stamp {
@@ -640,12 +630,12 @@ footer .scrawl {
 </header>
 
 <div id="backrow">
-  <a class="btn" style="--btilt:-1.1deg" href="../index.html">◀ return to void</a>
+  <a class="btn" style="--btilt:-1.1deg" href="/">◀ return to main</a>
 </div>
 
 <main id="rack">
 
-  <!-- RICK OWENS -->
+  
   <div class="brandmark" aria-hidden="true">
     <span class="no">01</span><span class="nm">rick owens</span><span class="line"></span>
   </div>
@@ -739,8 +729,7 @@ footer .scrawl {
       <span class="price">$800</span>
     </div>
   </div>
-
-  <!-- BALENCIAGA -->
+   
   <div class="brandmark" aria-hidden="true">
     <span class="no">02</span><span class="nm">balenciaga</span><span class="line"></span>
   </div>
@@ -775,7 +764,7 @@ footer .scrawl {
     </div>
   </div>
 
-  <!-- ARCHIVE & OTHER -->
+  
   <div class="brandmark" aria-hidden="true">
     <span class="no">03</span><span class="nm">archive &amp; other</span><span class="line"></span>
   </div>
@@ -806,11 +795,10 @@ footer .scrawl {
 <div class="sticker sticker--scrawl" aria-hidden="true">← жми на карточку</div>
 
 <footer>
-  <span class="scrawl">не для продажи. хотя пиши</span>
+  <span class="scrawl">готов всё продать если чё</span>
   lookbook v1 · build 0728 · @emopunk
 </footer>
 
-<!-- модалка -->
 <div id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
   <div class="modal-content">
     <span class="frame" aria-hidden="true"></span>
@@ -833,11 +821,11 @@ footer .scrawl {
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── каскад появления карточек, покадрово ── */
+  
   const cards = [...document.querySelectorAll('.card')];
   cards.forEach((card, i) => { card.style.animationDelay = (i * 0.07) + 's'; });
 
-  /* ── лёгкий 3d-тилт на ховере (пропускаем на тач/reduce) ── */
+  
   const coarse = matchMedia('(pointer: coarse)').matches;
   if (!coarse && !reduce) {
     cards.forEach(card => {
@@ -852,7 +840,6 @@ footer .scrawl {
     });
   }
 
-  /* ── звуки как на главной (тихие, ломаются молча если нельзя) ── */
   let ac = null;
   function audio() {
     if (!ac) {
@@ -878,7 +865,7 @@ footer .scrawl {
 
   cards.forEach(c => c.addEventListener('mouseenter', sMove));
 
-  /* ── модалка ── */
+  
   const modal = document.getElementById('modal');
   const closeBtn = modal.querySelector('.close-btn');
   let lastFocus = null;
