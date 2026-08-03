@@ -912,7 +912,11 @@ body.live .sticker--stamp { opacity: .6; }
   .slot:nth-child(3) .scrap { --dx: 4px; }
   .slot:nth-child(4) .scrap { --dx: 12px; }
   .scrap.on { transform: translateZ(calc(var(--z) + 20px)) rotate(calc(var(--rot) * .3)) translateX(calc(var(--dx) + 6px)) scale(1.02); }
-  #arrow, .sticker--scrawl, #tricks, #tip { display: none; }
+  #arrow, .sticker--scrawl { display: none; }
+  #tricks { top: calc(var(--pad) + 96px); width: auto; max-width: 74vw; }
+  #tip { left: 12px; right: 12px; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); max-width: none; }
+  .submenu { top: calc(100% + 8px); left: 2px; right: 2px; transform: translateZ(30px); flex-direction: column; align-items: stretch; }
+  .subbtn { --srot: -1deg; }
   #prompts .key { display: none; }
   #prompts .touch { display: inline; }
   #blurb { margin-left: 2px; max-width: none; }
@@ -990,6 +994,99 @@ body.grav .slot{animation:none;opacity:1}
 body.grav #banner{animation:none}
 body.grav #banner .shine{display:none}
 body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav #tapehud,body.grav #prompts{transition:none;will-change:transform}
+#term {
+  position: fixed; z-index: 8;
+  left: 0; right: 0; top: 0;
+  height: min(54vh, 470px);
+  display: flex; flex-direction: column;
+  background: rgba(9, 7, 4, .76);
+  -webkit-backdrop-filter: blur(9px) saturate(.85);
+  backdrop-filter: blur(9px) saturate(.85);
+  border-bottom: 3px solid var(--rust);
+  box-shadow: 0 18px 44px rgba(0,0,0,.65);
+  font-family: 'VT323', monospace;
+  font-size: 19px; line-height: 1.28;
+  color: var(--bone);
+  text-transform: lowercase;
+  transform: translateY(-103%);
+  transition: transform .22s steps(6);
+}
+#term.open { transform: translateY(0); }
+#term::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+}
+#term::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -3px;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--rust) 0 14px, transparent 14px 22px);
+  opacity: .5;
+}
+#tout { flex: 1; overflow-y: auto; padding: 13px 18px 6px; scrollbar-width: thin; scrollbar-color: var(--brown) transparent; }
+#tout::-webkit-scrollbar { width: 8px; }
+#tout::-webkit-scrollbar-thumb { background: var(--brown); }
+#tout .ln { white-space: pre-wrap; word-break: break-word; }
+.t-dim { color: var(--nicotine); opacity: .88; }
+.t-ok { color: var(--ember); }
+.t-err { color: #D9603B; }
+.t-in { color: var(--bone); opacity: .95; }
+.tline {
+  display: flex; gap: 10px; align-items: baseline;
+  padding: 8px 18px 12px;
+  border-top: 1px dashed rgba(183, 162, 114, .28);
+}
+#tprompt { color: var(--ember); white-space: nowrap; }
+#tin {
+  flex: 1; min-width: 0;
+  background: transparent; border: 0; outline: 0;
+  color: var(--bone);
+  font: inherit; text-transform: lowercase;
+  caret-color: var(--ember);
+}
+body.noanim #term { transition: none; }
+@media (max-width: 640px) { #term { font-size: 17px; height: min(60vh, 430px); } }
+
+.conf { position: fixed; top: -18px; z-index: 7; pointer-events: none; animation: confFall linear forwards; }
+@keyframes confFall { to { transform: translate(var(--cx, 0px), 108vh) rotate(var(--cr, 480deg)); opacity: .92; } }
+#bdayBan {
+  position: fixed; z-index: 7;
+  top: 12px; left: 50%;
+  transform: translateX(-50%) rotate(-1.6deg);
+  background: linear-gradient(180deg, #F0E7C6, #D9CFA8);
+  color: #17110A;
+  font-family: var(--pixel); font-size: 9px;
+  letter-spacing: .06em;
+  padding: 13px 18px 12px;
+  box-shadow: 6px 8px 0 rgba(0,0,0,.55);
+  clip-path: polygon(0 8px, 6px 0, calc(100% - 9px) 2px, 100% 10px, calc(100% - 3px) calc(100% - 7px), calc(100% - 12px) 100%, 8px calc(100% - 2px), 2px calc(100% - 10px));
+  user-select: none; pointer-events: none;
+}
+#bdayBan::before {
+  content: ''; position: absolute;
+  top: -7px; left: 50%;
+  width: 58px; height: 15px;
+  transform: translateX(-50%) rotate(2deg);
+  background: linear-gradient(180deg, rgba(214,201,163,.35), rgba(160,148,116,.28));
+  border-left: 1px solid rgba(0,0,0,.25);
+  border-right: 1px solid rgba(0,0,0,.25);
+}
+body.chaos .slot, body.chaos .sticker--news, body.chaos .sticker--stamp, body.chaos .sticker--scrawl,
+body.chaos #banner, body.chaos #score, body.chaos #tapehud, body.chaos #blurb, body.chaos #prompts { cursor: grab; }
+body.chaos.chdrag, body.chaos.chdrag * { cursor: grabbing !important; }
+body.chaos .sticker { pointer-events: auto; }
+html, body { touch-action: manipulation; overscroll-behavior: none; }
+#term { height: min(54dvh, 470px); }
+#term .tline { padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+#tout { overscroll-behavior: contain; }
+#prompts { padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 640px) { #term { height: min(60dvh, 430px); } }
+body.grav #banner, body.grav .slot, body.grav #blurb, body.grav #score, body.grav #tapehud, body.grav .sticker, body.grav #prompts,
+body.chaos #banner, body.chaos .slot, body.chaos #blurb, body.chaos #score, body.chaos #tapehud, body.chaos .sticker, body.chaos #prompts { transition: none !important; }
+body.grav #marker, body.grav #arrow, body.grav #board,
+body.chaos #marker, body.chaos #arrow, body.chaos #board { opacity: 0 !important; }
+body.chaos { -webkit-user-select: none; user-select: none; }
+.conf { will-change: transform; }
 </style>
 </head>
 <body class="pixel">
@@ -1155,6 +1252,14 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
   <span class="start">press any key</span>
 </div>
 
+<div id="term" aria-hidden="true" role="dialog" aria-label="терминал">
+  <div id="tout"></div>
+  <div class="tline">
+    <span id="tprompt">guest@funstat:~$</span>
+    <input id="tin" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="команда">
+  </div>
+</div>
+
 <script>
 (() => {
   'use strict';
@@ -1317,6 +1422,8 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
     'банкуй комбо до конца шкалы',
     'wallride по краю экрана пока в разработке. с 2027 года мб появится'
   ];
+
+  const TIPS_POOL = coarse ? TIPS.filter(t => !(/клав|букву g|^r /i.test(t))) : TIPS;
 
   function popTrick(text, pts, bad) {
     if (!tricksBox) return;
@@ -1494,6 +1601,7 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
 
   function placeSub() {
     if (!meScrap || !meSub) return;
+    if (innerWidth <= 760) { meSub.style.left = ''; return; }
     meSub.style.left = (meScrap.offsetLeft + meScrap.offsetWidth + 16) + 'px';
   }
 
@@ -1554,7 +1662,7 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
   let lastGrindEnd = -1e9;
 
   function startGrind() {
-    if (grinding || !started) return;
+    if (grinding || !started || termOn || chaosOn || gravOn) return;
     grinding = true;
     bal = 0; balVel = 0;
     grindStart = performance.now();
@@ -1636,9 +1744,9 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
     tipCount++;
     if (!force && tipCount % 3 !== 0) return;
     let i, guard = 0;
-    do { i = (Math.random() * TIPS.length) | 0; guard++; } while (i === lastTip && guard < 8);
+    do { i = (Math.random() * TIPS_POOL.length) | 0; guard++; } while (i === lastTip && guard < 8);
     lastTip = i;
-    tipText.textContent = TIPS[i];
+    tipText.textContent = TIPS_POOL[i];
     tipBox.classList.remove('show'); void tipBox.offsetWidth; tipBox.classList.add('show');
   }
 
@@ -1812,6 +1920,7 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
 
   addEventListener('keydown', e => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (termOn) return;
 
     if (!started) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); begin(); }
@@ -1857,7 +1966,7 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
     touchX = e.changedTouches[0].clientX;
   }, { passive: true });
   addEventListener('touchend', e => {
-    if (touchX === null || !started) return;
+    if (touchX === null || !started || termOn || chaosOn) return;
     const dx = e.changedTouches[0].clientX - touchX;
     if (Math.abs(dx) > 60) { dx < 0 ? next() : prev(); schedule(); }
     touchX = null;
@@ -1901,6 +2010,7 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
   function setEra(v) {
     eraOn = v;
     document.body.classList.toggle('era', v);
+    if (v) { try { localStorage.setItem('fs_egg_era', '1'); } catch (err) {} }
     document.body.classList.add('glitch-hit');
     setTimeout(() => document.body.classList.remove('glitch-hit'), 200);
     if (v) { tone(52, .7, .12, 'sawtooth'); noise(.6, 240, .6, .12, 70); popTrick('где все?', 0, true); }
@@ -1991,6 +2101,7 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
   function startGrav() {
     gravOn = true; gravBack = false; gravShook = false;
     document.body.classList.add('grav');
+    try { localStorage.setItem('fs_egg_grav', '1'); } catch (err) {}
     closeSub();
     endGrind(false);
     const els = [...document.querySelectorAll('#banner,.slot,#blurb,#score,#tapehud,.sticker--news,.sticker--stamp,.sticker--scrawl,#prompts')]
@@ -2025,11 +2136,575 @@ body.grav #banner,body.grav #blurb,body.grav #score,body.grav .sticker,body.grav
 
   let seq = '';
   addEventListener('keydown', e => {
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.metaKey || e.ctrlKey || e.altKey || termOn) return;
     if (e.key.length !== 1 || !/[a-z]/i.test(e.key)) return;
     seq = (seq + e.key.toLowerCase()).slice(-6);
     if (seq.endsWith('xmr')) { seq = ''; setEra(!eraOn); }
-    else if (seq.endsWith('dths')) { seq = ''; if (!gravOn) startGrav(); else if (!gravBack) endGrav(); }
+    else if (seq.endsWith('dths')) {
+      seq = '';
+      if (chaosOn) { popTrick('и так бардак', 0, true); return; }
+      if (!gravOn) startGrav(); else if (!gravBack) endGrav();
+    }
+  });
+
+  const BDAY = '';
+  const SECRET = 'tekken1:ghbdtnrfrltkfxnjltkftimnfr';
+
+  const term = $('term'), tout = $('tout'), tin = $('tin'), tprompt = $('tprompt');
+  let termOn = false, admin = false, chaosOn = false, chaosBack = false, bdayOn = false;
+  try { admin = localStorage.getItem('fs_admin') === '1'; } catch (e) {}
+
+  let visits = 1, firstSeen = '';
+  try {
+    visits = (parseInt(localStorage.getItem('fs_visits') || '0', 10) || 0) + 1;
+    localStorage.setItem('fs_visits', String(visits));
+    firstSeen = localStorage.getItem('fs_first') || '';
+    if (!firstSeen) {
+      firstSeen = new Date().toLocaleDateString('ru-RU');
+      localStorage.setItem('fs_first', firstSeen);
+    }
+  } catch (e) {}
+
+  function promptUpd() {
+    tprompt.textContent = (admin ? 'emopunk' : 'guest') + '@funstat:~' + (admin ? '#' : '$');
+  }
+  promptUpd();
+
+  function tprint(txt, cls) {
+    for (const l of String(txt).split('\n')) {
+      const d = document.createElement('div');
+      d.className = 'ln' + (cls ? ' ' + cls : '');
+      d.textContent = l;
+      tout.appendChild(d);
+    }
+    while (tout.children.length > 260) tout.removeChild(tout.firstChild);
+    tout.scrollTop = tout.scrollHeight;
+  }
+
+  let greeted = false;
+  function termToggle(force) {
+    const want = typeof force === 'boolean' ? force : !termOn;
+    if (want === termOn) return;
+    if (want && !started) begin();
+    termOn = want;
+    term.classList.toggle('open', termOn);
+    term.setAttribute('aria-hidden', String(!termOn));
+    if (termOn) {
+      seq = '';
+      if (!greeted) {
+        greeted = true;
+        tprint('funstat terminal v1.0', 't-ok');
+        tprint('соединение установлено · шифрование: нет · логи: нет', 't-dim');
+        tprint("напиши 'help' если потерялся", 't-dim');
+      }
+      endGrind(false);
+      closeSub();
+      tone(620, .05, .05); setTimeout(() => tone(880, .04, .04), 40);
+      setTimeout(() => tin.focus({ preventScroll: true }), 80);
+      setTimeout(vvFit, 160);
+    } else {
+      tin.blur();
+      term.style.height = '';
+      tone(320, .06, .05);
+    }
+  }
+
+  addEventListener('keydown', e => {
+    if ((e.code === 'Backquote' || e.code === 'IntlBackslash' || e.key === '`' || e.key === '§' || e.key === '±') && !e.repeat && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      termToggle();
+      return;
+    }
+    if (termOn && e.key === 'Escape') { e.preventDefault(); termToggle(false); }
+  });
+
+  let verTaps = 0, verTapTo = null;
+  if (verEl) verEl.addEventListener('click', () => {
+    verTaps++;
+    clearTimeout(verTapTo);
+    verTapTo = setTimeout(() => { verTaps = 0; }, 1900);
+    if (verTaps >= 5) { verTaps = 0; termToggle(); }
+  });
+
+  const hist = [];
+  let histAt = -1;
+
+  tin.addEventListener('keydown', e => {
+    e.stopPropagation();
+    if (e.key === 'Enter') {
+      const raw = tin.value;
+      tin.value = '';
+      exec(raw);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (hist.length) {
+        histAt = histAt < 0 ? hist.length - 1 : Math.max(0, histAt - 1);
+        tin.value = hist[histAt];
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (histAt >= 0) {
+        histAt++;
+        if (histAt >= hist.length) { histAt = -1; tin.value = ''; }
+        else tin.value = hist[histAt];
+      }
+    } else if (e.key === 'Escape') {
+      termToggle(false);
+    }
+  });
+  tin.addEventListener('keyup', e => e.stopPropagation());
+  term.addEventListener('click', e => {
+    if (e.target === term || e.target === tout) tin.focus({ preventScroll: true });
+  });
+
+  function vvFit() {
+    if (!termOn) { term.style.height = ''; return; }
+    if (!window.visualViewport) return;
+    const base = Math.min(470, Math.round(innerHeight * (innerWidth <= 640 ? .6 : .54)));
+    const h = Math.min(base, Math.round(visualViewport.height - 54));
+    if (h > 120) term.style.height = h + 'px';
+    tout.scrollTop = tout.scrollHeight;
+  }
+  if (window.visualViewport) visualViewport.addEventListener('resize', vvFit);
+
+  function eggsFound() {
+    const s = [];
+    try {
+      if (localStorage.getItem('fs_egg_era') === '1') s.push('era');
+      if (localStorage.getItem('fs_egg_grav') === '1') s.push('gravity');
+      if (localStorage.getItem('fs_egg_chaos') === '1') s.push('chaos');
+    } catch (e) {}
+    return s;
+  }
+
+  function adminOnly(fn) {
+    if (!admin) { tprint('нужен доступ', 't-err'); return; }
+    fn();
+  }
+
+  const PAGES = { main: '/', lookbook: '/lookbook', stena: '/stena', room: '/room', tg: 'https://telegram.me/emopunk' };
+
+  const cmds = {
+    help() {
+      tprint('команды:', 't-ok');
+      tprint('  help          это меню\n  pages         страницы сайта\n  open <name>   перейти\n  tape <n|rnd>  переключить плёнку\n  sfx fx pixel crt   тумблеры\n  roll [n]      бросить кость\n  whoami        кто ты здесь\n  date          локальное время\n  echo <текст>  эхо\n  era           как было в самом начале\n  gravity       уронить всё\n  clear         очистить\n  exit          закрыть', 't-dim');
+      if (admin) tprint('админ:\n  bday          тест др-режима\n  score <n>     начислить очки\n  tip           показать подсказку\n  reset         стереть локальные следы\n  logout        выйти', 't-ok');
+      tprint('есть и недокументированные', 't-dim');
+    },
+    clear() { tout.innerHTML = ''; },
+    pages() {
+      tprint('main      /\nlookbook  /lookbook\nstena     /stena\nroom      /room\ntg        telegram.me/emopunk', 't-dim');
+      tprint("open <name> чтобы перейти", 't-dim');
+    },
+    open(a) {
+      if (!PAGES[a]) { tprint('не знаю такой: ' + (a || '?'), 't-err'); return; }
+      tprint('открываю ' + a + '…', 't-ok');
+      sConfirm();
+      setTimeout(() => {
+        if (a === 'tg') window.open(PAGES[a], '_blank', 'noopener');
+        else location.href = PAGES[a];
+      }, 260);
+    },
+    tape(a) {
+      if (!a || a === 'rnd') { shuffleTape(); tprint('tape ' + pad2(index + 1), 't-ok'); return; }
+      const n = parseInt(a, 10);
+      if (!n || n < 1 || n > tapes.length) { tprint('есть 1–' + tapes.length, 't-err'); return; }
+      show(n - 1); schedule();
+      tprint('tape ' + pad2(n), 't-ok');
+    },
+    sfx() { $('sfxBtn').click(); tprint('sfx: ' + (sfxOn ? 'on' : 'off'), 't-ok'); },
+    fx() { $('fxBtn').click(); tprint('fx: ' + (motionOn ? 'on' : 'off'), 't-ok'); },
+    pixel() { $('pixelBtn').click(); tprint('pixel: ' + (pixelOn ? 'on' : 'off'), 't-ok'); },
+    crt() { $('crtBtn').click(); tprint('crt: ' + (document.body.classList.contains('nocrt') ? 'off' : 'on'), 't-ok'); },
+    roll(a) {
+      const n = clamp(parseInt(a, 10) || 6, 2, 1000);
+      const r = 1 + ((Math.random() * n) | 0);
+      tprint('d' + n + ' → ' + r + (r === n ? ' · крит' : r === 1 ? ' · ну такое' : ''), r === 1 ? 't-err' : 't-ok');
+      tone(300 + Math.min(r, 60) * 8, .06, .05);
+    },
+    date() {
+      const d = new Date();
+      tprint(d.toLocaleDateString('ru-RU') + ' · ' + d.toLocaleTimeString('ru-RU').slice(0, 5), 't-dim');
+    },
+    echo(a) { tprint(a || '', 't-dim'); },
+    ver() { tprint(verEl ? verEl.textContent : '?', 't-dim'); },
+    whoami() {
+      tprint(admin ? 'emopunk · admin' : 'guest · случайный прохожий', admin ? 't-ok' : 't-dim');
+      tprint('визитов: ' + visits + (firstSeen ? ' · впервые тут: ' + firstSeen : ''), 't-dim');
+      tprint('best: ' + best.toLocaleString('ru-RU'), 't-dim');
+      const eggs = eggsFound();
+      tprint('пасхалки: ' + (eggs.length ? eggs.join(', ') : 'ноль. ищи'), eggs.length ? 't-ok' : 't-dim');
+    },
+    era() {
+      setEra(!eraOn);
+      tprint('era: ' + (eraOn ? 'заброшка' : 'наши дни'), 't-ok');
+    },
+    gravity() {
+      if (chaosOn) { tprint('сначала прибери хаос', 't-err'); return; }
+      if (!gravOn) { startGrav(); tprint('гравитация уронена', 't-ok'); }
+      else if (!gravBack) { endGrav(); tprint('чиним…', 't-ok'); }
+    },
+    chaos() {
+      if (gravOn || gravBack) { tprint('сначала верни гравитацию (dths)', 't-err'); return; }
+      if (!chaosOn) { startChaos(); tprint('хаос включён. закрой терминал и разноси всё руками', 't-ok'); }
+      else if (!chaosBack) { endChaos(); tprint('прибираемся…', 't-ok'); }
+    },
+    xmr() { cmds.era(); },
+    dths() { cmds.gravity(); },
+    sudo() { tprint('нет.', 't-err'); },
+    hack() {
+      tprint('подбор пароля…', 't-dim');
+      let i = 0;
+      const iv = setInterval(() => {
+        i++;
+        tprint('▓'.repeat(i) + '░'.repeat(8 - i) + ' ' + Math.min(99, i * 13) + '%', 't-dim');
+        if (i >= 8) {
+          clearInterval(iv);
+          tprint('доступ запрещён. иди лучше на стену порисуй', 't-err');
+          tone(120, .2, .1, 'sawtooth');
+        }
+      }, 150);
+    },
+    rm(a, parts) {
+      if (parts.slice(1).join('').replace(/\s+/g, '') !== '-rf/') { tprint('rm: так нельзя', 't-err'); return; }
+      tprint('удаляю /banner…\nудаляю /score…\nудаляю /me…', 't-err');
+      setTimeout(() => {
+        document.body.classList.add('glitch-hit');
+        sBail();
+      }, 420);
+      setTimeout(() => {
+        document.body.classList.remove('glitch-hit');
+        tprint('шутка. тут нечего удалять, всё и так потеряно', 't-dim');
+      }, 940);
+    },
+    bday() {
+      adminOnly(() => {
+        setBday(!bdayOn);
+        tprint('bday: ' + (bdayOn ? 'on' : 'off'), 't-ok');
+      });
+    },
+    score(a) {
+      adminOnly(() => {
+        const n = parseInt(a, 10) || 0;
+        if (!n) { tprint('score <число>', 't-err'); return; }
+        trick('debug', Math.abs(n));
+        setTimeout(() => bank(false), 90);
+        tprint('начислено', 't-ok');
+      });
+    },
+    tip() { adminOnly(() => { showTip(true); tprint('подсказка показана', 't-ok'); }); },
+    reset() {
+      adminOnly(() => {
+        try {
+          ['fs_visits', 'fs_first', 'fs_egg_era', 'fs_egg_grav', 'fs_egg_chaos', 'emopunk_best', 'emopunk_fx'].forEach(k => localStorage.removeItem(k));
+        } catch (e) {}
+        best = 0;
+        if (bestEl) bestEl.textContent = '0';
+        tprint('локальные следы стёрты. как будто тебя не было', 't-ok');
+      });
+    },
+    logout() {
+      if (!admin) { tprint('ты и не входил', 't-dim'); return; }
+      admin = false;
+      try { localStorage.removeItem('fs_admin'); } catch (e) {}
+      promptUpd();
+      tprint('вышел. снова guest', 't-dim');
+    }
+  };
+
+  function exec(raw) {
+    const line = raw.trim();
+    if (!line) { tprint(tprompt.textContent, 't-dim'); return; }
+    hist.push(line);
+    if (hist.length > 60) hist.shift();
+    histAt = -1;
+    tprint(tprompt.textContent + ' ' + (line === SECRET || line === 'login ' + SECRET ? '••••••••••' : line), 't-in');
+    if (line === SECRET || line === 'login ' + SECRET) {
+      admin = true;
+      try { localStorage.setItem('fs_admin', '1'); } catch (e) {}
+      promptUpd();
+      sConfirm();
+      tprint('доступ разрешён. с возвращением, emopunk.', 't-ok');
+      tprint('админ-команды добавлены в help', 't-dim');
+      return;
+    }
+    if (/^login(\s|$)/.test(line) || (line.includes(':') && !line.includes(' ') && line.length > 12)) {
+      tone(120, .18, .1, 'sawtooth');
+      tprint('в доступе отказано', 't-err');
+      return;
+    }
+    const parts = line.toLowerCase().split(/\s+/);
+    const cmd = parts[0];
+    const arg = parts.slice(1).join(' ');
+    if (cmds[cmd]) cmds[cmd](arg, parts);
+    else tprint("команда не найдена: " + cmd + " · попробуй 'help'", 't-err');
+  }
+
+  const CONF = ['#E08A2C', '#FFD27A', '#C24B31', '#8A9A4E', '#5E93A8', '#D6CEB6', '#A6551D'];
+  let bdayIv = null, bdayBan = null, lastCongrat = 0, confLive = 0;
+
+  function confPiece() {
+    if (confLive > 90) return;
+    confLive++;
+    const s = document.createElement('span');
+    s.className = 'conf';
+    const sz = 4 + Math.random() * 6;
+    s.style.left = (Math.random() * 100) + 'vw';
+    s.style.width = sz + 'px';
+    s.style.height = (sz * (Math.random() < .3 ? 2.2 : 1)) + 'px';
+    s.style.background = CONF[(Math.random() * CONF.length) | 0];
+    s.style.setProperty('--cx', ((Math.random() - .5) * 170) + 'px');
+    s.style.setProperty('--cr', ((Math.random() * 900 - 450) | 0) + 'deg');
+    s.style.animationDuration = (2.6 + Math.random() * 2.2).toFixed(2) + 's';
+    document.body.appendChild(s);
+    const done = () => {
+      if (!s.isConnected) return;
+      confLive--;
+      s.remove();
+    };
+    s.addEventListener('animationend', done);
+    setTimeout(done, 5600);
+  }
+
+  function setBday(v) {
+    bdayOn = v;
+    if (v) {
+      if (!bdayBan) {
+        bdayBan = document.createElement('div');
+        bdayBan.id = 'bdayBan';
+        bdayBan.textContent = 'сегодня у emopunk др · жми b';
+        document.body.appendChild(bdayBan);
+      }
+      sBank(); setTimeout(sBank, 260);
+      clearInterval(bdayIv);
+      bdayIv = setInterval(() => {
+        if (document.hidden || reduce) return;
+        confPiece(); confPiece(); confPiece();
+      }, 150);
+    } else {
+      clearInterval(bdayIv);
+      bdayIv = null;
+      if (bdayBan) { bdayBan.remove(); bdayBan = null; }
+    }
+  }
+
+  function whenStarted(fn) {
+    if (started) { fn(); return; }
+    const w = setInterval(() => {
+      if (started) { clearInterval(w); fn(); }
+    }, 400);
+  }
+
+  if (BDAY) {
+    const d = new Date();
+    if (pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) === BDAY) {
+      whenStarted(() => { if (!bdayOn) setBday(true); });
+    }
+  }
+
+  addEventListener('keydown', e => {
+    if (termOn || !bdayOn || e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if ((k === 'b' || k === 'и') && performance.now() - lastCongrat > 1500) {
+      lastCongrat = performance.now();
+      for (let i = 0; i < 26; i++) confPiece();
+      trick('поздравил', 1000);
+      setTimeout(() => bank(false), 90);
+    }
+  });
+
+  const CH_SEL = '#banner,.slot,#blurb,#score,#tapehud,.sticker--news,.sticker--stamp,.sticker--scrawl,#prompts';
+  let chItems = null, chIv = null, chCand = null, chGrab = null, chThud = 0, supClick = 0;
+
+  function chApply(it) {
+    it.el.style.transform = 'translate(' + Math.round(it.x) + 'px,' + Math.round(it.y) + 'px) rotate(' + (Math.round(it.r * 2) / 2) + 'deg)';
+  }
+
+  function chStep() {
+    const now = performance.now();
+    let busy = false;
+    for (const it of chItems) {
+      if (chaosBack) {
+        it.x *= .74; it.y *= .74;
+        it.r = it.r0 + (it.r - it.r0) * .74;
+        if (Math.abs(it.x) < .8 && Math.abs(it.y) < .8 && Math.abs(it.r - it.r0) < .5) {
+          it.x = 0; it.y = 0; it.r = it.r0;
+          it.el.style.transform = '';
+        } else { busy = true; chApply(it); }
+        continue;
+      }
+      if (it.grab) { busy = true; continue; }
+      if (!it.live) continue;
+      it.vy += 1.15;
+      it.x += it.vx; it.y += it.vy; it.r += it.vr;
+      const L = it.box.left + it.x, R = it.box.right + it.x, T = it.box.top + it.y, B = it.box.bottom + it.y;
+      if (B >= innerHeight - 2) {
+        it.y = innerHeight - 2 - it.box.bottom;
+        if (Math.abs(it.vy) > 3.2) {
+          it.vy = -it.vy * .42; it.vx *= .78; it.vr *= .6;
+          if (now - chThud > 70) {
+            chThud = now;
+            tone(58 + Math.random() * 24, .08, .09, 'square');
+            noise(.05, 160, .9, .07);
+          }
+          puff(L + (R - L) * (.2 + Math.random() * .6), B - 4, 4);
+        } else {
+          it.vy = 0; it.vx *= .6; it.vr *= .5;
+          if (Math.abs(it.vx) < .4 && Math.abs(it.vr) < .4) {
+            it.vx = 0; it.vr = 0; it.live = false;
+            chApply(it);
+            continue;
+          }
+        }
+      }
+      if (L <= 2 && it.vx < 0) { it.x += 2 - L; it.vx = -it.vx * .55; it.vr = -it.vr * .7; }
+      if (R >= innerWidth - 2 && it.vx > 0) { it.x -= R - (innerWidth - 2); it.vx = -it.vx * .55; it.vr = -it.vr * .7; }
+      if (T <= 2 && it.vy < 0) { it.y += 2 - T; it.vy = -it.vy * .5; }
+      busy = true;
+      chApply(it);
+    }
+    if (!busy) {
+      clearInterval(chIv);
+      chIv = null;
+      if (chaosBack) {
+        chaosBack = false; chaosOn = false; chItems = null;
+        document.body.classList.remove('chaos');
+        popTrick('прибрались', 0);
+      }
+    }
+  }
+
+  function startChaos() {
+    chaosOn = true; chaosBack = false; chThud = 0;
+    document.body.classList.add('chaos');
+    try { localStorage.setItem('fs_egg_chaos', '1'); } catch (err) {}
+    closeSub();
+    endGrind(false);
+    const els = [...document.querySelectorAll(CH_SEL)]
+      .filter(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
+    chItems = els.map(el => {
+      const r0 = rotOf(el);
+      return { el, box: el.getBoundingClientRect(), x: 0, y: 0, vx: 0, vy: 0, r: r0, r0, vr: 0, live: false, grab: false };
+    });
+    popTrick('хаос: хватай и швыряй', 0);
+    sStart();
+    clearInterval(chIv);
+    chIv = setInterval(chStep, 33);
+  }
+
+  function endChaos() {
+    if (!chItems) {
+      chaosOn = false; chaosBack = false;
+      document.body.classList.remove('chaos');
+      return;
+    }
+    chaosBack = true;
+    if (chGrab) { chGrab.it.grab = false; chGrab = null; }
+    chCand = null;
+    document.body.classList.remove('chdrag');
+    sStart();
+    popTrick('уборка', 0);
+    clearInterval(chIv);
+    chIv = setInterval(chStep, 33);
+  }
+
+  function chFind(t) {
+    if (!chItems || !t || !t.closest) return null;
+    for (const it of chItems) if (it.el === t || it.el.contains(t)) return it;
+    return null;
+  }
+
+  addEventListener('pointerdown', e => {
+    if (!chaosOn || chaosBack || e.button !== 0) return;
+    const it = chFind(e.target);
+    if (!it) return;
+    chCand = {
+      it,
+      sx: e.clientX, sy: e.clientY,
+      ox: it.x, oy: it.y,
+      moved: false,
+      hist: [[e.clientX, e.clientY, performance.now()]]
+    };
+  }, true);
+
+  addEventListener('pointermove', e => {
+    if (!chCand) return;
+    const dx = e.clientX - chCand.sx, dy = e.clientY - chCand.sy;
+    if (!chCand.moved) {
+      if (Math.hypot(dx, dy) < (e.pointerType === 'touch' ? 12 : 7)) return;
+      chCand.moved = true;
+      chCand.it.grab = true;
+      chCand.it.live = true;
+      chGrab = chCand;
+      document.body.classList.add('chdrag');
+      clearTimeout(holdTimer);
+      endGrind(false);
+      if (!chIv) chIv = setInterval(chStep, 33);
+    }
+    const it = chCand.it;
+    it.x = chCand.ox + dx;
+    it.y = chCand.oy + dy;
+    it.vx = 0; it.vy = 0;
+    it.r = it.r0 + clamp(dx * .06, -14, 14);
+    chApply(it);
+    chCand.hist.push([e.clientX, e.clientY, performance.now()]);
+    if (chCand.hist.length > 5) chCand.hist.shift();
+    e.preventDefault();
+  });
+
+  addEventListener('pointerup', () => {
+    if (!chCand) return;
+    const c = chCand;
+    chCand = null;
+    if (!c.moved) return;
+    supClick = performance.now() + 380;
+    document.body.classList.remove('chdrag');
+    const it = c.it;
+    it.grab = false;
+    chGrab = null;
+    const h = c.hist;
+    if (h.length > 1) {
+      const a = h[0], b = h[h.length - 1];
+      const dt = Math.max(16, b[2] - a[2]);
+      it.vx = clamp((b[0] - a[0]) / dt * 18, -46, 46);
+      it.vy = clamp((b[1] - a[1]) / dt * 18, -46, 46);
+      it.vr = clamp(it.vx * .5, -16, 16);
+    }
+    it.live = true;
+    if (!chIv) chIv = setInterval(chStep, 33);
+  });
+
+  addEventListener('pointercancel', () => {
+    if (chCand && chCand.moved && chCand.it) {
+      chCand.it.grab = false;
+      chCand.it.live = true;
+      if (!chIv) chIv = setInterval(chStep, 33);
+    }
+    document.body.classList.remove('chdrag');
+    chGrab = null;
+    chCand = null;
+  });
+
+  document.addEventListener('click', e => {
+    if (chaosOn && performance.now() < supClick) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
+  addEventListener('contextmenu', e => {
+    if (chaosOn && (chGrab || chCand)) e.preventDefault();
+  });
+
+  let lastVW = innerWidth;
+  addEventListener('resize', () => {
+    const wSame = innerWidth === lastVW;
+    lastVW = innerWidth;
+    if (wSame && coarse) { vvFit(); return; }
+    if (chaosOn && !chaosBack) endChaos();
+  });
+  addEventListener('orientationchange', () => {
+    if (chaosOn && !chaosBack) endChaos();
   });
 
   sizeCanvas();
