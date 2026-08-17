@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>cloudee studio — веб-дизайн на заказ</title>
+<meta name="description" content="точный чёрно-белый веб-дизайн: лендинги, сайты-персоны, интерфейсы и интерактив. сделано вручную, без шаблонов.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-125 -95 250 190'%3E%3Cg fill='%23ebebeb'%3E%3Cellipse rx='80' ry='80'/%3E%3Cellipse cx='-54' cy='-20' rx='41' ry='41'/%3E%3Cellipse cx='-64' cy='18' rx='38' ry='38'/%3E%3Cellipse cx='61' cy='19' rx='40' ry='40'/%3E%3Cellipse cx='42' cy='-38' rx='36' ry='36'/%3E%3C/g%3E%3Cg fill='%23111316'%3E%3Crect x='-21' y='-24' width='14' height='45' rx='7'/%3E%3Crect x='7' y='-24' width='14' height='45' rx='7'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+:root {
+  --ink: #0a0a0a;
+  --paper: #ffffff;
+  --raised: #f5f5f6;
+  --mute: #86868b;
+  --line: #d9d9de;
+  --cloud: #ebebeb;
+  --eye: #111316;
+  --disp: 'Inter Tight', 'Inter', -apple-system, sans-serif;
+  --body: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --mono: 'IBM Plex Mono', 'SF Mono', ui-monospace, monospace;
+  --w: 1040px;
+  --pad: clamp(20px, 4vw, 40px);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { overscroll-behavior: none; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--ink); color: var(--paper); }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+
+.wrap { max-width: var(--w); margin: 0 auto; padding: 0 var(--pad); }
+.mono {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: lowercase;
+  color: var(--mute);
+}
+
+nav {
+  position: fixed; z-index: 40;
+  top: 0; left: 0; right: 0;
+  height: 54px;
+  display: flex; align-items: center;
+  background: rgba(255, 255, 255, .72);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  backdrop-filter: blur(16px) saturate(1.6);
+  border-bottom: 1px solid var(--line);
+}
+nav .wrap { width: 100%; display: flex; align-items: center; gap: 28px; }
+.mark {
+  font-family: var(--mono);
+  font-size: 13px; font-weight: 500;
+  letter-spacing: .06em;
+  color: var(--ink);
+  display: flex; align-items: center; gap: 9px;
+}
+.mark svg { width: 22px; height: 17px; display: block; }
+.navlinks { display: flex; gap: 22px; margin-left: auto; }
+.navlinks a {
+  font-size: 13.5px; font-weight: 500;
+  color: var(--mute);
+  transition: color .18s ease;
+}
+.navlinks a:hover { color: var(--ink); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 40px; padding: 0 20px;
+  border-radius: 999px;
+  background: var(--ink); color: var(--paper);
+  font-size: 14px; font-weight: 600;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+  transition: transform .16s ease, opacity .16s ease;
+  user-select: none;
+}
+.btn:hover { opacity: .84; }
+.btn:active { transform: scale(.97); }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn.ghost:hover { border-color: var(--ink); opacity: 1; }
+.btn.big { height: 50px; padding: 0 28px; font-size: 15.5px; }
+nav .btn { height: 34px; padding: 0 16px; font-size: 13px; }
+
+header {
+  padding: 150px 0 90px;
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1.08fr .92fr;
+  gap: 40px;
+  align-items: center;
+}
+.hero h1 {
+  margin: 14px 0 0;
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: clamp(42px, 6.6vw, 84px);
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+.hero .sub {
+  margin: 22px 0 0;
+  max-width: 46ch;
+  font-size: 19px;
+  color: var(--mute);
+}
+.hero .cta { display: flex; gap: 12px; margin-top: 34px; flex-wrap: wrap; }
+.heroSlot { position: relative; height: min(46vw, 420px); }
+
+#avFix {
+  position: fixed; z-index: 30;
+  top: 0; left: 0;
+  width: 380px;
+  pointer-events: none;
+  transition: transform .55s cubic-bezier(.3, .9, .3, 1), width .55s cubic-bezier(.3, .9, .3, 1);
+  will-change: transform;
+}
+#avFix svg { display: block; width: 100%; height: auto; cursor: pointer; pointer-events: auto; overflow: visible; }
+#avFix .shadow {
+  width: 56%; height: 14px;
+  margin: -2px auto 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .09);
+  transition: width .3s ease, opacity .3s ease;
+}
+#avFix.mini .shadow { height: 8px; opacity: .7; }
+body.avhide #avFix { opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+
+section { padding: 92px 0; }
+section.raised { background: var(--raised); }
+section.dark { background: var(--ink); color: var(--paper); }
+h2 {
+  margin: 10px 0 0;
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: clamp(30px, 4vw, 46px);
+  letter-spacing: -.035em;
+  line-height: 1.04;
+}
+.lead { margin: 16px 0 0; color: var(--mute); max-width: 56ch; }
+
+.svc { margin-top: 44px; border-top: 1px solid var(--line); }
+.svcrow {
+  display: grid;
+  grid-template-columns: 170px 1fr 1.2fr;
+  gap: 20px;
+  padding: 26px 10px;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+  transition: background .2s ease;
+}
+.svcrow:hover { background: var(--raised); }
+.svcrow .name { font-size: 21px; font-weight: 600; letter-spacing: -.015em; }
+.svcrow .desc { color: var(--mute); font-size: 15.5px; }
+
+.steps {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+.step { border-top: 1px solid var(--ink); padding-top: 18px; }
+.step .name { font-weight: 600; font-size: 17px; margin-top: 10px; }
+.step .desc { color: var(--mute); font-size: 14.5px; margin-top: 6px; }
+
+.plans {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+.plan {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 30px 28px 28px;
+  background: var(--paper);
+  display: flex; flex-direction: column;
+  transition: border-color .2s ease, transform .25s ease;
+}
+.plan:hover { border-color: var(--ink); transform: translateY(-3px); }
+.plan.featured { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.plan .price {
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: 40px;
+  letter-spacing: -.03em;
+  margin-top: 14px;
+}
+.plan .price small { font-size: 17px; font-weight: 600; color: var(--mute); letter-spacing: 0; }
+.plan.featured .price small { color: rgba(255, 255, 255, .55); }
+.plan .name { font-size: 18px; font-weight: 600; margin-top: 4px; }
+.plan ul {
+  list-style: none;
+  margin: 20px 0 26px; padding: 0;
+  font-size: 14.5px;
+  color: var(--mute);
+  display: grid; gap: 9px;
+}
+.plan.featured ul { color: rgba(255, 255, 255, .72); }
+.plan ul li { padding-left: 20px; position: relative; }
+.plan ul li::before {
+  content: '';
+  position: absolute; left: 0; top: 8px;
+  width: 10px; height: 2px;
+  background: currentColor;
+  opacity: .6;
+}
+.plan .btn { margin-top: auto; width: 100%; }
+.plan.featured .btn { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.plansNote { margin-top: 22px; text-align: center; }
+
+.proof {
+  margin-top: 44px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 34px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  transition: border-color .2s ease;
+}
+.proof:hover { border-color: var(--ink); }
+.proof .t { font-size: 21px; font-weight: 600; letter-spacing: -.015em; }
+.proof .d { color: var(--mute); font-size: 15px; margin-top: 6px; max-width: 52ch; }
+.proof .arr {
+  font-family: var(--disp);
+  font-size: 30px;
+  flex: none;
+  transition: transform .25s ease;
+}
+.proof:hover .arr { transform: translate(4px, -4px); }
+
+.dark h2 { font-size: clamp(34px, 5vw, 58px); }
+.dark .lead { color: rgba(255, 255, 255, .6); }
+.dark .btn { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.dark .mono { color: rgba(255, 255, 255, .45); }
+.darkInner { text-align: center; padding: 30px 0; }
+.darkInner .btn { margin-top: 36px; }
+
+footer {
+  padding: 34px 0 44px;
+  border-top: 1px solid var(--line);
+}
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+.rv { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+.rv.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rv { opacity: 1; transform: none; transition: none; }
+  #avFix { transition: none; }
+  .plan, .proof .arr, .btn { transition: none; }
+}
+@media (max-width: 880px) {
+  .hero { grid-template-columns: 1fr; gap: 10px; }
+  .heroSlot { order: -1; height: 250px; margin-bottom: 20px; }
+  .navlinks { display: none; }
+  .steps { grid-template-columns: 1fr 1fr; gap: 34px 22px; }
+  .plans { grid-template-columns: 1fr; }
+  .svcrow { grid-template-columns: 1fr; gap: 6px; padding: 22px 6px; }
+  .proof { flex-direction: column; align-items: flex-start; }
+  header { padding: 120px 0 70px; }
+  section { padding: 70px 0; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="cloudee studio">
+      <svg viewBox="-125 -95 250 190" aria-hidden="true"><g fill="#0a0a0a"><ellipse rx="80" ry="80"/><ellipse cx="-54" cy="-20" rx="41" ry="41"/><ellipse cx="-64" cy="18" rx="38" ry="38"/><ellipse cx="61" cy="19" rx="40" ry="40"/><ellipse cx="42" cy="-38" rx="36" ry="36"/></g></svg>
+      cloudee·studio
+    </a>
+    <div class="navlinks">
+      <a href="#services">услуги</a>
+      <a href="#process">процесс</a>
+      <a href="#pricing">цены</a>
+      <a href="#proof">портфолио</a>
+    </div>
+    <a class="btn" href="https://telegram.me/emopunk" target="_blank" rel="noopener">обсудить проект</a>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="wrap hero">
+    <div>
+      <div class="mono">веб-дизайн · сайты · интерфейсы</div>
+      <h1>точный дизайн.<br>живой характер.</h1>
+      <p class="sub">делаем сайты вручную: от строгих лендингов до страниц с собственным характером. то, что работает.</p>
+      <div class="cta">
+        <a class="btn big" href="https://telegram.me/emopunk" target="_blank" rel="noopener" id="ctaHero">обсудить проект</a>
+        <a class="btn big ghost" href="#pricing">смотреть цены</a>
+      </div>
+    </div>
+    <div class="heroSlot" id="heroSlot"></div>
+  </div>
+</header>
+
+<div id="avFix" aria-hidden="true">
+  <svg id="avSvg" viewBox="-140 -114 280 222">
+    <g id="avRig">
+      <g id="avHead">
+        <g id="avBody" fill="#ebebeb"></g>
+        <g id="avEyes" fill="#111316">
+          <rect id="eyeL" rx="7"></rect>
+          <rect id="eyeR" rx="7"></rect>
+        </g>
+      </g>
+    </g>
+  </svg>
+  <div class="shadow"></div>
+</div>
+
+<section id="services" data-mood="curious">
+  <div class="wrap">
+    <div class="mono rv">01 — что мы делаем</div>
+    <h2 class="rv">меньше украшений.<br>больше смысла.</h2>
+    <div class="svc rv">
+      <div class="svcrow">
+        <div class="mono">лендинги</div>
+        <div class="name">промо и продающие страницы</div>
+        <div class="desc">одна страница, один сценарий, ноль случайных элементов. структура под задачу, а не под моду.</div>
+      </div>
+      <div class="svcrow">
+        <div class="mono">персоны</div>
+        <div class="name">сайты-визитки и портфолио</div>
+        <div class="desc">страницы для людей и брендов, у которых есть характер. от строгого минимума до сайта-игрушки с механиками.</div>
+      </div>
+      <div class="svcrow">
+        <div class="mono">интерфейсы</div>
+        <div class="name">ui и дизайн экранов</div>
+        <div class="desc">аккуратные интерфейсы для сервисов и приложений: сетка, типографика, состояния — всё по местам.</div>
+      </div>
+      <div class="svcrow">
+        <div class="mono">интерактив</div>
+        <div class="name">анимации и механики</div>
+        <div class="desc">микровзаимодействия, конверсия, движения. то, из-за чего сайт запоминают и показывают.</div>
+      </div>
+      <div class="svcrow">
+        <div class="mono">контент</div>
+        <div class="name">видео и фото</div>
+        <div class="desc">монтаж тизеров и обработка фотографий под сайт — чтобы контент не выбивался из дизайна.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="raised" id="process" data-mood="thinking">
+  <div class="wrap">
+    <div class="mono rv">02 — как идёт работа</div>
+    <h2 class="rv">четыре шага.<br>ноль сюрпризов.</h2>
+    <div class="steps rv">
+      <div class="step">
+        <div class="mono">01</div>
+        <div class="name">заявка</div>
+        <div class="desc">пишешь в telegram, описываешь задачу. отвечаем в тот же день, задаём вопросы по делу.</div>
+      </div>
+      <div class="step">
+        <div class="mono">02</div>
+        <div class="name">концепт</div>
+        <div class="desc">за 1–2 дня показываем направление: структура, типографика, настроение. правим до «да, это оно».</div>
+      </div>
+      <div class="step">
+        <div class="mono">03</div>
+        <div class="name">дизайн и сборка</div>
+        <div class="desc">собираем страницу целиком: дизайн, вёрстка, адаптив, анимации. показываем прогресс, ничего не прячем.</div>
+      </div>
+      <div class="step">
+        <div class="mono">04</div>
+        <div class="name">запуск</div>
+        <div class="desc">публикуем, подключаем домен, отдаём исходники. два раунда правок после запуска — в цене.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" data-mood="working">
+  <div class="wrap">
+    <div class="mono rv">03 — сколько это стоит</div>
+    <h2 class="rv">честные цены.<br>без «от … звоните».</h2>
+    <p class="lead rv">ставки уровня внимательного начинающего специалиста: дешевле студий, аккуратнее конструкторов. цена фиксируется до начала работы и не меняется в процессе.</p>
+    <div class="plans rv">
+      <div class="plan">
+        <div class="mono">страница</div>
+        <div class="price">12 000 <small>₽</small></div>
+        <div class="name">визитка или одностраничник</div>
+        <ul>
+          <li>до 4 блоков</li>
+          <li>уникальный дизайн, без шаблонов</li>
+          <li>адаптив под телефон</li>
+          <li>срок 3–5 дней</li>
+        </ul>
+        <a class="btn ghost" href="https://telegram.me/emopunk" target="_blank" rel="noopener">выбрать</a>
+      </div>
+      <div class="plan featured" id="planMid">
+        <div class="mono" style="color:rgba(255,255,255,.5)">лендинг</div>
+        <div class="price">25 000 <small>₽</small></div>
+        <div class="name">страница под ключ</div>
+        <ul>
+          <li>5–8 секций под задачу</li>
+          <li>анимации и микровзаимодействия</li>
+          <li>адаптив + базовое seo</li>
+          <li>2 раунда правок включены</li>
+          <li>срок 1–2 недели</li>
+        </ul>
+        <a class="btn" href="https://telegram.me/emopunk" target="_blank" rel="noopener">выбрать</a>
+      </div>
+      <div class="plan">
+        <div class="mono">проект</div>
+        <div class="price">от 60 000 <small>₽</small></div>
+        <div class="name">сайт с характером</div>
+        <ul>
+          <li>многостраничник или интерактив</li>
+          <li>механики, физика, пасхалки</li>
+          <li>дизайн-система в комплекте</li>
+          <li>срок от 3 недель</li>
+        </ul>
+        <a class="btn ghost" href="https://telegram.me/emopunk" target="_blank" rel="noopener">обсудить</a>
+      </div>
+    </div>
+    <div class="plansNote mono rv">в каждый тариф входит вёрстка и запуск · допы: видео-тизер — 8 000 ₽, фотопак — 5 000 ₽</div>
+  </div>
+</section>
+
+<section class="raised" id="proof" data-mood="proud">
+  <div class="wrap">
+    <div class="mono rv">04 — живое доказательство</div>
+    <h2 class="rv">мы так живём,<br>а не только продаём.</h2>
+    <a class="proof rv" href="https://funstat.xyz" target="_blank" rel="noopener">
+      <div>
+        <div class="t">funstat.xyz</div>
+        <div class="d">собственный сайт-песочница — это лучший ответ на вопрос «а что вы умеете».</div>
+      </div>
+      <div class="arr">↗</div>
+    </a>
+  </div>
+</section>
+
+<section class="dark" data-mood="excited">
+  <div class="wrap darkInner">
+    <div class="mono rv">05 — начнём</div>
+    <h2 class="rv">расскажи,<br>что строим.</h2>
+    <p class="lead rv" style="margin-left:auto;margin-right:auto">опиши задачу в паре предложений — вернёмся с вопросами и честной оценкой в тот же день.</p>
+    <a class="btn big rv" href="https://telegram.me/emopunk" target="_blank" rel="noopener" id="ctaFinal">написать в telegram</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="mono">© 2026 cloudee·studio</div>
+    <div class="mono">кто это вообще -></div>
+  </div>
+</footer>
+
+<script>
+const CLOUDEE={"colors":{"body":"#ebebeb","eyes":"#111316"},"shapes":[{"w":159.8,"h":159.8,"x":0,"y":0},{"w":81.6,"h":81.6,"x":-54.2,"y":-20.0},{"w":108.6,"h":87.1,"x":-64.1,"y":18.4},{"w":97.8,"h":96.8,"x":61.2,"y":19.0},{"w":94.3,"h":94.3,"x":41.5,"y":-37.6}],"ex":{"neutral":{"h":[0,0,0],"l":{"width":13.94,"height":45.42,"x":0,"y":-1.07,"angle":0},"r":{"width":13.94,"height":45.42,"x":0,"y":-1.07,"angle":0},"s":12.76,"m":["none","none"]},"upward-side-glance":{"h":[7.3,27.8,-16.1],"l":{"width":16.44,"height":37.8,"x":0,"y":-14.57,"angle":0},"r":{"width":16.44,"height":37.8,"x":0,"y":-14.57,"angle":0},"s":32.06,"m":["none","none"]},"downward-gaze":{"h":[-15.06,0.14,-14.55],"l":{"width":16.34,"height":49.99,"x":0,"y":5.93,"angle":0},"r":{"width":16.34,"height":49.99,"x":0,"y":5.93,"angle":0},"s":35.46,"m":["none","none"]},"skeptical-right":{"h":[-16.53,-3.77,-13.73],"l":{"width":17.03,"height":53.1,"x":0,"y":5.93,"angle":0},"r":{"width":43.87,"height":10,"x":0,"y":5.93,"angle":0},"s":34.06,"m":["none","none"]},"small-attentive":{"h":[-4.23,14.36,11.2],"l":{"width":16.01,"height":35.02,"x":0,"y":5.93,"angle":0},"r":{"width":16.01,"height":35.02,"x":0,"y":5.93,"angle":0},"s":28.66,"m":["none","none"]},"wide-downward-gaze":{"h":[-19.21,15.2,11.8],"l":{"width":46.03,"height":46.89,"x":0,"y":5.93,"angle":0},"r":{"width":47.06,"height":47.61,"x":0,"y":5.93,"angle":0},"s":47.26,"m":["none","none"]},"surprised-left":{"h":[2.95,-16.05,-20.92],"l":{"width":45.63,"height":47.16,"x":0,"y":5.93,"angle":0},"r":{"width":45.63,"height":47.16,"x":0,"y":5.93,"angle":0},"s":48.66,"m":["none","none"]},"sleepy-squint":{"h":[3.4,13.23,8.98],"l":{"width":45.72,"height":10,"x":0,"y":5.93,"angle":0},"r":{"width":45.72,"height":10,"x":0,"y":5.93,"angle":0},"s":41.63,"m":["none","none"]},"angry-right":{"h":[8.06,17.63,-11.12],"l":{"width":14.85,"height":35.82,"x":0,"y":5.93,"angle":-30.87},"r":{"width":14.85,"height":35.82,"x":0,"y":5.93,"angle":28.78},"s":29.82,"m":["none","none"]},"curious-left":{"h":[-12.3,-17.6,5.91],"l":{"width":14.55,"height":43.19,"x":0,"y":5.93,"angle":23.52},"r":{"width":14.55,"height":43.19,"x":0,"y":5.93,"angle":-24.04},"s":32.66,"m":["none","none"]},"asymmetric-down-right":{"h":[-20.06,12.61,-12.7],"l":{"width":36.44,"height":37.22,"x":0,"y":5.93,"angle":0},"r":{"width":16.04,"height":17.62,"x":0,"y":5.93,"angle":0},"s":39.46,"m":["none","none"]},"attentive-left":{"h":[1.43,6.19,10.56],"l":{"width":17.78,"height":53.55,"x":0,"y":5.93,"angle":0},"r":{"width":17.78,"height":53.55,"x":0,"y":5.93,"angle":0},"s":34.56,"m":["none","none"]},"joyful-wide":{"h":[-2.09,-15.9,-14.47],"l":{"width":28.14,"height":80.75,"x":0,"y":5.93,"angle":0},"r":{"width":28.14,"height":78.6,"x":0,"y":5.93,"angle":0},"s":37.17,"m":["none","none"]},"eyes-closed":{"h":[-8.75,-8.74,-10.77],"l":{"width":50.08,"height":10.92,"x":0,"y":5.93,"angle":0},"r":{"width":50.08,"height":10.58,"x":0,"y":5.93,"angle":0},"s":47.03,"m":["none","none"]},"joyful-down-right":{"h":[-15.29,15.01,12.79],"l":{"width":25.2,"height":72.14,"x":0,"y":5.93,"angle":0},"r":{"width":25.2,"height":72.14,"x":0,"y":5.93,"angle":0},"s":46.46,"m":["none","none"]},"skeptical-left":{"h":[3.53,-7.08,9.83],"l":{"width":18.25,"height":54.7,"x":0,"y":5.93,"angle":0},"r":{"width":42.87,"height":10,"x":0,"y":5.93,"angle":0},"s":39.98,"m":["none","none"]},"far-right-glance":{"h":[0.32,35.31,-10.9],"l":{"width":16.4,"height":35.24,"x":0,"y":5.93,"angle":0},"r":{"width":16.4,"height":35.24,"x":0,"y":5.93,"angle":0},"s":31.66,"m":["none","none"]},"angry-left":{"h":[-14.75,-19.35,5.63],"l":{"width":13.55,"height":44.06,"x":0,"y":5.93,"angle":-27.61},"r":{"width":13.55,"height":44.06,"x":0,"y":5.93,"angle":26.15},"s":32.86,"m":["none","none"]},"playful-right":{"h":[-4.4,14.07,-16.13],"l":{"width":12.99,"height":38.79,"x":0,"y":5.93,"angle":26.29},"r":{"width":12.99,"height":38.79,"x":0,"y":5.93,"angle":-20.25},"s":29.49,"m":["none","none"]},"asymmetric-up-left":{"h":[6.59,4.74,12.84],"l":{"width":36.04,"height":37.12,"x":0,"y":5.93,"angle":0},"r":{"width":16.14,"height":17.52,"x":0,"y":5.93,"angle":0},"s":38.16,"m":["none","none"]},"gentle-downward-gaze":{"h":[-6.08,-11.04,-13.97],"l":{"width":16.99,"height":54.11,"x":0,"y":5.93,"angle":0},"r":{"width":16.99,"height":54.11,"x":0,"y":5.93,"angle":0},"s":33.96,"m":["none","none"]},"wide-down-left":{"h":[-17.13,18.07,13.89],"l":{"width":29.4,"height":74.52,"x":0,"y":5.93,"angle":0},"r":{"width":29.4,"height":74.52,"x":0,"y":5.93,"angle":0},"s":48.56,"m":["none","none"]},"surprised-wide-left":{"h":[-5.43,-11.71,-13.47],"l":{"width":45.34,"height":45.52,"x":0,"y":5.93,"angle":0},"r":{"width":44.44,"height":44.82,"x":0,"y":5.93,"angle":0},"s":46.76,"m":["none","none"]},"drowsy-closed":{"h":[10.29,3.4,7.58],"l":{"width":49.62,"height":10.04,"x":0,"y":5.93,"angle":0},"r":{"width":49.62,"height":10.04,"x":0,"y":5.93,"angle":0},"s":46.17,"m":["none","none"]},"suspicious-right":{"h":[-17.8,10,-10.89],"l":{"width":17.91,"height":51.31,"x":0,"y":-3.87,"angle":0},"r":{"width":47.51,"height":10,"x":0,"y":-3.87,"angle":0},"s":37.7,"m":["none","none"]},"shy-downward":{"h":[7.13,7.78,3.94],"l":{"width":15.44,"height":27.42,"x":0,"y":45.93,"angle":0},"r":{"width":17.14,"height":28.92,"x":0,"y":45.93,"angle":0},"s":28.96,"m":["none","none"]},"angry-brows":{"h":[10.47,5.09,4.7],"l":{"width":21.07,"height":58.45,"x":0,"y":5.93,"angle":-36.24},"r":{"width":21.07,"height":58.45,"x":0,"y":5.93,"angle":27.73},"s":46.46,"m":["none","shake"]},"uneasy-left":{"h":[-12.3,-17.6,5.91],"l":{"width":14.55,"height":43.19,"x":0,"y":5.93,"angle":23.52},"r":{"width":14.55,"height":43.19,"x":0,"y":5.93,"angle":-24.04},"s":32.66,"m":["shake","slowDrift"]}},"an":{"sleeping":{"mode":"loop","steps":[{"e":"eyes-closed","hold":3600,"tr":500},{"e":"drowsy-closed","hold":3600,"tr":500},{"e":"sleepy-squint","hold":3600,"tr":500}],"blink":true},"waking":{"mode":"loop","steps":[{"e":"eyes-closed","hold":2300,"tr":500}],"blink":true},"idle":{"mode":"loop","steps":[{"e":"upward-side-glance","hold":5200,"tr":500},{"e":"curious-left","hold":5200,"tr":500}],"blink":true},"listening":{"mode":"loop","steps":[{"e":"attentive-left","hold":2300,"tr":500},{"e":"downward-gaze","hold":2300,"tr":500},{"e":"gentle-downward-gaze","hold":2300,"tr":500}],"blink":true},"thinking":{"mode":"loop","steps":[{"e":"curious-left","hold":2300,"tr":500},{"e":"angry-left","hold":2300,"tr":500},{"e":"skeptical-left","hold":2300,"tr":500},{"e":"playful-right","hold":2300,"tr":500},{"e":"skeptical-right","hold":2300,"tr":500}],"blink":true},"searching":{"mode":"loop","steps":[{"e":"far-right-glance","hold":2300,"tr":500},{"e":"asymmetric-down-right","hold":2300,"tr":500},{"e":"surprised-left","hold":2300,"tr":500},{"e":"wide-down-left","hold":2300,"tr":500},{"e":"wide-downward-gaze","hold":2300,"tr":500},{"e":"asymmetric-up-left","hold":2300,"tr":500}],"blink":true},"working":{"mode":"loop","steps":[{"e":"angry-right","hold":2300,"tr":500},{"e":"angry-left","hold":2300,"tr":500},{"e":"joyful-wide","hold":2300,"tr":500},{"e":"attentive-left","hold":2300,"tr":500}],"blink":true},"excited":{"mode":"loop","steps":[{"e":"joyful-down-right","hold":2300,"tr":500},{"e":"playful-right","hold":2300,"tr":500},{"e":"surprised-wide-left","hold":2300,"tr":500},{"e":"surprised-left","hold":2300,"tr":500},{"e":"joyful-wide","hold":2300,"tr":500}],"blink":true},"bored":{"mode":"loop","steps":[{"e":"sleepy-squint","hold":3600,"tr":500},{"e":"drowsy-closed","hold":3600,"tr":500},{"e":"upward-side-glance","hold":3600,"tr":500}],"blink":true},"suspicious":{"mode":"loop","steps":[{"e":"skeptical-left","hold":2300,"tr":500},{"e":"skeptical-right","hold":2300,"tr":500},{"e":"suspicious-right","hold":2300,"tr":500}],"blink":true},"angry":{"mode":"loop","steps":[{"e":"angry-right","hold":2300,"tr":500},{"e":"angry-left","hold":2300,"tr":500}],"blink":true},"drowsy":{"mode":"loop","steps":[{"e":"sleepy-squint","hold":3600,"tr":500},{"e":"drowsy-closed","hold":3600,"tr":500},{"e":"eyes-closed","hold":3600,"tr":500}],"blink":true},"happy":{"mode":"loop","steps":[{"e":"joyful-down-right","hold":2300,"tr":500},{"e":"joyful-wide","hold":2300,"tr":500},{"e":"playful-right","hold":2300,"tr":500},{"e":"gentle-downward-gaze","hold":2300,"tr":500}],"blink":true},"curious":{"mode":"loop","steps":[{"e":"surprised-left","hold":2300,"tr":500},{"e":"surprised-wide-left","hold":2300,"tr":500},{"e":"upward-side-glance","hold":2300,"tr":500},{"e":"far-right-glance","hold":2300,"tr":500}],"blink":true},"confused":{"mode":"loop","steps":[{"e":"skeptical-left","hold":2300,"tr":500},{"e":"skeptical-right","hold":2300,"tr":500},{"e":"curious-left","hold":2300,"tr":500}],"blink":true},"surprised":{"mode":"loop","steps":[{"e":"surprised-left","hold":2300,"tr":500},{"e":"surprised-wide-left","hold":2300,"tr":500}],"blink":true},"proud":{"mode":"loop","steps":[{"e":"far-right-glance","hold":2300,"tr":500},{"e":"curious-left","hold":2300,"tr":500},{"e":"joyful-down-right","hold":2300,"tr":500}],"blink":true},"shy":{"mode":"loop","steps":[{"e":"upward-side-glance","hold":2300,"tr":500},{"e":"shy-downward","hold":2300,"tr":500},{"e":"eyes-closed","hold":2300,"tr":500}],"blink":true},"sad":{"mode":"loop","steps":[{"e":"sleepy-squint","hold":3600,"tr":500},{"e":"eyes-closed","hold":3600,"tr":500},{"e":"drowsy-closed","hold":3600,"tr":500}],"blink":true},"laughing":{"mode":"loop","steps":[{"e":"joyful-down-right","hold":2300,"tr":500},{"e":"joyful-wide","hold":2300,"tr":500},{"e":"playful-right","hold":2300,"tr":500}],"blink":true},"scared":{"mode":"loop","steps":[{"e":"surprised-left","hold":2300,"tr":500},{"e":"surprised-wide-left","hold":2300,"tr":500}],"blink":true},"playful":{"mode":"loop","steps":[{"e":"joyful-down-right","hold":2300,"tr":500},{"e":"playful-right","hold":2300,"tr":500},{"e":"joyful-wide","hold":2300,"tr":500},{"e":"curious-left","hold":2300,"tr":500}],"blink":true},"celebrate":{"mode":"loop","steps":[{"e":"joyful-down-right","hold":2300,"tr":500},{"e":"curious-left","hold":2300,"tr":500},{"e":"playful-right","hold":2300,"tr":500}],"blink":true}}};
+
+(() => {
+  const $ = id => document.getElementById(id);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+  const avBody = $('avBody');
+  const puffs = [];
+  CLOUDEE.shapes.forEach((s, i) => {
+    const e = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    e.setAttribute('cx', s.x);
+    e.setAttribute('cy', s.y);
+    e.setAttribute('rx', s.w / 2);
+    e.setAttribute('ry', s.h / 2);
+    avBody.appendChild(e);
+    if (i > 0) puffs.push({ el: e, ph: i * 1.7, sp: .55 + i * .17 });
+  });
+  avBody.setAttribute('fill', CLOUDEE.colors.body);
+  $('avEyes').setAttribute('fill', CLOUDEE.colors.eyes);
+
+  const EX = CLOUDEE.ex, AN = CLOUDEE.an;
+  const rig = $('avRig'), head = $('avHead'), eyeL = $('eyeL'), eyeR = $('eyeR');
+
+  const P = ['width', 'height', 'x', 'y', 'angle'];
+  const snap = name => {
+    const e = EX[name] || EX.neutral;
+    return {
+      hx: e.h[0], hy: e.h[1], hz: e.h[2], sp: e.s,
+      l: { ...e.l }, r: { ...e.r }
+    };
+  };
+  let cur = snap('neutral'), from = snap('neutral'), to = snap('neutral');
+  let t = 1, dur = 400;
+  let blinkK = 1;
+  let gazeX = 0, gazeY = 0, gtX = 0, gtY = 0;
+  let exEyeJit = false, exShake = false, exDrift = false;
+
+  let hopY = 0, hopV = 0, squash = 0, shakeT = 0, wiggleT = 0, recoilT = 0;
+  const imp = kind => {
+    if (reduce) return;
+    if (kind === 'hop') hopV = -2.7;
+    else if (kind === 'hop1') hopV = -1.9;
+    else if (kind === 'hop2') { hopV = -3.5; setTimeout(() => { hopV = -2.3; }, 430); }
+    else if (kind === 'jump') hopV = -3.1;
+    else if (kind === 'giggle') { hopV = -1.3; setTimeout(() => { hopV = -1.3; }, 260); setTimeout(() => { hopV = -1.1; }, 520); }
+    else if (kind === 'wiggle') wiggleT = 1;
+    else if (kind === 'tremble') shakeT = 1;
+    else if (kind === 'recoil') { recoilT = 1; hopV = -1.4; }
+  };
+  const MOT = {
+    celebrate: 'hop2', excited: 'hop', happy: 'hop1', waking: 'hop1',
+    laughing: 'giggle', surprised: 'jump', playful: 'wiggle',
+    angry: 'tremble', scared: 'recoil', proud: 'hop1'
+  };
+
+  function setExpr(name, ms) {
+    from = JSON.parse(JSON.stringify(cur));
+    to = snap(name);
+    const m = (EX[name] || EX.neutral).m || ['none', 'none'];
+    exEyeJit = m[0] === 'shake';
+    exShake = m[1] === 'shake';
+    exDrift = m[1] === 'slowDrift';
+    dur = Math.max(80, ms || 400);
+    t = 0;
+  }
+
+  function draw(now) {
+    if (t < 1) {
+      t = Math.min(1, t + 16.7 / dur);
+      const k = ease(t);
+      cur.hx = lerp(from.hx, to.hx, k);
+      cur.hy = lerp(from.hy, to.hy, k);
+      cur.hz = lerp(from.hz, to.hz, k);
+      cur.sp = lerp(from.sp, to.sp, k);
+      P.forEach(p => {
+        cur.l[p] = lerp(from.l[p], to.l[p], k);
+        cur.r[p] = lerp(from.r[p], to.r[p], k);
+      });
+    }
+    gazeX = lerp(gazeX, gtX, .12);
+    gazeY = lerp(gazeY, gtY, .12);
+
+    let bobY = 0, sway = 0, bre = 0, shX = 0, sx = 1, sy = 1;
+    if (!reduce) {
+      const drift = exDrift ? 1.9 : 1;
+      bobY = Math.sin(now * .0011 / (exDrift ? 1.8 : 1)) * 2.5 * drift;
+      sway = Math.sin(now * .0007) * (exDrift ? 1.5 : .8);
+      bre = Math.sin(now * .0016) * .008;
+      hopV += .32;
+      hopY += hopV;
+      if (hopY > 0) {
+        hopY = 0;
+        if (hopV > .9) squash = Math.min(.16, hopV * .05);
+        hopV = Math.abs(hopV) < .5 ? 0 : hopV * -.3;
+      }
+      squash *= .86;
+      if (shakeT > 0) { shX += Math.sin(now * .055) * 3.2 * shakeT; shakeT -= .022; }
+      if (exShake) shX += Math.sin(now * .05) * 1.5;
+      if (wiggleT > 0) { sway += Math.sin(now * .021) * 7 * wiggleT; wiggleT -= .02; }
+      if (recoilT > 0) { shX -= recoilT * 9; recoilT -= .04; }
+      sx = 1 + bre + squash * .7;
+      sy = 1 + bre - squash;
+      puffs.forEach(p => {
+        p.el.setAttribute('transform', 'translate(' +
+          (Math.sin(now * .001 * p.sp + p.ph) * 1.4).toFixed(2) + ',' +
+          (Math.cos(now * .0013 * p.sp + p.ph) * 1.1).toFixed(2) + ')');
+      });
+    }
+    rig.setAttribute('transform', 'translate(' + shX.toFixed(2) + ',' + (bobY + hopY).toFixed(2) + ') rotate(' + sway.toFixed(2) + ') scale(' + sx.toFixed(4) + ',' + sy.toFixed(4) + ')');
+
+    const jx = exEyeJit && !reduce ? (Math.random() - .5) * 1.4 : 0;
+    const jy = exEyeJit && !reduce ? (Math.random() - .5) * 1.1 : 0;
+    head.setAttribute('transform', 'translate(' + (cur.hx + gazeX * .6).toFixed(2) + ',' + (cur.hy + gazeY * .6).toFixed(2) + ') rotate(' + cur.hz.toFixed(2) + ')');
+    const put = (el, e, side) => {
+      const w = e.width, h = Math.max(e.height * blinkK, 3.2);
+      const cx = side * (cur.sp / 2 + w / 2) + e.x + gazeX + jx;
+      const cy = e.y - 8 + gazeY + jy;
+      el.setAttribute('x', (cx - w / 2).toFixed(2));
+      el.setAttribute('y', (cy - h / 2).toFixed(2));
+      el.setAttribute('width', w.toFixed(2));
+      el.setAttribute('height', h.toFixed(2));
+      el.setAttribute('rx', (w / 2).toFixed(2));
+      el.setAttribute('transform', 'rotate(' + e.angle.toFixed(2) + ' ' + cx.toFixed(2) + ' ' + cy.toFixed(2) + ')');
+    };
+    put(eyeL, cur.l, -1);
+    put(eyeR, cur.r, 1);
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  let animName = '', stepIdx = 0, stepTo = null, blinkTo = null, blinkOn = false;
+
+  function scheduleBlink() {
+    clearTimeout(blinkTo);
+    if (!blinkOn || reduce) return;
+    blinkTo = setTimeout(() => {
+      let k = 0;
+      const iv = setInterval(() => {
+        k += .25;
+        blinkK = k < 1 ? 1 - k * .94 : .06 + (k - 1) * .94;
+        if (k >= 2) { blinkK = 1; clearInterval(iv); }
+      }, 30);
+      scheduleBlink();
+    }, 2600 + Math.random() * 3400);
+  }
+
+  function play(name, onDone) {
+    const a = AN[name];
+    if (!a || (animName === name && a.mode === 'loop')) return;
+    animName = name;
+    stepIdx = 0;
+    blinkOn = a.blink;
+    clearTimeout(stepTo);
+    scheduleBlink();
+    if (MOT[name]) imp(MOT[name]);
+    const step = () => {
+      const s = a.steps[stepIdx];
+      setExpr(s.e, s.tr);
+      stepTo = setTimeout(() => {
+        stepIdx++;
+        if (stepIdx >= a.steps.length) {
+          if (a.mode === 'loop') { stepIdx = 0; step(); }
+          else if (onDone) onDone();
+          else play('idle');
+        } else step();
+      }, s.tr + s.hold);
+    };
+    step();
+  }
+
+  const fix = $('avFix'), slot = $('heroSlot'), svg = $('avSvg');
+  let mini = false;
+
+  function place() {
+    if (mini) {
+      const w = 92;
+      fix.style.width = w + 'px';
+      fix.style.transform = 'translate(' + (innerWidth - w - 18) + 'px,' + (innerHeight - w * .82 - 18) + 'px)';
+    } else {
+      const r = slot.getBoundingClientRect();
+      const w = Math.min(r.width, r.height * 1.32);
+      fix.style.width = w + 'px';
+      fix.style.transform = 'translate(' + (r.left + (r.width - w) / 2) + 'px,' + (r.top + (r.height - w * .78) / 2) + 'px)';
+    }
+  }
+  place();
+  addEventListener('resize', place);
+  addEventListener('scroll', () => { if (!mini) place(); }, { passive: true });
+
+  new IntersectionObserver(en => {
+    const was = mini;
+    mini = !en[0].isIntersecting;
+    if (mini !== was) {
+      fix.classList.toggle('mini', mini);
+      place();
+    }
+  }, { threshold: .15 }).observe(slot);
+
+  let idleTo1, idleTo2, idleTo3, sleeping = false;
+  function armIdle() {
+    clearTimeout(idleTo1); clearTimeout(idleTo2); clearTimeout(idleTo3);
+    idleTo1 = setTimeout(() => play('bored'), 45000);
+    idleTo2 = setTimeout(() => play('drowsy'), 80000);
+    idleTo3 = setTimeout(() => { sleeping = true; play('sleeping'); }, 115000);
+  }
+  function wake() {
+    armIdle();
+    if (sleeping) {
+      sleeping = false;
+      play('waking', () => play('idle'));
+    }
+  }
+  ['pointermove', 'pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(ev =>
+    addEventListener(ev, wake, { passive: true })
+  );
+  armIdle();
+
+  const AMBIENT = ['curious', 'listening', 'searching', 'playful', 'thinking', 'happy'];
+  setInterval(() => {
+    if (sleeping || document.hidden || reduce) return;
+    if (animName !== 'idle') return;
+    if (Math.random() < .35) return;
+    const a = AMBIENT[(Math.random() * AMBIENT.length) | 0];
+    play(a);
+    setTimeout(() => { if (animName === a && !sleeping) play('idle'); }, 3800 + Math.random() * 2600);
+  }, 9000);
+
+  let lastSY = scrollY, lastST = performance.now(), scCool = 0, scBack = null;
+  addEventListener('scroll', () => {
+    const now = performance.now();
+    const dt = Math.max(16, now - lastST);
+    const v = Math.abs(scrollY - lastSY) / dt * 1000;
+    lastSY = scrollY; lastST = now;
+    if (sleeping || now < scCool) return;
+    if (v > 5200) {
+      scCool = now + 5000;
+      play('scared');
+    } else if (v > 3000) {
+      scCool = now + 4000;
+      play('surprised');
+    } else return;
+    clearTimeout(scBack);
+    scBack = setTimeout(() => { if (!sleeping) { const m = curMood; curMood = ''; play(m || 'idle'); } }, 1400);
+  }, { passive: true });
+
+  addEventListener('pointermove', e => {
+    if (coarse) return;
+    const r = svg.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2);
+    const dy = e.clientY - (r.top + r.height / 2);
+    gtX = clamp(dx / 120, -1, 1) * 4;
+    gtY = clamp(dy / 120, -1, 1) * 3;
+  }, { passive: true });
+
+  const POKES = ['playful', 'laughing', 'surprised', 'happy', 'shy'];
+  let pokeI = 0, pokeN = 0, pokeTo = null, sulkTo = null;
+  svg.addEventListener('click', () => {
+    if (sleeping) { wake(); return; }
+    clearTimeout(pokeTo); clearTimeout(sulkTo);
+    pokeN++;
+    pokeTo = setTimeout(() => { pokeN = 0; }, 3600);
+    if (pokeN >= 6) {
+      play('angry');
+      sulkTo = setTimeout(() => {
+        if (animName === 'angry') play('sad', () => play('idle'));
+      }, 5200);
+      return;
+    }
+    if (pokeN >= 4) { play('confused', () => play('idle')); return; }
+    play(POKES[pokeI++ % POKES.length], () => play('idle'));
+  });
+  svg.addEventListener('dblclick', () => { if (!sleeping) play('laughing', () => play('idle')); });
+
+  const moodEls = [...document.querySelectorAll('[data-mood]')];
+  let curMood = '';
+  const moodIO = new IntersectionObserver(ens => {
+    ens.forEach(en => {
+      if (en.isIntersecting && !sleeping) {
+        const m = en.target.dataset.mood;
+        if (m !== curMood) { curMood = m; play(m); }
+      }
+    });
+  }, { threshold: .35 });
+  moodEls.forEach(el => moodIO.observe(el));
+
+  const heroIO = new IntersectionObserver(en => {
+    if (en[0].isIntersecting && !sleeping) { curMood = ''; play('idle'); }
+  }, { threshold: .4 });
+  heroIO.observe(slot);
+
+  const hoverPlay = (el, name) => {
+    if (!el) return;
+    el.addEventListener('pointerenter', () => { if (!sleeping && !coarse) play(name); });
+  };
+  [$('ctaHero'), $('ctaFinal')].forEach(b => {
+    hoverPlay(b, 'happy');
+    if (b) b.addEventListener('click', () => play('celebrate'));
+  });
+  document.querySelectorAll('.svcrow').forEach((r, i) =>
+    hoverPlay(r, i % 2 ? 'curious' : 'searching')
+  );
+  const plans = document.querySelectorAll('.plan');
+  hoverPlay(plans[0], 'curious');
+  hoverPlay(plans[1], 'excited');
+  hoverPlay(plans[2], 'surprised');
+  hoverPlay(document.querySelector('.proof'), 'proud');
+  hoverPlay(document.querySelector('nav .btn'), 'listening');
+
+  const rvIO = new IntersectionObserver(ens => {
+    ens.forEach(en => {
+      if (en.isIntersecting) { en.target.classList.add('in'); rvIO.unobserve(en.target); }
+    });
+  }, { threshold: .12 });
+  document.querySelectorAll('.rv').forEach(el => rvIO.observe(el));
+
+  play('waking', () => play('idle'));
+})();
+</script>
+</body>
+</html>
