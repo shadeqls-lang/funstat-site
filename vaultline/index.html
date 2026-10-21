@@ -1,5 +1,9 @@
-<!doctype html><html lang="en"><head><meta charset=utf8><title>Vaultline Garages — a share of the whole car</title><meta name="description" content="Vaultline is an interactive concept: fund a Spin pool together, the Spin sets the Vault, the Vault buys a real car, and that car becomes a project you co-own, vote on and can exit any time."><meta name="theme-color" content="#060806"><meta name="claude:viewport-fit-sides" content="cover"><meta property="og:type" content="website"><meta property="og:title" content="Vaultline Garages"><meta property="og:description" content="A share. Of the whole car. Fund a Spin pool, land a Vault, co-own a real car."><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23060806'/%3E%3Cpath d='M4 5h4.2l3.8 8.2L15.8 5H20l-6.4 14h-3.2z' fill='%23D3F36B'/%3E%3C/svg%3E"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#060806"><title>Vaultline Garages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+
+</head><body><style>
 /* Layout: a night showroom. Centered hero stage with a car on a pulsing turntable, then the live garage unit, a registry carousel, odds, FAQ, and a giant interactive slogan as the footer. One dark world by design. */
 :root{
   color-scheme: dark;
@@ -895,6 +899,30 @@ summary{-webkit-tap-highlight-color:transparent}
   .arrows button{width:46px;height:46px}
 }
 </style>
+<style>
+/* Vault HQ showcase */
+.hq{padding-block:40px 30px;position:relative;overflow-x:clip}
+.hq-grid{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:40px;align-items:center}
+@media (max-width:980px){.hq-grid{grid-template-columns:minmax(0,1fr);gap:8px}}
+.hq-copy h2{font-size:clamp(36px,4.8vw,66px);font-stretch:110%;letter-spacing:-.04em}
+.hq-copy h2 em{font-style:normal;color:var(--muted)}
+.hq-copy p{margin-top:18px;color:var(--muted);font-size:16.5px;max-width:30em}
+.hq-list{margin:26px 0 0;padding:0;list-style:none;display:grid;border-top:1px solid var(--line)}
+.hq-list li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--muted)}
+.hq-list li b{display:block;color:var(--text);font-weight:600;font-size:15px}
+.hq-list svg{width:20px;height:20px;color:var(--lime);margin-top:2px}
+.hq-art{position:relative;margin-inline:-6%;aspect-ratio:1367/1150;max-width:112%}
+.hq-art::before{content:"";position:absolute;left:12%;right:12%;bottom:10%;height:28%;background:radial-gradient(closest-side,rgba(211,243,107,.22),transparent 75%);filter:blur(30px);z-index:0;animation:hqglow 5s ease-in-out infinite;will-change:opacity}
+@keyframes hqglow{50%{opacity:.55}}
+.hq-img{position:absolute;inset:0;z-index:1;will-change:transform}
+.hq-img img{width:100%;height:100%;object-fit:contain;display:block;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 22%,#000 78%,transparent 100%),linear-gradient(180deg,transparent 0%,#000 16%,#000 66%,transparent 100%),radial-gradient(62% 60% at 50% 50%,#000 50%,transparent 100%);
+  -webkit-mask-composite:source-in,source-in;
+  mask-image:linear-gradient(90deg,transparent 0%,#000 22%,#000 78%,transparent 100%),linear-gradient(180deg,transparent 0%,#000 16%,#000 66%,transparent 100%),radial-gradient(62% 60% at 50% 50%,#000 50%,transparent 100%);
+  mask-composite:intersect}
+@media (max-width:980px){.hq-art{margin-inline:-10%;max-width:120%}}
+@media (prefers-reduced-motion:reduce){.hq-art::before{animation:none}}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>document.documentElement.classList.add("js")</script>
 <div class="bgv" aria-hidden="true"><video id="bgVideo" src="bg.mp4" poster="bg-poster.jpg" autoplay muted loop playsinline preload="auto"></video></div>
@@ -965,6 +993,23 @@ summary{-webkit-tap-highlight-color:transparent}
       <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 4"/></svg></div><div><b>Your contribution sets your share</b><span>$5,000 in a $50,000 pool is 10%, whatever the Spin lands on.</span></div></div>
       <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></div><div><b>Owners decide the car's fate</b><span>Sell, Yield, Hold, Upgrade or Recycle, weighted by voting power.</span></div></div>
       <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></div><div><b>Exit without waiting</b><span>List any part of your share on the project's own marketplace.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="hq" id="vault">
+  <div class="wrap hq-grid">
+    <div class="hq-copy">
+      <h2>Where your car lives. <em>Between votes.</em></h2>
+      <p>Every project car is stored in a Vaultline bay until the owners decide what happens next. You can check on it in your project at any time.</p>
+      <ul class="hq-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/></svg><div><b>Bonded and insured</b>Each car is covered from the day it is bought until it leaves the vault.</div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><b>Inspected on arrival</b>Condition report and photos are attached to the project.</div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h10"/></svg><div><b>One bay per project</b>The registry ID on your card points to the exact bay.</div></li>
+      </ul>
+    </div>
+    <div class="hq-art" id="hqArt" aria-hidden="true">
+      <div class="hq-img" id="hqImg"><img src="vault-hq.webp" srcset="vault-hq-900.webp 900w, vault-hq.webp 1367w" sizes="(max-width:980px) 100vw, 60vw" alt="" decoding="async"></div>
     </div>
   </div>
 </section>
@@ -1880,7 +1925,7 @@ document.addEventListener('visibilitychange',()=>{ if(!bv||reduce) return; docum
 function setupReveal(){
   if(reduce || !('IntersectionObserver' in window)) return;
   const groups=[
-    ['.s-head',0],['.facts .fact',1],['.pipe .node',1],['.paths .path',1],['.loop',0],['.m-grid > *',1],
+    ['.s-head',0],['.hq-copy',0],['.hq-art',0],['.hq-list li',1],['.facts .fact',1],['.pipe .node',1],['.paths .path',1],['.loop',0],['.m-grid > *',1],
     ['.fan-item',1],['.proj > *',1],['.proj-tabs',0],['.modes .mode',1],['.up-run',0],['.mkt > *',1],
     ['.v-bar',0],['#odds .tbl-wrap',0],['.math > div',1],['.faq-side',0],['.faq details',1],['.mega-cta',0]
   ];
@@ -1893,11 +1938,13 @@ function setupReveal(){
 function setupPause(){
   if(!('IntersectionObserver' in window)) return;
   const io=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('offscreen',!e.isIntersecting)),{rootMargin:'120px 0px'});
-  document.querySelectorAll('.hero,#spin,#classes,#project,#upgrade,#vehicles,.ticker').forEach(el=>io.observe(el));
+  document.querySelectorAll('.hero,#vault,#spin,#classes,#project,#upgrade,#vehicles,.ticker').forEach(el=>io.observe(el));
 }
 function setupParallax(){
-  if(reduce) return; const hc=$('heroCars'); let ticking=false;
-  const upd=()=>{ ticking=false; const y=scrollY; if(y>innerHeight*1.4) return; hc.style.transform=`translate3d(0,${(y*-.08).toFixed(1)}px,0) scale(${(1+Math.min(y,600)/6000).toFixed(4)})`; };
+  if(reduce) return; const hc=$('heroCars'), hq=$('hqImg'), ha=$('hqArt'); let ticking=false;
+  const upd=()=>{ ticking=false; const y=scrollY;
+    const r=ha.getBoundingClientRect(); if(r.bottom>0&&r.top<innerHeight){ const k=(r.top+r.height/2-innerHeight/2)/innerHeight; hq.style.transform=`translate3d(0,${(k*30).toFixed(1)}px,0) scale(${(1.04-Math.abs(k)*.04).toFixed(4)})`; }
+    if(y>innerHeight*1.4) return; hc.style.transform=`translate3d(0,${(y*-.08).toFixed(1)}px,0) scale(${(1+Math.min(y,600)/6000).toFixed(4)})`; };
   addEventListener('scroll',()=>{ if(!ticking){ ticking=true; requestAnimationFrame(upd); } },{passive:true});
 }
 
@@ -1985,5 +2032,4 @@ setupSpy(); setupProgress(); setupFocusTrap();
 $('strip').innerHTML='<div>$——,———</div>';
 })();
 </script>
-
 </body></html>
