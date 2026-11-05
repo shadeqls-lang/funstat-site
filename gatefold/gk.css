@@ -24,7 +24,8 @@
 /* foil pack */
 .gk-foil{position:relative;display:block;width:var(--fw,120px);aspect-ratio:.7;border-radius:6px 6px 8px 8px;background:linear-gradient(160deg,var(--f1) 0%,var(--f2) 38%,var(--f3) 78%,var(--f2) 100%);box-shadow:inset 7px 0 14px rgba(255,255,255,.18),inset -8px 0 16px rgba(0,0,0,.35),inset 0 -14px 20px rgba(0,0,0,.25),0 24px 40px -18px rgba(0,0,0,.8);overflow:hidden;isolation:isolate;container-type:inline-size}
 .gk-foil::before{content:"";position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(115deg,rgba(255,255,255,.06) 0 3px,transparent 3px 9px)}
-.gk-foil::after{content:"";position:absolute;inset:0;background:linear-gradient(112deg,transparent 30%,rgba(255,255,255,.5) 46%,rgba(185,218,255,.25) 52%,transparent 64%);background-size:260% 100%;animation:gkSheen 5.5s ease-in-out infinite;mix-blend-mode:screen;pointer-events:none}
+.gk-foil::after{content:"";position:absolute;inset:0;background:linear-gradient(112deg,transparent 30%,rgba(255,255,255,.5) 46%,rgba(185,218,255,.25) 52%,transparent 64%);background-size:260% 100%;background-position:130% 0;mix-blend-mode:screen;pointer-events:none}
+.gk-arm .gk-foil::after,.rp .gk-foil::after{animation:gkSheen 5.5s ease-in-out infinite}
 @keyframes gkSheen{0%,20%{background-position:130% 0}70%,100%{background-position:-40% 0}}
 .gk-foil .cr{position:absolute;left:0;right:0;height:9%;background:repeating-linear-gradient(90deg,rgba(255,255,255,.32) 0 1.5px,rgba(0,0,0,.18) 1.5px 3.5px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
 .gk-foil .cr.t{top:0}.gk-foil .cr.b{bottom:0;box-shadow:0 -1px 0 rgba(0,0,0,.25)}
@@ -44,7 +45,7 @@
 .gk-case-bg{position:absolute;inset:-4%;z-index:-1;background:url(stage.webp) center 30%/cover;opacity:.28;filter:blur(3px) saturate(1.2);mix-blend-mode:screen}
 .gk-glass{position:absolute;inset:0;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.16) 0 7%,transparent 7% 56%,rgba(255,255,255,.07) 56% 60%,transparent 60%),linear-gradient(0deg,rgba(255,255,255,.06),transparent 22%)}
 .gk-rail{position:absolute;left:6%;right:32%;top:4%;height:1.4cqw;border-radius:1cqw;background:linear-gradient(180deg,#E9F0FF,#7486AE);box-shadow:0 1cqw 2cqw rgba(0,0,0,.5)}
-.gk-arm{position:absolute;left:38%;top:4%;width:30%;transform:translateX(-50%);transform-origin:50% 0;display:flex;flex-direction:column;align-items:center;animation:gkSway 6s ease-in-out infinite}
+.gk-arm{position:absolute;left:38%;top:4%;width:30%;transform:translateX(-50%);will-change:transform;transform-origin:50% 0;display:flex;flex-direction:column;align-items:center;animation:gkSway 6s ease-in-out infinite}
 @keyframes gkSway{0%,100%{transform:translateX(-50%) rotate(1.6deg)}50%{transform:translateX(-50%) rotate(-1.6deg)}}
 .gk-cable{display:block;width:.8cqw;height:9cqw;background:linear-gradient(90deg,#7486AE,#F4F8FF,#7486AE)}
 .gk-claw{width:46%;margin-top:-.4cqw;position:relative;z-index:2;filter:drop-shadow(0 1cqw 1.4cqw rgba(0,0,0,.5))}
