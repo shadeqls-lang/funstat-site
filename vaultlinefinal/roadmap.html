@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vaultline Roadmap</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a timeline on the left, read top to bottom; a sticky 3D card on the right that turns over for each phase. Colors only from the Vaultline palette: #221831 #465779 #99B3C6 #D3D7E7, with one soft violet for "In design". */
+:root{
+  color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --ink:#07060B; --ink-2:#0E0B16; --plum:#221831; --steel:#465779; --sky:#99B3C6; --mist:#D3D7E7;
+  --text:#ECEEF6; --muted:#99B3C6; --dim:#6B7C9E;
+  --line:rgba(211,215,231,.08); --line-2:rgba(211,215,231,.15);
+  --live:#D3D7E7; --dev:#99B3C6; --design:#A99BD6; --plan:#7487B0; --explore:#7A7395;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{overflow-x:clip}
+body{margin:0;background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--ink)}
+a{color:inherit}
+button{font:inherit;color:inherit}
+img{display:block;max-width:100%}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--mist);outline-offset:3px;border-radius:8px}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--f-mono)}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:-.03em;line-height:1;margin:0;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+
+/* status marks: color and shape both carry the status */
+.mk{width:12px;height:12px;border-radius:50%;flex-shrink:0;display:inline-block;position:relative}
+.mk.live{background:var(--live);box-shadow:0 0 0 3px rgba(211,215,231,.14),0 0 14px rgba(211,215,231,.5)}
+.mk.dev{background:conic-gradient(var(--dev) 0 50%,transparent 50% 100%);border:2px solid var(--dev)}
+.mk.design{border:2px solid var(--design)}
+.mk.plan{border:2px dashed var(--plan)}
+.mk.explore{border:2px dotted var(--explore)}
+.pill{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 13px 0 11px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c);background:color-mix(in srgb,var(--c) 10%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent);white-space:nowrap}
+.pill .mk{width:10px;height:10px}
+
+/* header */
+header.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(7,6,11,.7);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);border-bottom:1px solid var(--line)}
+header.site .wrap{display:flex;align-items:center;gap:24px;height:64px}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;font-family:var(--f-display);font-weight:700;font-size:21px;letter-spacing:-.03em;font-stretch:108%}
+.logo svg{width:22px;height:22px}
+.logo i{font-style:normal;color:var(--mist)}
+.hnav{display:flex;gap:2px;margin-left:12px}
+.hnav a{text-decoration:none;color:var(--muted);font-size:13.5px;padding:8px 12px;border-radius:999px;transition:color .2s,background .2s}
+.hnav a:hover{color:var(--text)}
+.hnav a[aria-current]{color:var(--text);background:rgba(211,215,231,.07)}
+.hdr-r{margin-left:auto;display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;border:1px solid transparent;font-weight:600;font-size:14.5px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:transform .35s var(--ease),background .25s,border-color .25s,box-shadow .35s}
+.btn:active{transform:scale(.97)}
+.btn-mist{background:linear-gradient(180deg,#F4F5FB,#D3D7E7 55%,#B9C3DA);color:#221831;box-shadow:0 0 0 1px rgba(211,215,231,.55),0 10px 30px -10px rgba(153,179,198,.55),inset 0 1px 0 rgba(255,255,255,.8)}
+.btn-mist:hover{box-shadow:0 0 0 1px rgba(211,215,231,.7),0 16px 40px -10px rgba(153,179,198,.75),inset 0 1px 0 rgba(255,255,255,.8)}
+.btn-ghost{background:rgba(211,215,231,.04);border-color:var(--line-2);color:var(--text)}
+.btn-ghost:hover{background:rgba(211,215,231,.09)}
+.btn-sm{height:38px;padding:0 15px;font-size:13px}
+.btn .arr{transition:transform .35s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+@media (max-width:1060px){.hnav{display:none}}
+.prog{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:2px;width:var(--sp,0%);z-index:50;background:linear-gradient(90deg,var(--steel),var(--sky),var(--mist));pointer-events:none}
+
+/* hero */
+.hero{position:relative;overflow:hidden;isolation:isolate}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.42;transform:scale(1.15)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(110% 80% at 50% 0%,rgba(7,6,11,.1),rgba(7,6,11,.75) 70%),linear-gradient(180deg,rgba(7,6,11,.3),var(--ink) 96%)}
+.hero .wrap{padding-block:104px 72px;display:grid;gap:56px}
+.hero-top{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:32px 64px;align-items:end}
+.kick{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(60px,9.6vw,152px);font-stretch:118%;font-weight:780;letter-spacing:-.05em;line-height:.86;margin-top:20px}
+.hero h1 .l{display:block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
+.hero h1 .l > span{display:block;animation:up 1.3s var(--ease) both}
+.hero h1 .l:nth-child(2) > span{animation-delay:.12s;background:linear-gradient(100deg,var(--mist) 0%,#F4F5FB 38%,var(--sky) 70%,var(--steel) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes up{from{transform:translateY(106%);opacity:0}}
+.hero-side{display:grid;gap:24px;padding-bottom:12px}
+.hero-side p{color:#C3CBDD;font-size:17.5px;line-height:1.6}
+.hero-acts{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:900px){.hero-top{grid-template-columns:minmax(0,1fr)}.hero .wrap{padding-block:72px 48px;gap:40px}}
+
+/* overview: the whole pipeline at a glance */
+.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--line);border-radius:28px;background:rgba(14,11,22,.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);overflow:hidden;scroll-margin-top:96px}
+.col{padding:20px 20px 22px;display:grid;gap:14px;align-content:start;border-left:1px solid var(--line);min-width:0}
+.col:first-child{border-left:0}
+.col-h{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text)}
+.col-h b{margin-left:auto;font-family:var(--f-mono);font-size:12px;font-weight:500;color:var(--dim)}
+.col ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.col li a{display:block;padding:10px 12px;border-radius:12px;font-size:13.5px;line-height:1.35;text-decoration:none;color:#C3CBDD;background:rgba(211,215,231,.03);border:1px solid var(--line);transition:border-color .25s,background .25s,transform .35s var(--ease)}
+.col li a:hover{border-color:color-mix(in srgb,var(--c) 45%,transparent);background:color-mix(in srgb,var(--c) 7%,transparent);transform:translateY(-2px)}
+.col li small{display:block;font-size:11.5px;color:var(--dim);margin-top:2px}
+@media (max-width:1040px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}.col:nth-child(odd){border-left:0}.col:nth-child(n+3){border-top:1px solid var(--line)}.col:last-child{grid-column:1/-1}}
+@media (max-width:560px){.board{grid-template-columns:minmax(0,1fr)}.col{border-left:0!important;border-top:1px solid var(--line)}.col:first-child{border-top:0}}
+
+/* timeline */
+.tl-sec{padding-block:96px 40px}
+.sec-h{display:flex;justify-content:space-between;align-items:end;gap:20px 48px;flex-wrap:wrap;margin-bottom:56px}
+.sec-h h2{font-size:clamp(40px,5vw,72px);font-stretch:112%;letter-spacing:-.045em;max-width:11em}
+.sec-h h2 em{font-style:normal;color:var(--muted)}
+.sec-h p{color:var(--muted);max-width:28em;font-size:16px}
+.tl-grid{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:72px;align-items:start}
+@media (max-width:1100px){.tl-grid{grid-template-columns:minmax(0,1fr)}.stage{display:none!important}}
+.tl{position:relative;padding-left:56px}
+.tl::before{content:"";position:absolute;left:17px;top:14px;bottom:14px;width:2px;border-radius:2px;background:rgba(211,215,231,.07)}
+.tl .fill{position:absolute;left:17px;top:14px;width:2px;border-radius:2px;height:var(--tp,0%);max-height:calc(100% - 28px);background:linear-gradient(var(--mist),var(--sky) 40%,var(--steel));box-shadow:0 0 12px rgba(153,179,198,.5)}
+.item{position:relative;padding-bottom:96px;scroll-margin-top:110px}
+.item:last-child{padding-bottom:0}
+.node{position:absolute;left:-56px;top:0;width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--ink-2);border:1px solid var(--line-2);transition:border-color .5s,box-shadow .5s}
+.item.on .node{border-color:color-mix(in srgb,var(--c) 60%,transparent);box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 10%,transparent),0 0 24px -4px var(--c)}
+.when{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;min-height:36px}
+.when .ph{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.item h3{font-size:clamp(34px,3.6vw,52px);font-stretch:112%;letter-spacing:-.04em;line-height:.98}
+.item h3 em{font-style:normal;color:var(--muted)}
+.item .lede{color:#C3CBDD;font-size:17px;max-width:36em;margin-top:16px}
+.pipe{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:28px;max-width:560px}
+.pipe span{display:grid;gap:8px;font-size:11.5px;color:var(--dim);letter-spacing:.04em}
+.pipe span i{height:4px;border-radius:2px;background:rgba(211,215,231,.08);overflow:hidden;position:relative}
+.pipe span i::after{content:"";position:absolute;inset:0;background:var(--c);transform:scaleX(0);transform-origin:left;transition:transform 1s var(--ease)}
+.pipe span.done{color:var(--muted)}
+.pipe span.cur{color:var(--text);font-weight:600}
+.item.on .pipe span.done i::after{transform:scaleX(1)}
+.item.on .pipe span.cur i::after{transform:scaleX(.55);animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.55}}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:28px}
+@media (max-width:700px){.cols{grid-template-columns:minmax(0,1fr)}}
+.panel{border:1px solid var(--line);border-radius:22px;background:rgba(14,11,22,.6);padding:20px 22px;min-width:0}
+.panel h4{margin:0 0 12px;font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.panel ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.panel li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;font-size:14.5px;line-height:1.5;color:#C3CBDD}
+.panel li svg{width:16px;height:16px;margin-top:3px;color:var(--c)}
+.panel.q li svg{color:var(--dim)}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.feat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:28px}
+.feat{border:1px solid var(--line);border-radius:20px;background:rgba(14,11,22,.6);padding:18px 20px;display:grid;gap:6px;align-content:start;transition:border-color .3s,transform .4s var(--ease)}
+.feat:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.feat b{font-size:15.5px;font-weight:600;display:flex;align-items:center;gap:10px}
+.feat span{font-size:14px;color:var(--muted);line-height:1.5}
+@media (max-width:560px){.pipe{gap:4px}.pipe span{font-size:10px;letter-spacing:0;overflow-wrap:anywhere}.feat-grid{grid-template-columns:minmax(0,1fr)}.tl{padding-left:44px}.tl::before,.tl .fill{left:13px}.node{left:-44px;width:28px;height:28px;border-radius:9px}}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1s var(--ease),transform 1.1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.hero h1 .l > span{animation:none}}
+
+/* the 3D card */
+.stage{position:sticky;top:calc(env(safe-area-inset-top,0px) + 120px);height:620px;perspective:1600px;display:flex;flex-direction:column;align-items:center;gap:26px}
+.cardwrap{position:relative;width:340px;aspect-ratio:5/7.2;transform-style:preserve-3d;transition:transform 1.15s cubic-bezier(.3,.7,.15,1);transform:rotateX(var(--rx,6deg)) rotateY(var(--ry,-14deg)) rotateZ(-2deg)}
+.cardwrap .edge{position:absolute;inset:0;border-radius:24px;background:linear-gradient(160deg,#5A6A8C,#2A3150 60%,#1A1630);transform:translateZ(var(--z))}
+.face{position:absolute;inset:0;border-radius:24px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;display:flex;flex-direction:column;padding:20px;gap:14px;
+  background:radial-gradient(120% 70% at 50% 0%,color-mix(in srgb,var(--fc,#99B3C6) 22%,#16121F) 0%,#0F0C17 58%,#0A090E 100%);border:1px solid color-mix(in srgb,var(--fc,#99B3C6) 30%,rgba(255,255,255,.08));box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.face.front{transform:translateZ(0)}
+.face.back{transform:translateZ(-12px) rotateY(180deg)}
+.face::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.12) 48%,transparent 62%);background-size:250% 100%;background-position:var(--gl,120%) 0;mix-blend-mode:screen;transition:background-position .3s linear}
+.f-top{display:flex;justify-content:space-between;align-items:center}
+.f-top .pill{height:24px;font-size:10px;padding:0 10px 0 8px}
+.f-top small{font-family:var(--f-mono);font-size:11px;color:var(--dim)}
+.f-art{flex:1;min-height:0;border-radius:16px;position:relative;overflow:hidden;background:radial-gradient(70% 55% at 50% 78%,color-mix(in srgb,var(--fc) 26%,transparent),transparent 70%),linear-gradient(180deg,rgba(14,12,22,.8),rgba(9,8,13,.85));border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;padding:14px}
+.f-name{font-family:var(--f-display);font-weight:700;font-stretch:108%;font-size:24px;letter-spacing:-.025em;line-height:1.05}
+.f-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.f-foot{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10.5px;color:var(--dim);padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
+.shadow{width:260px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.65),transparent);filter:blur(4px)}
+.cdots{display:flex;gap:6px}
+.cdots i{width:22px;height:3px;border-radius:2px;background:rgba(211,215,231,.12);transition:background .4s,width .4s var(--ease)}
+.cdots i.on{width:34px;background:var(--mist)}
+.a-car{position:relative;width:100%;display:flex;justify-content:center}
+.a-car img{width:112%;max-width:none;filter:drop-shadow(0 16px 18px rgba(0,0,0,.6))}
+.a-share{position:absolute;right:12px;top:10px;font-family:var(--f-display);font-size:30px;font-weight:700;color:var(--mist)}
+.a-book{width:100%;display:grid;gap:4px;font-family:var(--f-mono);font-size:11.5px}
+.a-book div{display:grid;grid-template-columns:1fr auto;gap:8px;padding:5px 8px;border-radius:6px;position:relative;isolation:isolate;color:var(--muted)}
+.a-book div::before{content:"";position:absolute;right:0;top:0;bottom:0;width:var(--d);border-radius:6px;z-index:-1;background:var(--sky);opacity:.14}
+.a-book div.b::before{background:var(--design);opacity:.2}
+.a-book div span:first-child{color:var(--text)}
+.a-book hr{border:0;border-top:1px dashed rgba(211,215,231,.18);margin:4px 0}
+.a-orbit{position:absolute;left:8%;right:8%;top:26%;bottom:22%;border-radius:50%;border:1px solid rgba(211,215,231,.2)}
+.a-orbit i{position:absolute;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--mist);box-shadow:0 0 12px var(--mist);left:50%;top:0;offset-path:ellipse(50% 50% at 50% 50%);animation:orbit 6s linear infinite}
+@keyframes orbit{from{offset-distance:0%}to{offset-distance:100%}}
+.a-track svg{width:100%;height:auto;display:block}
+.a-odds{width:100%;display:grid;gap:12px}
+.a-odds div{display:grid;gap:6px;font-size:11.5px;color:var(--muted)}
+.a-odds b{font-family:var(--f-display);font-size:16px;color:var(--text)}
+.a-odds i{display:flex;height:6px;border-radius:3px;overflow:hidden;gap:2px}
+.a-odds i em{display:block}
+.a-tiles{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.a-tiles div{border:1px dotted rgba(211,215,231,.28);border-radius:12px;padding:12px 10px;font-size:11.5px;color:var(--muted);line-height:1.3;min-height:72px;display:flex;align-items:flex-end}
+
+
+/* phase meta: target window, progress, milestones */
+.meta{display:flex;gap:10px 28px;flex-wrap:wrap;align-items:center;margin-top:22px;font-size:13.5px;color:var(--muted)}
+.meta b{color:var(--text);font-weight:600}
+.meta .pbar{display:flex;align-items:center;gap:10px;flex:1 1 220px;max-width:320px}
+.meta .pbar i{flex:1;height:6px;border-radius:3px;background:rgba(211,215,231,.08);overflow:hidden}
+.meta .pbar u{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 55%,transparent),var(--c));transition:width 1.2s var(--ease) .15s}
+.item.on .meta .pbar u{width:var(--pct)}
+.ms{border:1px solid var(--line);border-radius:22px;background:rgba(14,11,22,.6);padding:18px 22px;margin-top:12px}
+.ms h4{margin:0 0 12px;font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:flex;justify-content:space-between;gap:10px}
+.ms h4 span{letter-spacing:.04em;text-transform:none;color:var(--muted)}
+.ms ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px}
+@media (max-width:700px){.ms ol{grid-template-columns:minmax(0,1fr)}}
+.ms li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;align-items:start;font-size:14px;line-height:1.45;color:#C3CBDD}
+.ms li.todo{color:var(--dim)}
+.ms li .st{width:16px;height:16px;margin-top:2px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ms li.done .st{background:var(--c);color:#16121F}
+.ms li.done .st svg{width:10px;height:10px}
+.ms li.doing .st{border:2px solid var(--c);background:conic-gradient(var(--c) 0 50%,transparent 50%)}
+.ms li.todo .st{border:1.5px dashed rgba(211,215,231,.28)}
+.ms li small{display:block;font-size:11.5px;color:var(--dim);margin-top:1px}
+
+/* shipped log */
+.ship-sec{padding-block:24px 40px;scroll-margin-top:90px}
+.ship{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:980px){.ship{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.ship{grid-template-columns:minmax(0,1fr)}}
+.sh{border:1px solid var(--line);border-radius:22px;background:rgba(14,11,22,.6);padding:20px 22px;display:grid;gap:8px;align-content:start;transition:border-color .3s,transform .45s var(--ease)}
+.sh:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.sh .d{display:flex;justify-content:space-between;align-items:center;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.sh .d span{color:var(--live);display:inline-flex;align-items:center;gap:7px}
+.sh .d span .mk{width:8px;height:8px}
+.sh b{font-family:var(--f-display);font-size:21px;font-weight:700;font-stretch:108%;letter-spacing:-.02em;line-height:1.1}
+.sh p{font-size:14px;color:var(--muted);line-height:1.5}
+.sh a{font-size:13.5px;color:var(--text);text-decoration:none;margin-top:4px}
+.sh a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* vote board */
+.vote-sec{padding-block:40px 24px;scroll-margin-top:90px}
+.vote{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+@media (max-width:980px){.vote{grid-template-columns:minmax(0,1fr)}}
+.vlist{position:relative;display:grid;gap:8px}
+.vrow{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 16px 14px 14px;border-radius:20px;border:1px solid var(--line);background:rgba(14,11,22,.6);overflow:hidden;isolation:isolate;transition:border-color .3s,transform .6s var(--ease)}
+.vrow::before{content:"";position:absolute;inset:0;z-index:-1;width:var(--w,0%);background:linear-gradient(90deg,color-mix(in srgb,var(--c) 14%,transparent),color-mix(in srgb,var(--c) 4%,transparent));transition:width .8s var(--ease)}
+.vrow.mine{border-color:color-mix(in srgb,var(--c) 45%,transparent)}
+.vrow .rk{font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--dim);text-align:center}
+.vrow b{display:block;font-size:16px;font-weight:600}
+.vrow small{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.vbtn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line-2);background:rgba(211,215,231,.04);cursor:pointer;font-size:13.5px;font-weight:600;color:var(--text);transition:background .2s,border-color .2s,transform .3s var(--ease)}
+.vbtn:hover{border-color:rgba(211,215,231,.35)}
+.vbtn:active{transform:scale(.96)}
+.vbtn svg{width:14px;height:14px;transition:transform .35s var(--ease)}
+.vbtn[aria-pressed="true"]{background:var(--mist);color:#221831;border-color:var(--mist)}
+.vbtn[aria-pressed="true"] svg{transform:translateY(-2px)}
+.vbtn[disabled]{opacity:.4;cursor:not-allowed}
+.vside{border:1px solid var(--line);border-radius:22px;background:rgba(14,11,22,.6);padding:22px;display:grid;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px)}
+.vside h4{margin:0;font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.vleft{display:flex;gap:8px}
+.vleft i{flex:1;height:8px;border-radius:4px;background:rgba(211,215,231,.08);transition:background .3s}
+.vleft i.on{background:var(--mist)}
+.vside p{font-size:14px;color:var(--muted);line-height:1.55}
+.vside p b{color:var(--text);font-weight:600}
+.updated{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--dim)}
+
+/* mobile phase nav */
+.mnav{display:none}
+@media (max-width:1060px){.mnav{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 64px);z-index:39;background:rgba(7,6,11,.92);border-bottom:1px solid var(--line)}
+  .mnav .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:10px;padding-left:max(24px,env(safe-area-inset-left,0px))}
+  .mnav .wrap::-webkit-scrollbar{display:none}
+  .mnav a{flex:0 0 auto;height:34px;padding:0 14px;border-radius:999px;display:flex;align-items:center;gap:8px;text-decoration:none;font-size:13px;color:var(--muted);border:1px solid var(--line);transition:color .2s,background .2s,border-color .2s}
+  .mnav a .mk{width:8px;height:8px}
+  .mnav a[aria-current]{color:var(--text);border-color:var(--line-2);background:rgba(211,215,231,.07)}
+  .item,.board,.ship-sec,.vote-sec,.idea-sec,.faq-sec{scroll-margin-top:150px}}
+
+/* share link on each phase */
+.share{margin-left:auto;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--dim);font-size:12.5px;cursor:pointer;transition:color .2s,border-color .2s}
+.share:hover{color:var(--text);border-color:var(--line-2)}
+.share svg{width:13px;height:13px}
+
+/* phase art on narrow screens, where the sticky card is hidden */
+.m-art{display:none}
+@media (max-width:1100px){.m-art{display:flex;margin-top:24px;height:230px;border-radius:22px;position:relative;overflow:hidden;align-items:center;justify-content:center;padding:18px;border:1px solid color-mix(in srgb,var(--fc) 26%,var(--line));background:radial-gradient(70% 60% at 50% 80%,color-mix(in srgb,var(--fc) 22%,transparent),transparent 70%),linear-gradient(180deg,rgba(14,12,22,.85),rgba(9,8,13,.9))}
+  .m-art .a-car img{width:86%;max-width:420px;margin:auto}
+  .m-art .a-book,.m-art .a-odds,.m-art .a-tiles{max-width:420px}
+  .m-art .a-track{max-width:420px}}
+
+/* shape the roadmap: idea + updates */
+.idea-sec{padding-block:72px 24px;scroll-margin-top:90px}
+.idea{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:12px}
+@media (max-width:900px){.idea{grid-template-columns:minmax(0,1fr)}}
+.box{border:1px solid var(--line);border-radius:26px;background:rgba(14,11,22,.6);padding:28px;display:grid;gap:18px;align-content:start}
+.box h3{font-size:clamp(26px,2.6vw,34px);font-stretch:110%;letter-spacing:-.035em}
+.box>p{color:var(--muted);font-size:15px;margin-top:-8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line-2);background:none;color:var(--muted);cursor:pointer;font-size:13px;transition:background .2s,color .2s,border-color .2s}
+.chips button[aria-pressed="true"]{background:var(--mist);color:#221831;border-color:var(--mist)}
+.fld{display:grid;gap:8px}
+.fld label{font-size:12.5px;color:var(--muted)}
+.fld textarea,.fld input{width:100%;border-radius:16px;border:1px solid var(--line-2);background:rgba(7,6,11,.6);color:var(--text);font:inherit;font-size:15px;padding:14px 16px;outline:none;transition:border-color .2s,box-shadow .2s}
+.fld textarea{min-height:120px;resize:vertical;line-height:1.5}
+.fld input{height:50px;padding:0 16px}
+.fld textarea:focus,.fld input:focus{border-color:var(--sky);box-shadow:0 0 0 4px rgba(153,179,198,.12)}
+.fld .row{display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
+.fld .err{color:#E4A3B8}
+.form-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.form-foot small{font-size:12.5px;color:var(--dim)}
+.sent{display:grid;gap:10px;justify-items:start}
+.sent .ok{width:44px;height:44px;border-radius:50%;background:var(--mist);color:#221831;display:flex;align-items:center;justify-content:center}
+.sent .ok svg{width:20px;height:20px}
+.mine-ideas{display:grid;gap:8px}
+.mine-ideas div{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);font-size:14px;color:#C3CBDD}
+.mine-ideas small{font-family:var(--f-mono);font-size:11px;color:var(--dim);white-space:nowrap}
+.sub-row{display:flex;gap:8px}
+.sub-row input{flex:1;min-width:0}
+.sub-opts{display:grid;gap:10px}
+.sub-opts label{display:flex;gap:10px;align-items:center;font-size:14px;color:#C3CBDD;cursor:pointer}
+.sub-opts input{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line-2);display:grid;place-items:center;margin:0;cursor:pointer;transition:background .2s,border-color .2s}
+.sub-opts input:checked{background:var(--mist);border-color:var(--mist)}
+.sub-opts input:checked::after{content:"";width:9px;height:5px;border:solid #221831;border-width:0 0 2px 2px;transform:rotate(-45deg) translate(1px,-1px)}
+
+/* faq */
+.faq-sec{padding-block:72px 24px;scroll-margin-top:90px}
+.faq-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px 56px}
+@media (max-width:900px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+.faq-grid .sec-h{margin-bottom:0;align-items:start;flex-direction:column}
+details{border-top:1px solid var(--line)}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;font-size:18px;font-weight:600;letter-spacing:-.01em}
+summary::-webkit-details-marker{display:none}
+summary i{flex:0 0 auto;width:32px;height:32px;border-radius:50%;border:1px solid var(--line-2);position:relative;transition:transform .4s var(--ease),background .2s}
+summary i::before,summary i::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1.6px;margin:-.8px 0 0 -6px;background:var(--text);border-radius:1px}
+summary i::after{transform:rotate(90deg);transition:transform .4s var(--ease)}
+details[open] summary i{background:rgba(211,215,231,.07)}
+details[open] summary i::after{transform:none}
+summary:hover i{border-color:rgba(211,215,231,.35)}
+details p{color:#C3CBDD;padding:0 56px 24px 0;font-size:15.5px;max-width:40em}
+
+/* mega footer, as on the main page */
+.mega-sec{padding-block:96px 0;overflow:hidden;position:relative}
+.mega-cta{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.mega-cta p{color:var(--muted);font-size:16px;max-width:30em}
+.mega{margin:0;padding-block:40px 24px;font-family:var(--f-display);font-weight:600;line-height:.86;letter-spacing:-.04em;font-size:clamp(40px,10.4vw,190px);user-select:none;-webkit-user-select:none;cursor:default;text-align:center}
+.mega .ln{display:block;white-space:nowrap}
+.mega .ch{--t:0;display:inline-block;font-variation-settings:"wght" calc(380 + var(--t) * 520),"wdth" calc(78 + var(--t) * 47);color:color-mix(in srgb,var(--mist) calc(var(--t) * 100%),rgba(236,238,246,.16));transition:font-variation-settings .25s ease-out,color .25s ease-out;text-shadow:0 0 calc(var(--t) * 40px) rgba(153,179,198,calc(var(--t) * .45))}
+.mega .ln2 .ch{color:color-mix(in srgb,var(--mist) calc(var(--t) * 100%),rgba(236,238,246,.28))}
+.mega .sp{display:inline-block;width:.24em}
+@media (max-width:560px){.mega-cta .hero-acts{display:grid;grid-template-columns:minmax(0,1fr) auto;width:100%}.mega-cta .hero-acts .btn{padding:0 18px}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);z-index:80;background:var(--mist);color:#221831;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:600;box-shadow:0 20px 40px -12px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .3s,transform .4s var(--ease)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:860px){.tl-sec{padding-block:64px 24px}}
+footer{padding-block:24px 48px;color:var(--dim);font-size:13px}
+footer .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center}
+footer nav{display:flex;gap:20px;flex-wrap:wrap}
+footer nav a{text-decoration:none;color:var(--muted);transition:color .2s}
+footer nav a:hover{color:var(--text)}
+footer .legal{grid-column:1/-1;max-width:72em;line-height:1.6}
+@media (max-width:700px){footer .wrap{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<div class="prog" aria-hidden="true"></div>
+<header class="site">
+  <div class="wrap">
+    <a href="index.html" class="logo" aria-label="Vaultline home"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h5l4 9 4-9h5l-7.2 16H10.2z" fill="#D3D7E7"/><path d="M10 4h4l-2 4.5z" fill="#07060B"/></svg><span>vaultline<i>.</i></span></a>
+    <nav class="hnav" aria-label="Roadmap"><a href="#overview">Overview</a><a href="#market">Share Market</a><a href="#showroom">3D Showroom</a><a href="#racing">Race Manager</a><a href="#upgrade">Upgrade Spin</a><a href="#shipped">Shipped</a><a href="#vote">Vote</a><a href="#faq">FAQ</a></nav>
+    <div class="hdr-r"><a href="index.html" class="btn btn-ghost btn-sm">Back to site</a></div>
+  </div>
+</header>
+<nav class="mnav" aria-label="Roadmap sections"><div class="wrap" id="mnav"></div></nav>
+
+<main id="top">
+  <section class="hero">
+    <video src="bg.mp4" poster="bg-poster.jpg" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>
+    <div class="wrap">
+      <div class="hero-top">
+        <div>
+          <span class="kick">Vaultline · Roadmap</span> <span class="updated">· Updated Nov 9, 2026</span>
+          <h1><span class="l"><span>What we're</span></span><span class="l"><span>building next.</span></span></h1>
+        </div>
+        <div class="hero-side">
+          <p>Spins, three Vaults, shared ownership and Yield are live. Here is everything that comes after, in the order we plan to build it, and where each piece stands today.</p>
+          <div class="hero-acts"><a class="btn btn-mist" href="#live">Read the roadmap <span class="arr">↓</span></a><a class="btn btn-ghost" href="marketplace.html">Try the market preview</a></div>
+        </div>
+      </div>
+      <div class="board rv" id="overview" aria-label="Roadmap overview"></div>
+    </div>
+  </section>
+
+  <section class="tl-sec wrap" aria-labelledby="tlH">
+    <div class="sec-h rv"><h2 id="tlH">One phase at a time. <em>In this order.</em></h2><p>Each phase builds on the one before it. The bar under every title shows how far it has come, from first idea to live.</p></div>
+    <div class="tl-grid">
+      <div class="tl" id="tl"><span class="fill"></span></div>
+      <aside class="stage" aria-hidden="true">
+        <div class="cardwrap" id="card">
+          <div class="face back" id="faceB"></div>
+          <div class="face front" id="faceA"></div>
+        </div>
+        <div class="shadow"></div>
+        <div class="cdots" id="cdots"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="ship-sec wrap" id="shipped" aria-labelledby="shH">
+    <div class="sec-h rv"><h2 id="shH">Recently shipped. <em>Already in your hands.</em></h2><p>The newest pieces of Vaultline, most recent first.</p></div>
+    <div class="ship" id="ship"></div>
+  </section>
+
+  <section class="vote-sec wrap" id="vote" aria-labelledby="vH">
+    <div class="sec-h rv"><h2 id="vH">What should come next? <em>You pick.</em></h2><p>You get three votes. Put them on what you want built first, and change them any time.</p></div>
+    <div class="vote">
+      <div class="vlist rv" id="vlist"></div>
+      <aside class="vside rv" style="transition-delay:.08s">
+        <h4>Your votes</h4>
+        <div class="vleft" id="vleft"><i></i><i></i><i></i></div>
+        <p id="vtxt"></p>
+        <p>In the product, a vote weighs as much as your share. Here every vote counts as one, and they stay in this browser.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="idea-sec wrap" id="ideas" aria-labelledby="iH">
+    <div class="sec-h rv"><h2 id="iH">Shape the roadmap. <em>Tell us what's missing.</em></h2><p>Every idea is read by the team. The ones owners ask for most end up in the vote above.</p></div>
+    <div class="idea">
+      <form class="box rv" id="ideaF" novalidate>
+        <h3>Suggest a feature</h3>
+        <p>One idea per message works best. Say what you'd do with it.</p>
+        <div class="chips" id="ideaCat" role="group" aria-label="Area"><button type="button" aria-pressed="true">Vaults</button><button type="button" aria-pressed="false">Share Market</button><button type="button" aria-pressed="false">3D Showroom</button><button type="button" aria-pressed="false">Racing</button><button type="button" aria-pressed="false">Something else</button></div>
+        <div class="fld"><label for="ideaT">Your idea</label><textarea id="ideaT" maxlength="400" placeholder="I'd like to see the service history of every car before I join its Spin, because…"></textarea><div class="row"><span class="err" id="ideaE" aria-live="polite"></span><span id="ideaN">0 / 400</span></div></div>
+        <div class="form-foot"><small>Ideas stay in this browser in this preview.</small><button class="btn btn-mist" type="submit">Send idea <span class="arr">→</span></button></div>
+        <div class="mine-ideas" id="ideaList"></div>
+      </form>
+      <form class="box rv" id="subF" novalidate style="transition-delay:.08s">
+        <h3>Get updates</h3>
+        <p>A short note when a phase moves forward. Nothing else.</p>
+        <div class="sub-opts" role="group" aria-label="Topics">
+          <label><input type="checkbox" checked value="market">Share Market</label>
+          <label><input type="checkbox" checked value="showroom">3D Showroom</label>
+          <label><input type="checkbox" value="racing">Race Manager</label>
+          <label><input type="checkbox" value="upgrade">Upgrade Spin</label>
+        </div>
+        <div class="fld"><label for="subE">Email</label><div class="sub-row"><input id="subE" type="email" autocomplete="email" placeholder="you@email.com"></div><span class="err" id="subErr" aria-live="polite"></span></div>
+        <button class="btn btn-ghost" type="submit">Notify me</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="faq-sec wrap" id="faq" aria-labelledby="fH">
+    <div class="faq-grid">
+      <div class="sec-h rv"><h2 id="fH">Roadmap <em>questions.</em></h2><p>How we plan, what the dates mean and how your vote counts.</p></div>
+      <div class="rv">
+        <details open><summary>How often is this page updated?<i aria-hidden="true"></i></summary><p>Every time a milestone moves, and at least once a month. The date under the title shows the last update.</p></details>
+        <details><summary>Are the target dates promises?<i aria-hidden="true"></i></summary><p>No. They're the quarter we're aiming for today. If a phase slips, we move the date here and say why.</p></details>
+        <details><summary>How do votes decide the order?<i aria-hidden="true"></i></summary><p>Owners vote on what comes after the phases already in progress. A vote weighs as much as the owner's share, so people with more at stake have more say.</p></details>
+        <details><summary>Will new features cost extra?<i aria-hidden="true"></i></summary><p>Using them won't. The Share Market takes a small fee from the seller on each trade, and the exact number is one of the open questions above.</p></details>
+        <details><summary>Can I try anything before it's live?<i aria-hidden="true"></i></summary><p>Yes. The Share Market preview and the 3D 911 are up now, and Share Market will open a beta for 50 owners before it goes public.</p></details>
+        <details><summary>What happens to ideas I send?<i aria-hidden="true"></i></summary><p>The team reads all of them. Ideas that keep coming up are added to the vote, so owners can push them up the list.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="mega-sec" id="mega">
+    <div class="wrap">
+      <div class="mega-cta rv">
+        <p>The fastest way to have a say in what comes next is a share of a car.</p>
+        <div class="hero-acts"><a class="btn btn-mist" href="index.html#spin" style="height:54px;padding:0 28px;font-size:15.5px">Join the next Spin <span class="arr">→</span></a><a class="btn btn-ghost" href="profile.html" style="height:54px">Your profile</a></div>
+      </div>
+    </div>
+    <p class="mega" id="megaTxt" aria-label="Built in the open. One phase at a time."></p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="index.html" class="logo" aria-label="vaultline home"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h5l4 9 4-9h5l-7.2 16H10.2z" fill="#D3D7E7"/><path d="M10 4h4l-2 4.5z" fill="#07060B"/></svg><span>vaultline<i>.</i></span></a>
+    <nav aria-label="Footer"><a href="index.html#how">How it works</a><a href="index.html#spin">Spin</a><a href="index.html#pools">Vaults</a><a href="profile.html">Profile</a><a href="marketplace.html">Share market preview</a><a href="#top">Back to top</a></nav>
+    <p class="legal">Concept roadmap. Phases, order, dates and progress are examples and can change. Nothing on this page is a promise of a feature or a date, or an offer or solicitation for any security or token. For adults 18+.</p>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id), reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ST={live:{n:'Live',c:'var(--live)'},dev:{n:'In development',c:'var(--dev)'},design:{n:'In design',c:'var(--design)'},plan:{n:'Planned',c:'var(--plan)'},explore:{n:'Exploring',c:'var(--explore)'}};
+const STAGES=['Exploring','Design','Development','Live'], STAGE_AT={explore:0,design:1,plan:1,dev:2,live:3};
+const pill=s=>`<span class="pill" style="--c:${ST[s].c}"><i class="mk ${s}"></i>${ST[s].n}</span>`;
+const svg=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const IC={check:'<path d="M5 12l4 4 10-10"/>',q:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17h.01"/>'};
+
+/* ---------- content ---------- */
+const P=[
+  {id:'live',s:'live',ph:'Now',t:'The base.',em:'Already running.',lede:'Everything on this page builds on four things you can use today.',
+    target:'Live',feats:[['Spins','Pools fill, then the Spin picks a car from the Vault’s pool.'],['Three Vaults','Street, Track and Collector, each a collection of its own.'],['Projects and votes','Every car is a project. Your share is your voting power.'],['Yield','Rental income from the car, paid out by share.']],
+    links:[['index.html#how','How it works']]},
+  {id:'market',s:'design',ph:'Phase 1 · Next',t:'Share Market.',em:'Sell part, keep the rest.',lede:'Every car gets its own market. List any part of your share at your price, or buy into a car that already exists. The rules are written and a working preview is up.',
+    can:['Sell any part of a share, from 0.5% up','See the car’s value next to every price','Buy now, or post an offer and wait','Order book and trade history for every car'],
+    open:['Final seller fee (2.5% in the preview)','Whether offers can be partly accepted','How listings show on the project page'],
+    target:'Q1 2027',pct:38,ms:[['done','Market rules written','Sep 2026'],['done','Working preview','Oct 2026'],['doing','Final fee and partial offers'],['todo','Matching engine'],['todo','Security review'],['todo','Beta with 50 owners'],['todo','Open to everyone']],
+    links:[['marketplace.html','Open the preview']]},
+  {id:'showroom',s:'dev',ph:'Phase 2',t:'3D Showroom.',em:'Every car, every angle.',lede:'Each project car in full 3D on the site. Turn it, look inside, and see a new wrap on the real car before you vote for it. The first car already runs on the main page.',
+    can:['Turn any project car in 3D','Cockpit, engine and wheel close-ups','Preview wrap and wheel votes on the car','Photo mode for a still of your car'],
+    open:['A licensed model for every car in the pools','How heavy a model can be on a phone'],
+    target:'Q1 2027',pct:56,ms:[['done','Porsche 911 on the main page','Nov 2026'],['done','Loads fast on phones','Nov 2026'],['doing','Cockpit and engine views'],['doing','Wrap preview tied to votes'],['todo','Every Street Vault car in 3D'],['todo','Photo mode']],
+    links:[['index.html#showroom','See the 911 in 3D']]},
+  {id:'racing',s:'plan',ph:'Phase 3',t:'Race Manager.',em:'Your car, your team.',lede:'Owners run their car like a team. Vote to enter a race, hire a driver from the Vaultline pool, set the strategy, and split the prize by share.',
+    can:['Vote to send your car to a race','Pick a driver from a pool with ratings','Set tyres, fuel and how hard to push','Race winnings paid out like Yield'],
+    open:['Where car ratings come from','How a race result is worked out','One-off races or full seasons'],
+    target:'Q3 2027',pct:12,ms:[['done','Rules draft','Oct 2026'],['todo','Car rating model'],['todo','Race simulation'],['todo','Driver pool'],['todo','Prize payouts']],links:[]},
+  {id:'upgrade',s:'plan',ph:'Phase 4',t:'Upgrade Spin.',em:'Trade up, risk on the table.',lede:'If owners vote for it, the project’s value goes into a Spin for a more expensive car. Every outcome, every chance and the worst case are shown before anyone commits.',
+    can:['Three modes: Safe, Risk and Jackpot','Odds and maximum loss shown up front','One Jackpot attempt per project'],
+    open:['Exact odds for each mode','Whether owners who voted against can sell first'],
+    target:'Q4 2027',pct:8,ms:[['done','Three modes defined','Oct 2026'],['todo','Odds reviewed by an outside firm'],['todo','Owner vote flow'],['todo','Legal review']],links:[]},
+  {id:'later',s:'explore',ph:'After',t:'Later.',em:'Ideas we’re testing.',lede:'Things we want to build but haven’t committed to. Owner feedback decides which come first.',
+    feats:[['Classic and EV Vaults','New pools for air-cooled classics and electric performance cars.'],['Track days','Time behind the wheel of the car you co-own.'],['Seasons and leagues','Race results add up to a title for the best project.'],['Mobile app','Votes, payouts and race alerts on your phone.']],target:'2028 and later',links:[]}
+];
+
+/* ---------- overview board ---------- */
+const COLS=[['live','Live',[['Spins','live'],['Three Vaults','live'],['Projects and votes','live'],['Yield','live']]],
+  ['dev','In development',[['3D Showroom','showroom','Phase 2']]],
+  ['design','In design',[['Share Market','market','Phase 1']]],
+  ['plan','Planned',[['Race Manager','racing','Phase 3'],['Upgrade Spin','upgrade','Phase 4']]],
+  ['explore','Exploring',[['Classic and EV Vaults','later'],['Track days','later'],['Seasons and leagues','later'],['Mobile app','later']]]];
+$('overview').innerHTML=COLS.map(([s,n,items])=>`<div class="col" style="--c:${ST[s].c}"><div class="col-h"><i class="mk ${s}"></i>${n}<b>${items.length}</b></div><ul>${items.map(([t,id,sm])=>`<li><a href="#${id}">${t}${sm?`<small>${sm}</small>`:''}</a></li>`).join('')}</ul></div>`).join('');
+
+const TRACK='M40 120 C 20 100, 22 60, 52 50 L 120 34 C 150 26, 170 40, 182 58 C 192 74, 210 78, 232 64 L 250 52 C 272 40, 290 58, 280 82 C 272 104, 250 108, 228 112 L 120 140 C 86 148, 58 140, 40 120 Z';
+const CARD={
+  live:{fc:'#D3D7E7',name:'Project #1847',sub:'Porsche 911 Carrera · Street Vault',foot:['VL-911-0004','10% · $9,360'],art:`<div class="a-car"><img src="cars/911.webp" alt=""></div><span class="a-share">10%</span>`},
+  market:{fc:'#A99BD6',name:'Share Market',sub:'Order book for Project #1847',foot:['PRICE PER 1%','VALUE $936'],art:`<div class="a-book num">${[[1012,'1.5%',38],[989,'2%',52],[958,'3%',80]].map(([p,s,d])=>`<div style="--d:${d}%"><span>$${p}</span><span>${s}</span></div>`).join('')}<hr>${[[921,'1.5%',38],[906,'2.5%',64],[884,'1%',26]].map(([p,s,d])=>`<div class="b" style="--d:${d}%"><span>$${p}</span><span>${s}</span></div>`).join('')}</div>`},
+  showroom:{fc:'#99B3C6',name:'3D Showroom',sub:'Lamborghini Huracán · 360° view',foot:['ORBIT · COCKPIT · WRAP','3D'],art:`<span class="a-orbit"><i></i></span><div class="a-car"><img src="cars/huracan.webp" alt=""></div>`},
+  racing:{fc:'#7487B0',name:'Race Manager',sub:'Vaultline Ring · Lap 7 of 12',foot:['P2 · +1.8s','12 LAPS'],art:`<div class="a-track" style="width:100%"><svg viewBox="0 0 300 170"><path d="${TRACK}" fill="none" stroke="rgba(211,215,231,.14)" stroke-width="12" stroke-linejoin="round"/><path d="${TRACK}" fill="none" stroke="rgba(211,215,231,.4)" stroke-width="1" stroke-dasharray="3 5"/>${[['#D3D7E7',6,'7s','0s'],['#99B3C6',4.5,'7.3s','-.6s'],['#A99BD6',4.5,'7.6s','-1.2s'],['#465779',4.5,'7.9s','-1.9s']].map(([c,r,d,b])=>`<circle r="${r}" fill="${c}"><animateMotion dur="${d}" begin="${b}" repeatCount="indefinite" path="${TRACK}"/></circle>`).join('')}</svg></div>`},
+  upgrade:{fc:'#7487B0',name:'Upgrade Spin',sub:'Three modes, odds up front',foot:['SAFE · RISK · JACKPOT','MAX LOSS SHOWN'],art:`<div class="a-odds">${[['Safe',[25,50,25]],['Risk',[20,30,50]],['Jackpot',[3,17,80]]].map(([n,o])=>`<div><b>${n}</b><i>${o.map((x,k)=>`<em style="flex:${x};background:${['#D3D7E7','#465779','#A99BD6'][k]}"></em>`).join('')}</i><span class="num">${o[0]}% up · ${o[1]}% keep · ${o[2]}% down</span></div>`).join('')}</div>`},
+  later:{fc:'#7A7395',name:'Later',sub:'Ideas we’re testing',foot:['EXPLORING','NO DATE YET'],art:`<div class="a-tiles">${['Classic and EV Vaults','Track days','Seasons and leagues','Mobile app'].map(x=>`<div>${x}</div>`).join('')}</div>`}
+};
+/* ---------- timeline ---------- */
+$('tl').insertAdjacentHTML('beforeend',P.map((p,i)=>{
+  const at=STAGE_AT[p.s];
+  const pipe=`<div class="pipe" aria-label="Stage: ${ST[p.s].n}">${STAGES.map((n,k)=>`<span class="${k<at?'done':k===at?'cur':''}"><i></i>${n}</span>`).join('')}</div>`;
+  const list=(h,arr,cls,icn)=>arr&&arr.length?`<div class="panel ${cls}"><h4>${h}</h4><ul>${arr.map(x=>`<li>${svg(icn)}<span>${x}</span></li>`).join('')}</ul></div>`:'';
+  return `<article class="item rv" id="${p.id}" style="--c:${ST[p.s].c}">
+    <span class="node"><i class="mk ${p.s}"></i></span>
+    <div class="when"><span class="ph">${p.ph}</span>${pill(p.s)}<button type="button" class="share" data-share="${p.id}" aria-label="Copy link to ${p.t.replace('.','')}">${svg('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>')}Copy link</button></div>
+    <h3>${p.t} <em>${p.em}</em></h3>
+    <p class="lede">${p.lede}</p>
+    <div class="m-art" style="--fc:${CARD[p.id].fc}" aria-hidden="true">${CARD[p.id].art}</div>
+    ${p.s==='live'||p.s==='explore'?'':pipe}
+    ${p.pct!==undefined?`<div class="meta num"><span>Target <b>${p.target}</b></span><span class="pbar" style="--pct:${p.pct}%"><i><u></u></i><b>${p.pct}%</b></span></div>`:`<div class="meta"><span>${p.s==='live'?'Status':'Timing'} <b>${p.target}</b></span></div>`}
+    ${p.feats?`<div class="feat-grid">${p.feats.map(([b,t])=>`<div class="feat"><b><i class="mk ${p.s}" style="width:9px;height:9px"></i>${b}</b><span>${t}</span></div>`).join('')}</div>`:''}
+    ${p.can?`<div class="cols">${list('What you’ll be able to do',p.can,'',IC.check)}${list('Still being worked out',p.open,'q',IC.q)}</div>`:''}
+    ${p.ms?`<div class="ms"><h4>Milestones <span class="num">${p.ms.filter(m=>m[0]==='done').length} of ${p.ms.length} done</span></h4><ol>${p.ms.map(([st,t,d])=>`<li class="${st}"><span class="st">${st==='done'?svg('<path d="M5 12l4 4 10-10"/>').replace('stroke-width="2"','stroke-width="3.4"'):''}</span><span>${t}${d?`<small>${d}</small>`:st==='doing'?'<small>In progress</small>':''}</span></li>`).join('')}</ol></div>`:''}
+    ${p.links.length?`<div class="links">${p.links.map(([h,t])=>`<a class="btn btn-ghost btn-sm" href="${h}">${t} <span class="arr">→</span></a>`).join('')}</div>`:''}
+  </article>`; }).join(''));
+
+/* ---------- the card: one face per phase, it turns over when the phase changes ---------- */
+const card=$('card'), fA=$('faceA'), fB=$('faceB');
+card.insertAdjacentHTML('afterbegin',Array.from({length:11},(_,k)=>`<i class="edge" style="--z:-${k+1}px"></i>`).join(''));
+function face(i){ const p=P[i], c=CARD[p.id]; return `<div class="f-top">${pill(p.s)}<small>${p.ph.toUpperCase()}</small></div><div class="f-art">${c.art}</div><div><div class="f-name">${c.name}</div><div class="f-sub">${c.sub}</div></div><div class="f-foot"><span>${c.foot[0]}</span><span>${c.foot[1]}</span></div>`; }
+function paint(el,i){ el.innerHTML=face(i); el.style.setProperty('--fc',CARD[P[i].id].fc); }
+$('cdots').innerHTML=P.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('');
+let curI=0, flips=0, tp=.5; paint(fA,0);
+function tilt(){ const ry=flips*180-14+(reduce?0:(tp-.5)*24), rx=6-(reduce?0:(tp-.5)*8);
+  card.style.setProperty('--ry',ry.toFixed(2)+'deg'); card.style.setProperty('--rx',rx.toFixed(2)+'deg');
+  card.querySelectorAll('.face').forEach(f=>f.style.setProperty('--gl',(140-tp*170).toFixed(1)+'%')); }
+function show(i){ if(i===curI) return; curI=i; paint(flips%2===0?fB:fA,i); flips++; $('cdots').querySelectorAll('i').forEach((d,k)=>d.classList.toggle('on',k===i)); }
+
+/* ---------- scroll: progress bar, timeline fill, active phase, card turn ---------- */
+const items=[...document.querySelectorAll('.item')], tl=$('tl'), root=document.documentElement, navs=[...document.querySelectorAll('.hnav a')];
+function onScroll(){
+  const max=root.scrollHeight-innerHeight; root.style.setProperty('--sp',(max>0?scrollY/max*100:0).toFixed(2)+'%');
+  const r=tl.getBoundingClientRect(), mid=innerHeight*.5;
+  tl.style.setProperty('--tp',Math.max(0,Math.min(100,(mid-r.top)/r.height*100)).toFixed(2)+'%');
+  let act=0; items.forEach((it,i)=>{ const b=it.getBoundingClientRect(); if(b.top<mid) act=i; it.classList.toggle('on',b.top<innerHeight*.75); });
+  const a=items[act].getBoundingClientRect(); tp=Math.max(0,Math.min(1,(mid-a.top)/Math.max(1,a.height)));
+  show(act); tilt();
+  const sb=$('shipped').getBoundingClientRect().top, vb=$('vote').getBoundingClientRect().top, fb=$('faq').getBoundingClientRect().top;
+  const id=fb<mid?'faq':vb<mid?'vote':sb<mid?'shipped':r.top>mid?'overview':items[act].id;
+  if(window.__vlSync) window.__vlSync(id); navs.forEach(n=>n.toggleAttribute('aria-current',n.getAttribute('href')==='#'+id));
+}
+addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll); onScroll();
+
+
+/* ---------- shipped log ---------- */
+const SHIP=[
+  ['Nov 2026','Porsche 911 in 3D','The first project car you can turn around in 3D, right on the main page.',['index.html#showroom','See it']],
+  ['Oct 2026','Share market preview','A working preview of the market: order book, price chart and the full rules.',['marketplace.html','Open it']],
+  ['Oct 2026','Monthly Yield','Rental income now pays out every month, split by share.',null],
+  ['Sep 2026','Profiles','Every card you own, your profit and your achievements on one page.',['profile.html','Your profile']],
+  ['Aug 2026','Projects and votes','Every car is a project, and your share is your voting power.',null],
+  ['Jun 2026','Three Vaults','Street, Track and Collector, each with its own pool of cars.',['index.html#pools','The Vaults']]];
+$('ship').innerHTML=SHIP.map(([d,t,x,l],i)=>`<article class="sh rv" style="transition-delay:${(i%3)*.06}s"><div class="d"><span><i class="mk live"></i>Shipped</span>${d}</div><b>${t}</b><p>${x}</p>${l?`<a href="${l[0]}">${l[1]} →</a>`:''}</article>`).join('');
+
+/* ---------- vote: three votes, kept in this browser ---------- */
+const VKEY='vaultline-roadmap-votes';
+const VOPT=[['racing','Race Manager','Phase 3 · run your car like a team','plan',412],['upgrade','Upgrade Spin','Phase 4 · trade up with odds up front','plan',287],['classic','Classic and EV Vaults','New pools for classics and electric cars','explore',356],['track','Track days','Drive the car you co-own','explore',398],['seasons','Seasons and leagues','Race results add up to a title','explore',164],['app','Mobile app','Votes, payouts and race alerts on your phone','explore',241]];
+let mine=[]; try{ mine=JSON.parse(localStorage.getItem(VKEY)||'[]').filter(x=>VOPT.some(o=>o[0]===x)).slice(0,3); }catch(e){}
+const vsave=()=>{ try{ localStorage.setItem(VKEY,JSON.stringify(mine)); }catch(e){} };
+function renderVotes(){
+  const rows=VOPT.map(o=>({id:o[0],n:o[1],d:o[2],s:o[3],c:o[4]+(mine.includes(o[0])?1:0)})).sort((a,b)=>b.c-a.c);
+  const max=Math.max(...rows.map(r=>r.c)), list=$('vlist');
+  const first=new Map([...list.children].map(el=>[el.dataset.id,el.getBoundingClientRect().top]));
+  list.innerHTML=rows.map((r,i)=>`<div class="vrow ${mine.includes(r.id)?'mine':''}" data-id="${r.id}" style="--c:${ST[r.s].c};--w:${(r.c/max*100).toFixed(1)}%"><span class="rk num">${i+1}</span><span><b>${r.n}</b><small>${r.d}</small></span><button type="button" class="vbtn num" data-v="${r.id}" aria-pressed="${mine.includes(r.id)}" ${!mine.includes(r.id)&&mine.length>=3?'disabled':''} aria-label="${mine.includes(r.id)?'Remove vote for':'Vote for'} ${r.n}">${svg('<path d="M12 19V5M5 12l7-7 7 7"/>')}${r.c.toLocaleString('en-US')}</button></div>`).join('');
+  if(!reduce) [...list.children].forEach(el=>{ const f=first.get(el.dataset.id); if(f===undefined) return; const d=f-el.getBoundingClientRect().top; if(!d) return; el.style.transition='none'; el.style.transform=`translateY(${d}px)`; requestAnimationFrame(()=>{ el.style.transition=''; el.style.transform=''; }); });
+  $('vleft').querySelectorAll('i').forEach((x,k)=>x.classList.toggle('on',k<mine.length));
+  $('vtxt').innerHTML=mine.length?`You voted for <b>${mine.map(id=>VOPT.find(o=>o[0]===id)[1]).join(', ')}</b>. ${3-mine.length?`${3-mine.length} vote${3-mine.length>1?'s':''} left.`:'That’s all three. Tap one again to move it.'}`:'You have <b>3 votes</b>. Tap the arrow next to anything you want sooner.';
+}
+$('vlist').addEventListener('click',e=>{ const b=e.target.closest('[data-v]'); if(!b||b.disabled) return; const id=b.dataset.v; mine=mine.includes(id)?mine.filter(x=>x!==id):mine.concat(id).slice(0,3); vsave(); renderVotes(); });
+renderVotes();
+
+
+/* ---------- mobile section nav ---------- */
+const MN=[['overview','Overview',null],...P.map(p=>[p.id,p.t.replace('.',''),p.s]),['shipped','Shipped','live'],['vote','Vote',null],['faq','FAQ',null]];
+$('mnav').innerHTML=MN.map(([id,n,s])=>`<a href="#${id}">${s?`<i class="mk ${s}"></i>`:''}${n}</a>`).join('');
+const mlinks=[...$('mnav').querySelectorAll('a')];
+let lastM='';
+function syncM(id){ if(id===lastM) return; lastM=id; mlinks.forEach(a=>{ const on=a.getAttribute('href')==='#'+id; a.toggleAttribute('aria-current',on); if(on&&$('mnav').scrollWidth>$('mnav').clientWidth) $('mnav').scrollTo({left:a.offsetLeft-24,behavior:reduce?'auto':'smooth'}); }); }
+
+window.__vlSync=syncM; onScroll();
+
+/* ---------- toast + share ---------- */
+let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),2200); }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-share]'); if(!b) return; const url=location.href.split('#')[0]+'#'+b.dataset.share;
+  const done=()=>toast('Link copied'); if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,()=>{ prompt('Copy this link',url); }); else prompt('Copy this link',url); });
+
+/* ---------- ideas (kept in this browser) ---------- */
+const IKEY='vaultline-roadmap-ideas'; let ideas=[]; try{ ideas=JSON.parse(localStorage.getItem(IKEY)||'[]'); }catch(e){}
+const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function renderIdeas(){ $('ideaList').innerHTML=ideas.length?`<h4 style="margin:6px 0 0;font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)">Sent from this browser</h4>`+ideas.slice(0,3).map(i=>`<div><span>${esc(i.t.length>90?i.t.slice(0,90)+'…':i.t)}</span><small>${esc(i.c)}</small></div>`).join(''):''; }
+$('ideaCat').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; $('ideaCat').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b)); });
+$('ideaT').addEventListener('input',e=>{ $('ideaN').textContent=e.target.value.length+' / 400'; $('ideaE').textContent=''; });
+$('ideaF').addEventListener('submit',e=>{ e.preventDefault(); const t=$('ideaT').value.trim(); if(t.length<12){ $('ideaE').textContent='Tell us a little more, at least a sentence.'; $('ideaT').focus(); return; }
+  ideas.unshift({t,c:$('ideaCat').querySelector('[aria-pressed="true"]').textContent,at:Date.now()}); try{ localStorage.setItem(IKEY,JSON.stringify(ideas.slice(0,20))); }catch(err){}
+  $('ideaT').value=''; $('ideaN').textContent='0 / 400'; renderIdeas(); toast('Idea sent. Thank you.'); });
+renderIdeas();
+
+/* ---------- updates ---------- */
+$('subF').addEventListener('submit',e=>{ e.preventDefault(); const v=$('subE').value.trim(); if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){ $('subErr').textContent='Enter a full email address, like name@email.com.'; $('subE').focus(); return; }
+  const topics=[...$('subF').querySelectorAll('input[type=checkbox]:checked')].map(x=>x.parentNode.textContent.trim());
+  if(!topics.length){ $('subErr').textContent='Pick at least one phase to follow.'; return; }
+  $('subF').innerHTML=`<div class="sent"><span class="ok">${svg('<path d="M5 12l4 4 10-10"/>')}</span><h3>You're on the list.</h3><p style="color:var(--muted)">We'll write to ${esc(v)} when ${esc(topics.join(', '))} ${topics.length>1?'move':'moves'} forward. This preview doesn't send real emails.</p></div>`; });
+$('subE').addEventListener('input',()=>$('subErr').textContent='');
+
+/* ---------- mega slogan (same as the main page) ---------- */
+(function(){ const lines=['Built in the open.','One phase at a time.'];
+  $('megaTxt').innerHTML=lines.map((l,i)=>`<span class="ln ln${i+1}" aria-hidden="true">${[...l].map(ch=>ch===' '?'<span class="sp"></span>':`<span class="ch">${ch}</span>`).join('')}</span>`).join('');
+  const chars=[...document.querySelectorAll('#megaTxt .ch')]; if(reduce||!chars.length) return;
+  let px=-9999,py=-9999,lastMove=0,visible=false,raf=0,centers=[]; const vals=chars.map(()=>0), sec=$('mega');
+  const measure=()=>{ centers=chars.map(c=>{ const r=c.getBoundingClientRect(); return [r.left+r.width/2,r.top+r.height/2+scrollY]; }); };
+  new IntersectionObserver(es=>{ visible=es[0].isIntersecting; if(visible){ measure(); if(!raf) raf=requestAnimationFrame(loop); } },{threshold:0}).observe(sec);
+  addEventListener('resize',()=>{ if(visible) measure(); });
+  sec.addEventListener('pointermove',e=>{ px=e.clientX; py=e.clientY+scrollY; lastMove=performance.now(); },{passive:true});
+  sec.addEventListener('pointerleave',()=>{ px=py=-9999; });
+  function loop(now){ raf=0; if(!visible) return; const idle=now-lastMove>1800, Rr=Math.max(innerWidth*.16,140);
+    for(let i=0;i<chars.length;i++){ let t; if(idle) t=Math.max(0,Math.sin(now/900-i*.38))**6; else { const c=centers[i]; const d=Math.hypot(c[0]-px,c[1]-py); t=Math.max(0,1-d/Rr); t=t*t*(3-2*t); }
+      const v=vals[i]+(t-vals[i])*.22; if(Math.abs(v-vals[i])>.003){ vals[i]=v; chars[i].style.setProperty('--t',v.toFixed(3)); } }
+    raf=requestAnimationFrame(loop); } })();
+
+/* ---------- reveals, smooth scroll ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -10% 0px'});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+document.addEventListener('click',e=>{ const a=e.target.closest('a[href^="#"]'); if(!a) return; const id=a.getAttribute('href').slice(1), el=document.getElementById(id); if(!el) return; e.preventDefault();
+  scrollTo({top:el.getBoundingClientRect().top+scrollY-88,behavior:reduce?'auto':'smooth'}); history.replaceState(null,'','#'+id); });
+})();
+</script>
+</body>
+</html>
