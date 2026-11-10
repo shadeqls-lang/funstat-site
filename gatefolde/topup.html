@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gatefold Top Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="gk.css">
+<style>
+/* Layout: the old Gatefold checkout, re-cut for topping up rip credit. One working column (amount, then payment, then done) with the summary pinned beside it. */
+:root{
+  color-scheme:light;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#FFFFFF;
+  --ice:#F2F6FD;
+  --ice-2:#E3EDFC;
+  --ink:#0A1630;
+  --ink-2:#44526E;
+  --dim:#7D8AA4;
+  --line:rgba(10,22,48,.10);
+  --line-2:rgba(10,22,48,.18);
+  --blue:#1F5EFF;
+  --blue-2:#4F9DFF;
+  --sky:#B9DAFF;
+  --navy:#06102A;
+  --ok:#12A150;
+  --warn:#E5484D;
+  --f-sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --f-mono:"Geist Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{overflow-x:clip}
+body{margin:0;overflow-x:clip;background:var(--ice);color:var(--ink);font-family:var(--f-sans);font-size:15.5px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-.006em}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:#fff}
+img{display:block;max-width:100%}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit;letter-spacing:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.04em;line-height:1;text-wrap:balance}
+h1 em,h2 em{font-family:var(--f-serif);font-style:italic;font-weight:400;letter-spacing:-.02em}
+p{margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;padding:0 24px;border-radius:999px;border:1px solid transparent;font-weight:500;font-size:15.5px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:transform .3s var(--ease),background .2s,border-color .2s,opacity .2s}
+.btn:active{transform:scale(.97)}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 10px 24px -12px rgba(31,94,255,.8)}
+.btn-blue:hover{background:#1450EB}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-line{background:#fff;border-color:var(--line-2)}
+.btn-line:hover{border-color:var(--ink)}
+.btn-sm{height:38px;padding:0 16px;font-size:14px}
+.btn[disabled]{opacity:.38;cursor:not-allowed;box-shadow:none}
+.btn .arr{transition:transform .3s var(--ease)}
+.btn:not([disabled]):hover .arr{transform:translateX(4px)}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Header */
+header.co-h{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(255,255,255,.9);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:0 1px 0 var(--line)}
+header.co-h .wrap{display:flex;align-items:center;gap:24px;height:66px}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:600;font-size:20px;letter-spacing:-.04em}
+.logo svg{width:24px;height:17px}
+.steps{display:flex;align-items:center;gap:4px;margin:0 auto;list-style:none;padding:0}
+.steps li{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--dim);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.steps li b{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;border:1.5px solid currentColor}
+.steps li.on{color:var(--ink);background:var(--ice)}
+.steps li.on b{background:var(--ink);border-color:var(--ink);color:#fff}
+.steps li.done{color:var(--blue)}
+.steps li.done b{background:var(--blue);border-color:var(--blue);color:#fff}
+.steps li.sep{width:18px;height:1px;padding:0;border-radius:0;background:var(--line-2)}
+.timer{display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:var(--ice);font-size:13.5px;color:var(--ink-2);white-space:nowrap}
+.timer b{color:var(--ink);font-weight:600}
+.timer.low{background:rgba(229,72,77,.1);color:var(--warn)}
+.timer.low b{color:var(--warn)}
+.timer svg{width:15px;height:15px}
+.back-link{font-size:14px;color:var(--ink-2);text-decoration:none;white-space:nowrap}
+.back-link:hover{color:var(--ink)}
+@media (max-width:900px){.steps li span{display:none}.steps li{padding:6px}.steps li.sep{width:10px;padding:0}}
+@media (max-width:560px){.back-link{display:none}header.co-h .wrap{gap:10px}.steps{margin:0 0 0 auto}.timer .tl{display:none}.timer{padding:0 12px}.nav-row .btn{padding:0 16px;font-size:15px}.nav-row .btn-blue{flex:1;min-width:0}.panel{padding:22px 18px}}
+
+/* Event banner */
+.ev-banner{position:relative;border-radius:26px;overflow:hidden;color:#fff;background:var(--navy);min-height:230px;display:flex;align-items:flex-end;isolation:isolate}
+.ev-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;object-position:50% 40%}
+.ev-banner::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(6,16,42,.92) 0%,rgba(6,16,42,.55) 55%,rgba(6,16,42,.2) 100%),linear-gradient(0deg,rgba(6,16,42,.6),transparent 60%)}
+.ev-banner.plain{background:linear-gradient(140deg,#2B6BFF,#0B2A8F)}
+.ev-in{padding:28px;display:flex;flex-direction:column;gap:12px;width:100%}
+.ev-in h1{font-size:clamp(34px,4.6vw,58px);letter-spacing:-.05em}
+.ev-in h1 em{color:var(--sky)}
+.ev-chips{display:flex;gap:8px;flex-wrap:wrap}
+.ev-chips span{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);font-size:13.5px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ev-chips svg{width:14px;height:14px;opacity:.85}
+
+/* Grid */
+.co{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;align-items:start;padding-block:22px 80px}
+@media (max-width:1040px){.co{grid-template-columns:minmax(0,1fr);padding-bottom:140px}}
+.co.fin{grid-template-columns:minmax(0,1fr);max-width:880px}
+.co-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.panel{background:#fff;border-radius:24px;box-shadow:0 0 0 1px var(--line),0 24px 50px -40px rgba(6,16,42,.35);padding:26px;min-width:0}
+.panel-h{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.panel-h h2{font-size:clamp(28px,3vw,38px)}
+.panel-h h2 em{color:var(--blue)}
+.panel-h p{color:var(--ink-2);font-size:14.5px;max-width:34em}
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.nav-row .note{font-size:13.5px;color:var(--ink-2)}
+
+/* Step 3 */
+.fs{border:0;padding:0;margin:0 0 26px;min-width:0}
+.fs legend{font-size:18px;font-weight:600;letter-spacing:-.025em;margin-bottom:14px;padding:0}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fgrid .full{grid-column:1/-1}
+@media (max-width:620px){.fgrid{grid-template-columns:minmax(0,1fr)}}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:13px;font-weight:500;color:var(--ink-2)}
+.field input{height:50px;border-radius:14px;border:1.5px solid var(--line-2);background:#fff;padding:0 16px;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;min-width:0}
+.field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(31,94,255,.12)}
+.field.bad input{border-color:var(--warn)}
+.field .err{font-size:12.5px;color:var(--warn);min-height:0}
+.field .err:empty{display:none}
+.addons{display:grid;gap:10px}
+.addon{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px 18px;border-radius:16px;border:1.5px solid var(--line);cursor:pointer;transition:border-color .2s,background .2s}
+.addon:has(input:checked){border-color:var(--blue);background:rgba(31,94,255,.04)}
+.addon input{width:20px;height:20px;accent-color:var(--blue);margin:0}
+.addon b{display:block;font-weight:600;font-size:15px}
+.addon span{display:block;font-size:13.5px;color:var(--ink-2)}
+.addon .ap{font-weight:600;white-space:nowrap}
+.express{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.express button{height:50px;border-radius:14px;border:0;background:#000;color:#fff;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.express button.alt{background:#fff;color:var(--ink);box-shadow:0 0 0 1.5px var(--line-2)}
+.or{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--dim);margin:6px 0 16px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.paywrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
+@media (max-width:820px){.paywrap{grid-template-columns:minmax(0,1fr)}.card3d{order:-1;margin:0 auto}}
+.card3d{width:100%;max-width:300px;aspect-ratio:1.586;perspective:1000px}
+.card-in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s var(--ease)}
+.card3d.flip .card-in{transform:rotateY(180deg)}
+.cf{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:18px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
+  background:radial-gradient(120% 90% at 0% 0%,#4F9DFF 0%,#1F5EFF 35%,#0B2A8F 75%,#06102A 100%);box-shadow:0 24px 40px -20px rgba(6,16,42,.6)}
+.cf::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.18) 50%,transparent 65%)}
+.cf .top{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;letter-spacing:-.02em}
+.chip-ic{width:38px;height:28px;border-radius:6px;background:linear-gradient(135deg,#E9EEF8,#9DB0D1);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.cf .no{font-family:var(--f-mono);font-size:17px;letter-spacing:.08em}
+.cf .bot{display:flex;justify-content:space-between;align-items:end;font-size:12px;gap:10px}
+.cf .bot span{display:block;font-size:9.5px;opacity:.7;letter-spacing:.08em;text-transform:uppercase}
+.cf .bot b{font-weight:500;font-size:13px;text-transform:uppercase;letter-spacing:.04em;display:block;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cf.back{transform:rotateY(180deg);padding:0;justify-content:flex-start}
+.cf.back .strip{height:40px;background:#050A18;margin-top:22px}
+.cf.back .sig{margin:16px 18px 0;height:34px;border-radius:6px;background:#E9EEF8;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font-family:var(--f-mono);color:var(--ink);font-size:14px}
+.cf.back small{margin:12px 18px;font-size:10px;opacity:.7}
+.demo{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:rgba(31,94,255,.07);font-size:13.5px;color:var(--ink-2);margin-bottom:16px}
+.demo svg{width:18px;height:18px;flex-shrink:0;color:var(--blue);margin-top:1px}
+.demo button{background:none;border:0;color:var(--blue);text-decoration:underline;cursor:pointer;padding:0;font-size:13.5px}
+.terms{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink-2);margin-top:6px;cursor:pointer}
+.terms input{width:18px;height:18px;accent-color:var(--blue);margin:2px 0 0;flex-shrink:0}
+
+/* Summary */
+.co-sum{position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);display:flex;flex-direction:column;gap:12px}
+.sum{background:#fff;border-radius:24px;box-shadow:0 0 0 1px var(--line),0 24px 50px -40px rgba(6,16,42,.35);overflow:hidden}
+.sum-ev{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;padding:18px;border-bottom:1px solid var(--line);align-items:center}
+.sum-ev .th{width:72px;height:72px;border-radius:14px;overflow:hidden;background:linear-gradient(140deg,#2B6BFF,#0B2A8F)}
+.sum-ev .th img{width:100%;height:100%;object-fit:cover}
+.sum-ev b{display:block;font-size:16.5px;letter-spacing:-.025em;line-height:1.2}
+.sum-ev span{display:block;font-size:13px;color:var(--ink-2);margin-top:3px}
+.sum-body{padding:18px;display:grid;gap:10px;font-size:14.5px}
+.sum-row{display:flex;justify-content:space-between;gap:12px}
+.sum-row span{color:var(--ink-2);min-width:0}
+.sum-row b{font-weight:500;white-space:nowrap}
+.sum-row.sub span,.sum-row.sub b{font-size:13px;color:var(--dim);font-weight:400}
+.sum-empty{color:var(--ink-2);font-size:14px;padding:4px 0}
+.sum-tot{display:flex;justify-content:space-between;align-items:baseline;padding:16px 18px;border-top:1px dashed var(--line-2);font-size:15px}
+.sum-tot b{font-size:26px;font-weight:600;letter-spacing:-.04em}
+.promo{display:flex;gap:8px;padding:0 18px 18px}
+.promo input{flex:1;min-width:0;height:42px;border-radius:12px;border:1.5px solid var(--line-2);padding:0 14px;outline:none;font-size:14px}
+.promo input:focus{border-color:var(--blue)}
+.promo-msg{padding:0 18px 14px;font-size:13px;margin-top:-8px}
+.promo-msg.ok{color:var(--ok)}.promo-msg.bad{color:var(--warn)}
+.assure{display:grid;gap:10px;padding:16px 18px;border-radius:20px;background:#fff;box-shadow:0 0 0 1px var(--line);font-size:13.5px;color:var(--ink-2)}
+.assure div{display:flex;gap:10px;align-items:flex-start}
+.assure svg{width:17px;height:17px;flex-shrink:0;color:var(--blue);margin-top:1px}
+/* Confirmation */
+.done{text-align:center;padding:30px 10px 10px}
+.done .ok-ic{width:64px;height:64px;border-radius:50%;background:rgba(18,161,80,.12);color:var(--ok);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.done h2{font-size:clamp(40px,5vw,68px);letter-spacing:-.055em}
+.done h2 em{color:var(--blue)}
+.done p{color:var(--ink-2);margin:12px auto 0;max-width:34em}
+.order{display:inline-flex;gap:10px;align-items:center;margin-top:16px;font-family:var(--f-mono);font-size:13px;background:var(--ice);padding:8px 14px;border-radius:999px}
+.passes{display:grid;gap:14px;margin-top:28px;text-align:left}
+.tk{display:grid;grid-template-columns:minmax(0,1fr) 180px;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px var(--line),0 24px 40px -30px rgba(6,16,42,.5);position:relative;animation:tkIn .8s var(--ease) both}
+@keyframes tkIn{from{transform:translateY(24px) rotateX(18deg);opacity:0}}
+.tk::before,.tk::after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;background:var(--ice);right:168px}
+.tk::before{top:-12px}.tk::after{bottom:-12px}
+.tk-main{padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-right:2px dashed var(--line-2)}
+.tk-main .t1{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2);gap:10px}
+.tk-main .t1 b{font-weight:600;color:var(--ink);letter-spacing:-.03em;font-size:14px}
+.tk-main h3{font-size:26px;letter-spacing:-.045em}
+.tk-main .t2{font-family:var(--f-serif);font-style:italic;color:var(--ink-2);font-size:17px;margin-top:2px}
+.tk-f{display:flex;gap:22px;flex-wrap:wrap}
+.tk-f span{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tk-f b{font-size:20px;font-weight:600;letter-spacing:-.03em}
+.tk-code{padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:linear-gradient(160deg,#F7FAFF,#E8F0FD)}
+.tk-code canvas{width:100%;height:84px}
+.tk-code small{font-family:var(--f-mono);font-size:10.5px;color:var(--ink-2)}
+@media (max-width:620px){.tk{grid-template-columns:minmax(0,1fr)}.tk-main{border-right:0;border-bottom:2px dashed var(--line-2)}.tk::before,.tk::after{display:none}}
+.done-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;box-shadow:0 20px 40px -10px rgba(6,16,42,.5);max-width:calc(100vw - 32px)}
+@media (max-width:1040px){.toast{bottom:calc(100px + env(safe-area-inset-bottom,0px))}}
+.fade-in{animation:fadeIn .5s var(--ease)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){.fade-in,.tk{animation:none}.card-in{transition:none}}
+/* top-up specific */
+.co{padding-top:22px}
+.bal-pill{display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:var(--ice);font-size:13.5px;color:var(--ink-2);white-space:nowrap}
+.bal-pill b{color:var(--ink);font-weight:600}
+.tu-banner{position:relative;border-radius:26px;overflow:hidden;color:#fff;background:radial-gradient(70% 120% at 85% 10%,#4F9DFF 0%,#1F5EFF 35%,#0B2A8F 70%,#06102A 100%);padding:28px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;isolation:isolate}
+.tu-banner::before{content:"";position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(115deg,rgba(255,255,255,.05) 0 2px,transparent 2px 18px)}
+.tu-banner h1{font-size:clamp(34px,4.6vw,58px);letter-spacing:-.05em}
+.tu-banner h1 em{color:var(--sky)}
+.tu-banner p{color:rgba(255,255,255,.75);margin-top:10px;max-width:34em}
+.tu-now{text-align:right}
+.tu-now span{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.tu-now b{font-size:40px;font-weight:600;letter-spacing:-.05em;line-height:1}
+@media (max-width:640px){.tu-banner{grid-template-columns:minmax(0,1fr);padding:22px}.tu-now{text-align:left}}
+.amts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.amts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.amt{position:relative;border-radius:18px;border:1.5px solid var(--line);background:#fff;padding:18px 16px 16px;cursor:pointer;text-align:left;display:grid;gap:4px;transition:border-color .2s,box-shadow .25s,transform .35s var(--ease)}
+.amt:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.amt[aria-pressed="true"]{border-color:var(--blue);box-shadow:0 0 0 4px rgba(31,94,255,.12)}
+.amt b{font-size:30px;font-weight:600;letter-spacing:-.045em;line-height:1}
+.amt span{font-size:13px;color:var(--ink-2)}
+.amt .bonus{position:absolute;right:12px;top:12px;height:22px;padding:0 8px;border-radius:999px;background:rgba(31,94,255,.1);color:var(--blue);font-size:11.5px;font-weight:600;display:flex;align-items:center}
+.amt .pop{position:absolute;left:16px;top:-11px;height:22px;padding:0 9px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center}
+.custom{display:flex;align-items:center;gap:12px;margin-top:14px;padding:14px 16px;border-radius:16px;background:var(--ice)}
+.custom label{font-size:14px;color:var(--ink-2);white-space:nowrap}
+.custom .in{position:relative;flex:1;max-width:220px}
+.custom .in span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-2);font-weight:500}
+.custom input{width:100%;height:46px;border-radius:12px;border:1.5px solid var(--line-2);background:#fff;padding:0 14px 0 28px;font-size:16px;outline:none}
+.custom input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(31,94,255,.12)}
+.custom small{font-size:12.5px;color:var(--dim)}
+@media (max-width:560px){.custom{flex-wrap:wrap}.custom .in{max-width:none;flex-basis:100%}}
+.rips{margin-top:18px;display:grid;gap:8px}
+.rips h3{font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--ink-2)}
+.rip-row{display:flex;gap:8px;flex-wrap:wrap}
+.rip-row span{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:#fff;box-shadow:0 0 0 1px var(--line);font-size:13px}
+.rip-row b{font-weight:600}
+.express button{gap:8px}
+.lim{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink-2);padding:12px 14px;border-radius:14px;background:var(--ice);margin-top:14px}
+.lim svg{width:17px;height:17px;flex-shrink:0;color:var(--blue);margin-top:1px}
+.count-up{font-size:clamp(56px,9vw,104px);font-weight:600;letter-spacing:-.06em;line-height:.9;color:var(--blue);margin-top:14px}
+.newbal{display:inline-flex;gap:10px;align-items:center;margin-top:16px;font-size:15px;background:var(--ice);padding:10px 16px;border-radius:999px}
+.newbal b{font-weight:600}
+@media (max-width:1040px){.co-sum{position:static}}
+@media (max-width:600px){.bal-pill{display:none}}
+.co.fin{margin-inline:auto}
+.sum-ev .th{display:flex;align-items:center;justify-content:center;background:linear-gradient(140deg,#0B1C45,#06102A)}
+.sum-ev .th .gk-foil{--fw:46px}
+.sum-ev .th .gk-foil-l{display:none}
+</style>
+</head>
+<body>
+<header class="co-h">
+  <div class="wrap">
+    <a href="index.html" class="logo" aria-label="Gatefold home"><svg viewBox="0 0 26 18" aria-hidden="true"><path fill="currentColor" d="M0 2a2 2 0 0 1 2-2h22a2 2 0 0 1 2 2v3.5a3.5 3.5 0 0 0 0 7V16a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-3.5a3.5 3.5 0 0 0 0-7z"/><path d="M17.5 3v12" stroke="#1F5EFF" stroke-width="1.6" stroke-dasharray="2 2"/></svg>gatefold</a>
+    <ol class="steps" id="steps" aria-label="Top-up steps">
+      <li data-s="1"><b>1</b><span>Amount</span></li><li class="sep" aria-hidden="true"></li>
+      <li data-s="2"><b>2</b><span>Payment</span></li><li class="sep" aria-hidden="true"></li>
+      <li data-s="3"><b>3</b><span>Done</span></li>
+    </ol>
+    <span class="bal-pill num">Balance <b id="balNow">$0.00</b></span>
+    <a class="back-link" id="backLink" href="drops.html">← Back to ripping</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="co">
+    <div class="co-main">
+      <div class="tu-banner"><div><h1>Top up your <em>credit.</em></h1><p>Credit is what you rip with. It never expires, and buybacks land straight back in it.</p></div><div class="tu-now num"><span>Current balance</span><b id="balBig">$0</b></div></div>
+
+      <section class="panel fade-in" id="s1" aria-labelledby="s1h">
+        <div class="panel-h"><h2 id="s1h">Choose an <em>amount</em></h2><p>Bigger top-ups come with bonus credit on top.</p></div>
+        <div class="amts" id="amts" role="group" aria-label="Amount"></div>
+        <div class="custom"><label for="cust">Or enter an amount</label><div class="in"><span>$</span><input id="cust" inputmode="numeric" placeholder="350" autocomplete="off"></div><small>$20 to $5,000</small></div>
+        <div class="rips" id="rips"></div>
+        <div class="nav-row"><span class="note" id="s1note"></span><button class="btn btn-blue" id="to2" type="button">Continue to payment <span class="arr">→</span></button></div>
+      </section>
+
+      <section class="panel fade-in" id="s2" aria-labelledby="s2h" hidden>
+        <div class="panel-h"><h2 id="s2h">Add <em>payment</em></h2><p>Your receipt goes to this email.</p></div>
+        <div class="demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg><span>Demo top-up. Nothing is charged and nothing you type leaves this page, so don't use a real card. <button type="button" id="fillDemo">Fill demo details</button></span></div>
+        <form id="payForm" novalidate>
+          <fieldset class="fs"><legend>Contact</legend>
+            <div class="fgrid">
+              <div class="field"><label for="fName">Full name</label><input id="fName" autocomplete="off" placeholder="Alex Morgan"><span class="err"></span></div>
+              <div class="field"><label for="fEmail">Email</label><input id="fEmail" type="email" autocomplete="off" placeholder="alex@email.com"><span class="err"></span></div>
+            </div>
+          </fieldset>
+          <fieldset class="fs"><legend>Payment</legend>
+            <div class="express"><button type="button" class="exp" data-w="Apple Pay"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.8-3-.8C6.9 7.3 5 8.6 5 11.6c0 1.9.7 3.9 1.6 5.2.8 1.1 1.5 2 2.5 2s1.4-.6 2.6-.6 1.5.6 2.6.6 1.7-1 2.4-2c.8-1.1 1-2.2 1.1-2.2-.1 0-2.4-.9-2.4-3.5zM14.2 5.6c.6-.7 1-1.7.9-2.6-.8 0-1.8.5-2.4 1.2-.5.6-1 1.6-.9 2.5.9.1 1.8-.4 2.4-1.1z"/></svg>Pay</button><button type="button" class="exp alt" data-w="Google Pay"><b style="font-weight:600">G</b> Pay</button></div>
+            <div class="or">or pay by card</div>
+            <div class="paywrap">
+              <div class="fgrid">
+                <div class="field full"><label for="cNum">Card number</label><input id="cNum" inputmode="numeric" autocomplete="off" placeholder="1234 1234 1234 1234" maxlength="23"><span class="err"></span></div>
+                <div class="field"><label for="cExp">Expiry</label><input id="cExp" inputmode="numeric" autocomplete="off" placeholder="MM / YY" maxlength="7"><span class="err"></span></div>
+                <div class="field"><label for="cCvc">Security code</label><input id="cCvc" inputmode="numeric" autocomplete="off" placeholder="3 digits" maxlength="4"><span class="err"></span></div>
+                <div class="field full"><label for="cName">Name on card</label><input id="cName" autocomplete="off" placeholder="As printed on the card"><span class="err"></span></div>
+              </div>
+              <div class="card3d" id="card3d" aria-hidden="true"><div class="card-in">
+                <div class="cf front"><div class="top"><span>gatefold pay</span><span id="cBrand">Card</span></div><div class="chip-ic"></div><div class="no num" id="cNoV">•••• •••• •••• ••••</div><div class="bot"><div><span>Card holder</span><b id="cNameV">Your name</b></div><div><span>Expires</span><b id="cExpV">MM/YY</b></div></div></div>
+                <div class="cf back"><div class="strip"></div><div class="sig"><span id="cCvcV">•••</span></div><small>Security code is the 3 digits on the back.</small></div>
+              </div></div>
+            </div>
+          </fieldset>
+          <label class="terms" for="fTerms"><input type="checkbox" id="fTerms"><span>I'm 18 or older and agree to the credit terms. Credit can be used for rips and isn't refundable as cash.</span></label>
+          <div class="lim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/></svg><span>Your daily top-up limit is $5,000. You can lower it or pause top-ups any time from your profile.</span></div>
+          <div class="nav-row"><button class="btn btn-line" id="back1" type="button">← Back</button><button class="btn btn-blue" id="payBtn" type="submit">Add <span class="num" id="payAmt">$0</span></button></div>
+        </form>
+      </section>
+
+      <section class="panel fade-in" id="s3" aria-labelledby="s3h" hidden>
+        <div class="done">
+          <div class="ok-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <h2 id="s3h">Credit <em>added.</em></h2>
+          <div class="count-up num" id="countUp">+$0</div>
+          <div class="newbal num">New balance <b id="newBal">$0</b></div>
+          <p id="doneTxt">Receipt sent.</p>
+          <div class="order num" id="orderNo">Top-up GF-000000</div>
+          <div class="done-acts"><a class="btn btn-blue" id="goRip" href="drops.html">Back to ripping <span class="arr">→</span></a><button class="btn btn-line" id="again" type="button">Top up again</button></div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="co-sum" id="sumWrap" aria-label="Top-up summary">
+      <div class="sum">
+        <div class="sum-ev"><div class="th" id="sumTh"></div><div><b>Rip credit</b><span>Gatefold Drops · usable in every pool</span></div></div>
+        <div class="sum-body" id="sumBody"></div>
+        <div class="sum-tot"><span>You pay</span><b class="num" id="sumTot">$0.00</b></div>
+        <div class="promo"><input id="promo" placeholder="Promo code" aria-label="Promo code"><button class="btn btn-line btn-sm" id="promoBtn" type="button">Apply</button></div>
+        <div class="promo-msg" id="promoMsg" hidden></div>
+      </div>
+      <div class="assure">
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/></svg><span>Credit never expires and sits in your Gatefold account.</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Buybacks (90% within 7 days) are paid back into credit instantly.</span></div>
+      </div>
+    </aside>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="gk.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id), G=window.GK, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const m2=v=>'$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const m0=v=>'$'+Math.round(v).toLocaleString('en-US');
+let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,2800); }
+
+/* shared state with drops.html */
+const KEY='gf-drops-v3';
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'null')||{}; }catch(e){ return {}; } }
+function store(o){ try{ localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
+const curBal=()=>{ const o=load(); return typeof o.bal==='number'?o.bal:500; };
+const back=new URLSearchParams(location.search).get('back')||'';
+const backHref='drops.html'+(back?'#'+encodeURIComponent(back):'');
+$('backLink').href=backHref; $('goRip').href=backHref;
+
+const PRESETS=[{v:100,b:0},{v:250,b:10},{v:500,b:30,pop:'Most picked'},{v:1000,b:80}];
+const S={step:1,amt:500,promo:null};
+const bonusFor=v=>{ let b=0; PRESETS.forEach(p=>{ if(v>=p.v) b=p.b; }); return b; };
+const promoBonus=()=>S.promo?Math.round(S.amt*.05):0;
+const credit=()=>S.amt+bonusFor(S.amt)+promoBonus();
+
+function renderBal(){ const b=curBal(); $('balNow').textContent=m2(b); $('balBig').textContent=m0(b); }
+function renderAmts(){
+  $('amts').innerHTML=PRESETS.map(p=>`<button type="button" class="amt" data-v="${p.v}" aria-pressed="${S.amt===p.v}">${p.pop?`<span class="pop">${p.pop}</span>`:''}${p.b?`<span class="bonus num">+${m0(p.b)}</span>`:''}<b class="num">${m0(p.v)}</b><span>${p.b?`${m0(p.v+p.b)} of credit`:'No bonus'}</span></button>`).join('');
+  const pools=G.PACKS.slice().sort((a,b)=>a.price-b.price);
+  $('rips').innerHTML=`<h3>What ${m0(credit())} of credit covers</h3><div class="rip-row num">${pools.map(p=>`<span><b>${Math.floor(credit()/p.price)}×</b> ${esc(p.n)}</span>`).join('')}</div>`;
+  const ok=S.amt>=20&&S.amt<=5000; $('to2').disabled=!ok; $('s1note').textContent=ok?`You'll get ${m0(credit())} of credit.`:'Pick an amount between $20 and $5,000.';
+}
+$('amts').addEventListener('click',e=>{ const b=e.target.closest('.amt'); if(!b) return; S.amt=+b.dataset.v; $('cust').value=''; renderAmts(); renderSummary(); });
+$('cust').addEventListener('input',e=>{ const d=e.target.value.replace(/\D/g,'').slice(0,5); e.target.value=d; if(d){ S.amt=+d; } else S.amt=500; renderAmts(); renderSummary(); });
+
+function renderSteps(){ document.querySelectorAll('#steps li[data-s]').forEach(li=>{ const n=+li.dataset.s; li.classList.toggle('on',n===S.step); li.classList.toggle('done',n<S.step); }); }
+function renderSummary(){
+  const b=bonusFor(S.amt), pb=promoBonus();
+  $('sumTh').innerHTML=G.foil(G.pack('ufc'));
+  $('sumBody').innerHTML=`<div class="sum-row"><span>Credit</span><b class="num">${m2(S.amt)}</b></div>${b?`<div class="sum-row" style="color:var(--blue)"><span>Bonus credit</span><b class="num">+${m2(b)}</b></div>`:''}${pb?`<div class="sum-row" style="color:var(--ok)"><span>${esc(S.promo)} · 5% extra</span><b class="num">+${m2(pb)}</b></div>`:''}<div class="sum-row sub"><span>Processing fee</span><b class="num">$0.00</b></div><div class="sum-row"><span>Balance after</span><b class="num">${m2(curBal()+credit())}</b></div>`;
+  $('sumTot').textContent=m2(S.amt); $('payAmt').textContent=m0(S.amt)+' credit';
+}
+$('promoBtn').addEventListener('click',()=>{ const v=$('promo').value.trim().toUpperCase(), m=$('promoMsg'); m.hidden=false;
+  if(['RIP','GATEFOLD','NIGHTSHIFT'].includes(v)){ S.promo=v; m.className='promo-msg ok'; m.textContent='Code applied. 5% extra credit.'; }
+  else { S.promo=null; m.className='promo-msg bad'; m.textContent=v?`We couldn't find "${v}". Try NIGHTSHIFT.`:'Enter a code first.'; }
+  renderSummary(); renderAmts(); });
+
+/* card form (same as checkout) */
+const digits=v=>v.replace(/\D/g,'');
+function luhn(n){ let s=0,alt=false; for(let i=n.length-1;i>=0;i--){ let d=+n[i]; if(alt){ d*=2; if(d>9) d-=9; } s+=d; alt=!alt; } return n.length>=13 && s%10===0; }
+const brand=n=>/^4/.test(n)?'Visa':/^(5[1-5]|2[2-7])/.test(n)?'Mastercard':/^3[47]/.test(n)?'Amex':'Card';
+$('cNum').addEventListener('input',e=>{ const d=digits(e.target.value).slice(0,19); e.target.value=d.replace(/(.{4})/g,'$1 ').trim(); $('cBrand').textContent=brand(d); const shown=(d+'•'.repeat(Math.max(0,16-d.length))).slice(0,Math.max(16,d.length)); $('cNoV').textContent=shown.replace(/(.{4})/g,'$1 ').trim(); clearErr(e.target); });
+$('cExp').addEventListener('input',e=>{ let d=digits(e.target.value).slice(0,4); if(d.length>=3) d=d.slice(0,2)+' / '+d.slice(2); else if(d.length===2 && !/\/$/.test(e.target.value)) d=d+' / '; e.target.value=d; $('cExpV').textContent=e.target.value.replace(/\s/g,'')||'MM/YY'; clearErr(e.target); });
+$('cCvc').addEventListener('input',e=>{ e.target.value=digits(e.target.value).slice(0,4); $('cCvcV').textContent=e.target.value||'•••'; clearErr(e.target); });
+$('cName').addEventListener('input',e=>{ $('cNameV').textContent=e.target.value||'Your name'; clearErr(e.target); });
+$('cCvc').addEventListener('focus',()=>$('card3d').classList.add('flip'));
+$('cCvc').addEventListener('blur',()=>$('card3d').classList.remove('flip'));
+['fName','fEmail'].forEach(id=>$(id).addEventListener('input',e=>clearErr(e.target)));
+function setErr(el,msg){ const f=el.closest('.field'); f.classList.add('bad'); f.querySelector('.err').textContent=msg; }
+function clearErr(el){ const f=el.closest('.field'); if(!f) return; f.classList.remove('bad'); f.querySelector('.err').textContent=''; }
+function validate(){
+  let ok=true, first=null; const bad=(el,m)=>{ setErr(el,m); ok=false; first=first||el; };
+  if($('fName').value.trim().length<2) bad($('fName'),'Enter your name.');
+  if(!/^\S+@\S+\.\S+$/.test($('fEmail').value.trim())) bad($('fEmail'),'Enter a full email address, like name@email.com.');
+  const n=digits($('cNum').value); if(!luhn(n)) bad($('cNum'),'This card number isn’t valid. Check the 16 digits.');
+  const [mm,yy]=$('cExp').value.split('/').map(x=>+digits(x)); const now=new Date(); const exp=new Date(2000+(yy||0),(mm||1),0);
+  if(!(mm>=1&&mm<=12)||!yy||exp<now) bad($('cExp'),'Use a future date in MM / YY.');
+  if(!/^\d{3,4}$/.test($('cCvc').value)) bad($('cCvc'),'Enter the 3 digits on the back.');
+  if($('cName').value.trim().length<2) bad($('cName'),'Enter the name as it appears on the card.');
+  if(!$('fTerms').checked){ ok=false; toast('Tick the box to confirm you’re 18+ and agree to the terms.'); }
+  if(first) first.focus();
+  return ok;
+}
+$('fillDemo').addEventListener('click',()=>{ const set=(id,v)=>{ $(id).value=v; $(id).dispatchEvent(new Event('input')); }; set('fName','Alex Morgan'); set('fEmail','alex@example.com'); set('cNum','4242424242424242'); set('cExp','1229'); set('cCvc','123'); set('cName','Alex Morgan'); $('fTerms').checked=true; toast('Demo details filled in'); });
+function pay(via){ const b=$('payBtn'); b.disabled=true; b.innerHTML=`<span class="spin"></span> ${via?`Confirming with ${via}`:'Confirming payment'}`;
+  setTimeout(()=>{ const add=credit(), o=load(); const before=typeof o.bal==='number'?o.bal:500; o.bal=Math.round((before+add)*100)/100; o.topups=(o.topups||[]).concat([{at:Date.now(),amt:S.amt,credit:add}]); store(o);
+    b.disabled=false; b.innerHTML='Add <span class="num" id="payAmt"></span>'; renderDone(add,o.bal); go(3); },reduce?200:1500); }
+$('payForm').addEventListener('submit',e=>{ e.preventDefault(); if(validate()) pay(); });
+document.querySelectorAll('.exp').forEach(x=>x.addEventListener('click',()=>{ if(!$('fTerms').checked){ toast('Tick the box to confirm you’re 18+ and agree to the terms.'); $('fTerms').focus(); return; } pay(x.dataset.w); }));
+
+function renderDone(add,nb){ $('orderNo').textContent='Top-up GF-'+Math.floor(100000+Math.random()*899999); $('newBal').textContent=m2(nb);
+  const em=$('fEmail').value.trim(); $('doneTxt').textContent=em?`A receipt is on its way to ${em}. Your credit is ready to use in every pool.`:'Your credit is ready to use in every pool.';
+  const el=$('countUp'); if(reduce){ el.textContent='+'+m0(add); return; } const t0=performance.now(), D=1100;
+  (function f(t){ const k=Math.min(1,(t-t0)/D), e=1-Math.pow(1-k,3); el.textContent='+'+m0(add*e); if(k<1) requestAnimationFrame(f); })(t0);
+  renderBal(); }
+function go(n){ S.step=n; ['s1','s2','s3'].forEach((id,i)=>$(id).hidden=(i+1)!==n); $('sumWrap').hidden=n===3; document.querySelector('.co').classList.toggle('fin',n===3); renderSteps(); renderSummary(); scrollTo({top:0,behavior:reduce?'auto':'smooth'}); }
+$('to2').addEventListener('click',()=>go(2));
+$('back1').addEventListener('click',()=>go(1));
+$('again').addEventListener('click',()=>{ $('payForm').reset(); ['cNoV','cNameV','cExpV','cCvcV'].forEach((id,i)=>$(id).textContent=['•••• •••• •••• ••••','Your name','MM/YY','•••'][i]); go(1); renderAmts(); });
+addEventListener('storage',e=>{ if(e.key===KEY) renderBal(); });
+
+renderBal(); renderAmts(); renderSummary(); renderSteps();
+})();
+</script>
+</body>
+</html>

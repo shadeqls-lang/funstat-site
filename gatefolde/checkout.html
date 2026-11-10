@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gatefold Checkout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+/* Layout: one working column (tickets, seats, pay) with the order summary pinned beside it. On phones the summary becomes a bar at the bottom. */
+:root{
+  color-scheme:light;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#FFFFFF;
+  --ice:#F2F6FD;
+  --ice-2:#E3EDFC;
+  --ink:#0A1630;
+  --ink-2:#44526E;
+  --dim:#7D8AA4;
+  --line:rgba(10,22,48,.10);
+  --line-2:rgba(10,22,48,.18);
+  --blue:#1F5EFF;
+  --blue-2:#4F9DFF;
+  --sky:#B9DAFF;
+  --navy:#06102A;
+  --ok:#12A150;
+  --warn:#E5484D;
+  --f-sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --f-mono:"Geist Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{overflow-x:clip}
+body{margin:0;overflow-x:clip;background:var(--ice);color:var(--ink);font-family:var(--f-sans);font-size:15.5px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-.006em}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:#fff}
+img{display:block;max-width:100%}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit;letter-spacing:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.04em;line-height:1;text-wrap:balance}
+h1 em,h2 em{font-family:var(--f-serif);font-style:italic;font-weight:400;letter-spacing:-.02em}
+p{margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;padding:0 24px;border-radius:999px;border:1px solid transparent;font-weight:500;font-size:15.5px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:transform .3s var(--ease),background .2s,border-color .2s,opacity .2s}
+.btn:active{transform:scale(.97)}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 10px 24px -12px rgba(31,94,255,.8)}
+.btn-blue:hover{background:#1450EB}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-line{background:#fff;border-color:var(--line-2)}
+.btn-line:hover{border-color:var(--ink)}
+.btn-sm{height:38px;padding:0 16px;font-size:14px}
+.btn[disabled]{opacity:.38;cursor:not-allowed;box-shadow:none}
+.btn .arr{transition:transform .3s var(--ease)}
+.btn:not([disabled]):hover .arr{transform:translateX(4px)}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Header */
+header.co-h{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(255,255,255,.9);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:0 1px 0 var(--line)}
+header.co-h .wrap{display:flex;align-items:center;gap:24px;height:66px}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:600;font-size:20px;letter-spacing:-.04em}
+.logo svg{width:24px;height:17px}
+.steps{display:flex;align-items:center;gap:4px;margin:0 auto;list-style:none;padding:0}
+.steps li{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--dim);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.steps li b{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;border:1.5px solid currentColor}
+.steps li.on{color:var(--ink);background:var(--ice)}
+.steps li.on b{background:var(--ink);border-color:var(--ink);color:#fff}
+.steps li.done{color:var(--blue)}
+.steps li.done b{background:var(--blue);border-color:var(--blue);color:#fff}
+.steps li.skip{text-decoration:line-through;opacity:.6}
+.steps li.sep{width:18px;height:1px;padding:0;border-radius:0;background:var(--line-2)}
+.timer{display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:var(--ice);font-size:13.5px;color:var(--ink-2);white-space:nowrap}
+.timer b{color:var(--ink);font-weight:600}
+.timer.low{background:rgba(229,72,77,.1);color:var(--warn)}
+.timer.low b{color:var(--warn)}
+.timer svg{width:15px;height:15px}
+.back-link{font-size:14px;color:var(--ink-2);text-decoration:none;white-space:nowrap}
+.back-link:hover{color:var(--ink)}
+@media (max-width:900px){.steps li span{display:none}.steps li{padding:6px}.steps li.sep{width:10px;padding:0}}
+@media (max-width:560px){.back-link{display:none}header.co-h .wrap{gap:10px}.steps{margin:0 0 0 auto}.timer .tl{display:none}.timer{padding:0 12px}.nav-row .btn{padding:0 16px;font-size:15px}.nav-row .btn-blue{flex:1;min-width:0}.panel{padding:22px 18px}}
+
+/* Event banner */
+.ev-banner{position:relative;border-radius:26px;overflow:hidden;color:#fff;background:var(--navy);min-height:230px;display:flex;align-items:flex-end;isolation:isolate}
+.ev-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;object-position:50% 40%}
+.ev-banner::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(6,16,42,.92) 0%,rgba(6,16,42,.55) 55%,rgba(6,16,42,.2) 100%),linear-gradient(0deg,rgba(6,16,42,.6),transparent 60%)}
+.ev-banner.plain{background:linear-gradient(140deg,#2B6BFF,#0B2A8F)}
+.ev-in{padding:28px;display:flex;flex-direction:column;gap:12px;width:100%}
+.ev-in h1{font-size:clamp(34px,4.6vw,58px);letter-spacing:-.05em}
+.ev-in h1 em{color:var(--sky)}
+.ev-chips{display:flex;gap:8px;flex-wrap:wrap}
+.ev-chips span{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);font-size:13.5px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ev-chips svg{width:14px;height:14px;opacity:.85}
+
+/* Grid */
+.co{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;align-items:start;padding-block:22px 80px}
+@media (max-width:1040px){.co{grid-template-columns:minmax(0,1fr);padding-bottom:140px}}
+.co.fin{grid-template-columns:minmax(0,1fr);max-width:880px}
+.co-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.panel{background:#fff;border-radius:24px;box-shadow:0 0 0 1px var(--line),0 24px 50px -40px rgba(6,16,42,.35);padding:26px;min-width:0}
+.panel-h{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.panel-h h2{font-size:clamp(28px,3vw,38px)}
+.panel-h h2 em{color:var(--blue)}
+.panel-h p{color:var(--ink-2);font-size:14.5px;max-width:34em}
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.nav-row .note{font-size:13.5px;color:var(--ink-2)}
+
+/* Step 1 */
+.dates{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:22px;scrollbar-width:none}
+.dates::-webkit-scrollbar{display:none}
+.dt{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 16px;border-radius:16px;border:1.5px solid var(--line);background:#fff;cursor:pointer;min-width:132px;text-align:left;transition:border-color .2s,background .2s}
+.dt:hover{border-color:var(--line-2)}
+.dt span{font-family:var(--f-mono);font-size:11.5px;color:var(--blue)}
+.dt b{font-size:19px;font-weight:600;letter-spacing:-.03em}
+.dt small{font-size:12.5px;color:var(--ink-2)}
+.dt[aria-pressed="true"]{border-color:var(--blue);background:rgba(31,94,255,.05)}
+.dt .lt{color:var(--warn)}
+.types{display:grid;gap:10px}
+.tt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:18px 20px;border-radius:18px;border:1.5px solid var(--line);transition:border-color .2s,background .2s}
+.tt.on{border-color:var(--blue);background:rgba(31,94,255,.04)}
+.tt h3{font-size:18px;letter-spacing:-.025em;line-height:1.2;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tt p{font-size:14px;color:var(--ink-2);margin-top:4px}
+.tt .price{font-size:15px;font-weight:600;margin-top:8px}
+.tt .price small{font-weight:400;color:var(--ink-2);font-size:13px}
+.badge{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:500;background:var(--ice-2);color:var(--ink-2)}
+.badge.hot{background:rgba(229,72,77,.1);color:var(--warn)}
+.badge.blue{background:rgba(31,94,255,.1);color:var(--blue)}
+.qty{display:flex;align-items:center;gap:4px;border:1.5px solid var(--line);border-radius:999px;padding:4px}
+.qty button{width:36px;height:36px;border-radius:50%;border:0;background:var(--ice);cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.qty button:hover:not([disabled]){background:var(--ice-2)}
+.qty button[disabled]{opacity:.35;cursor:not-allowed}
+.qty output{min-width:26px;text-align:center;font-weight:600;font-size:16px}
+.perks{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-size:13.5px;color:var(--ink-2)}
+.perks span{display:flex;align-items:center;gap:7px}
+.perks svg{width:16px;height:16px;color:var(--blue)}
+
+/* Step 2 */
+.seat-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.pricef{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.pricef input{accent-color:var(--blue);width:150px}
+.mapbox{position:relative;border-radius:18px;background:var(--ice);overflow:hidden}
+#plan{width:100%;height:auto;display:block;touch-action:manipulation}
+#plan .sec{cursor:pointer;transition:opacity .25s}
+#plan .sec path{stroke:#fff;stroke-width:2.5;transition:filter .2s}
+#plan .sec text{font-family:var(--f-mono);font-size:11px;pointer-events:none;font-weight:500}
+#plan .sec.sold,#plan .sec.out{cursor:not-allowed}
+#plan .sec.sold path{fill:#DCE3EE!important}
+#plan .sec.sold text{fill:#A3AEC2!important}
+#plan .sec.out{opacity:.25}
+#plan .sec:not(.sold):not(.out):hover path{filter:brightness(1.12)}
+#plan .sec.sel path{stroke:var(--ink);stroke-width:3.5}
+#plan.chosen .sec:not(.sel){opacity:.4}
+#plan .seat{cursor:pointer;transition:r .15s}
+#plan .seat.taken{cursor:not-allowed;fill:#DCE3EE}
+#plan .seat.out{opacity:.22;cursor:not-allowed}
+#plan .seat.on{fill:var(--ink);stroke:#fff;stroke-width:1.5}
+#plan .seat:not(.taken):not(.out):hover{stroke:var(--ink);stroke-width:1.5}
+.zoom{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px}
+.zoom button{width:36px;height:36px;border-radius:10px;border:0;background:#fff;box-shadow:0 0 0 1px var(--line);cursor:pointer;font-size:18px}
+.tip{position:fixed;z-index:45;pointer-events:none;padding:9px 12px;border-radius:12px;background:var(--ink);color:#fff;font-size:13px;box-shadow:0 20px 40px -10px rgba(6,16,42,.5);opacity:0;transform:translate(-50%,calc(-100% - 12px));transition:opacity .12s;white-space:nowrap}
+.tip.on{opacity:1}
+.tip b{display:block;font-size:14px;font-weight:600}
+.secpane{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px;margin-top:16px;align-items:start}
+@media (max-width:760px){.secpane{grid-template-columns:minmax(0,1fr)}}
+.view{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:var(--navy)}
+.view img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:object-position .7s var(--ease),transform .7s var(--ease)}
+.view span{position:absolute;left:10px;bottom:10px;font-family:var(--f-mono);font-size:11px;color:#fff;background:rgba(6,16,42,.6);padding:4px 9px;border-radius:7px}
+.grid-h{display:flex;justify-content:space-between;align-items:center;font-size:14px;margin-bottom:10px}
+.grid-h b{font-weight:600}
+.grid-h span{color:var(--ink-2);font-size:13px}
+.seats{display:grid;grid-template-columns:20px repeat(14,minmax(0,1fr)) 20px;gap:4px;align-items:center}
+.seats .rl{font-family:var(--f-mono);font-size:10.5px;color:var(--dim);text-align:center}
+.st{aspect-ratio:1;border-radius:5px 5px 3px 3px;border:0;padding:0;cursor:pointer;background:var(--tc);opacity:.85;transition:transform .2s var(--ease),opacity .2s}
+.st:hover{transform:scale(1.18);opacity:1}
+.st.taken{background:#DCE3EE;opacity:1;cursor:not-allowed}
+.st.taken:hover{transform:none}
+.st[aria-pressed="true"]{background:var(--ink);opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
+.stage-l{grid-column:2/-2;text-align:center;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.2em;color:var(--dim);border-bottom:2px solid var(--line-2);padding-bottom:4px;margin-bottom:6px}
+.picked{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 6px 0 12px;border-radius:999px;background:var(--ice);font-size:13.5px}
+.chip button{width:24px;height:24px;border-radius:50%;border:0;background:#fff;cursor:pointer;font-size:13px;line-height:1}
+.hint{font-size:14px;color:var(--ink-2);padding:18px;text-align:center;border:1.5px dashed var(--line-2);border-radius:16px}
+.ga-note{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:16px;background:var(--ice)}
+.ga-note svg{width:22px;height:22px;flex-shrink:0;color:var(--blue);margin-top:2px}
+
+/* Step 3 */
+.fs{border:0;padding:0;margin:0 0 26px;min-width:0}
+.fs legend{font-size:18px;font-weight:600;letter-spacing:-.025em;margin-bottom:14px;padding:0}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fgrid .full{grid-column:1/-1}
+@media (max-width:620px){.fgrid{grid-template-columns:minmax(0,1fr)}}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:13px;font-weight:500;color:var(--ink-2)}
+.field input{height:50px;border-radius:14px;border:1.5px solid var(--line-2);background:#fff;padding:0 16px;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;min-width:0}
+.field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(31,94,255,.12)}
+.field.bad input{border-color:var(--warn)}
+.field .err{font-size:12.5px;color:var(--warn);min-height:0}
+.field .err:empty{display:none}
+.addons{display:grid;gap:10px}
+.addon{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px 18px;border-radius:16px;border:1.5px solid var(--line);cursor:pointer;transition:border-color .2s,background .2s}
+.addon:has(input:checked){border-color:var(--blue);background:rgba(31,94,255,.04)}
+.addon input{width:20px;height:20px;accent-color:var(--blue);margin:0}
+.addon b{display:block;font-weight:600;font-size:15px}
+.addon span{display:block;font-size:13.5px;color:var(--ink-2)}
+.addon .ap{font-weight:600;white-space:nowrap}
+.express{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.express button{height:50px;border-radius:14px;border:0;background:#000;color:#fff;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.express button.alt{background:#fff;color:var(--ink);box-shadow:0 0 0 1.5px var(--line-2)}
+.or{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--dim);margin:6px 0 16px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.paywrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
+@media (max-width:820px){.paywrap{grid-template-columns:minmax(0,1fr)}.card3d{order:-1;margin:0 auto}}
+.card3d{width:100%;max-width:300px;aspect-ratio:1.586;perspective:1000px}
+.card-in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s var(--ease)}
+.card3d.flip .card-in{transform:rotateY(180deg)}
+.cf{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:18px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
+  background:radial-gradient(120% 90% at 0% 0%,#4F9DFF 0%,#1F5EFF 35%,#0B2A8F 75%,#06102A 100%);box-shadow:0 24px 40px -20px rgba(6,16,42,.6)}
+.cf::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.18) 50%,transparent 65%)}
+.cf .top{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;letter-spacing:-.02em}
+.chip-ic{width:38px;height:28px;border-radius:6px;background:linear-gradient(135deg,#E9EEF8,#9DB0D1);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.cf .no{font-family:var(--f-mono);font-size:17px;letter-spacing:.08em}
+.cf .bot{display:flex;justify-content:space-between;align-items:end;font-size:12px;gap:10px}
+.cf .bot span{display:block;font-size:9.5px;opacity:.7;letter-spacing:.08em;text-transform:uppercase}
+.cf .bot b{font-weight:500;font-size:13px;text-transform:uppercase;letter-spacing:.04em;display:block;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cf.back{transform:rotateY(180deg);padding:0;justify-content:flex-start}
+.cf.back .strip{height:40px;background:#050A18;margin-top:22px}
+.cf.back .sig{margin:16px 18px 0;height:34px;border-radius:6px;background:#E9EEF8;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font-family:var(--f-mono);color:var(--ink);font-size:14px}
+.cf.back small{margin:12px 18px;font-size:10px;opacity:.7}
+.demo{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:rgba(31,94,255,.07);font-size:13.5px;color:var(--ink-2);margin-bottom:16px}
+.demo svg{width:18px;height:18px;flex-shrink:0;color:var(--blue);margin-top:1px}
+.demo button{background:none;border:0;color:var(--blue);text-decoration:underline;cursor:pointer;padding:0;font-size:13.5px}
+.terms{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink-2);margin-top:6px;cursor:pointer}
+.terms input{width:18px;height:18px;accent-color:var(--blue);margin:2px 0 0;flex-shrink:0}
+
+/* Summary */
+.co-sum{position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);display:flex;flex-direction:column;gap:12px}
+.sum{background:#fff;border-radius:24px;box-shadow:0 0 0 1px var(--line),0 24px 50px -40px rgba(6,16,42,.35);overflow:hidden}
+.sum-ev{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;padding:18px;border-bottom:1px solid var(--line);align-items:center}
+.sum-ev .th{width:72px;height:72px;border-radius:14px;overflow:hidden;background:linear-gradient(140deg,#2B6BFF,#0B2A8F)}
+.sum-ev .th img{width:100%;height:100%;object-fit:cover}
+.sum-ev b{display:block;font-size:16.5px;letter-spacing:-.025em;line-height:1.2}
+.sum-ev span{display:block;font-size:13px;color:var(--ink-2);margin-top:3px}
+.sum-body{padding:18px;display:grid;gap:10px;font-size:14.5px}
+.sum-row{display:flex;justify-content:space-between;gap:12px}
+.sum-row span{color:var(--ink-2);min-width:0}
+.sum-row b{font-weight:500;white-space:nowrap}
+.sum-row.sub span,.sum-row.sub b{font-size:13px;color:var(--dim);font-weight:400}
+.sum-empty{color:var(--ink-2);font-size:14px;padding:4px 0}
+.sum-tot{display:flex;justify-content:space-between;align-items:baseline;padding:16px 18px;border-top:1px dashed var(--line-2);font-size:15px}
+.sum-tot b{font-size:26px;font-weight:600;letter-spacing:-.04em}
+.promo{display:flex;gap:8px;padding:0 18px 18px}
+.promo input{flex:1;min-width:0;height:42px;border-radius:12px;border:1.5px solid var(--line-2);padding:0 14px;outline:none;font-size:14px}
+.promo input:focus{border-color:var(--blue)}
+.promo-msg{padding:0 18px 14px;font-size:13px;margin-top:-8px}
+.promo-msg.ok{color:var(--ok)}.promo-msg.bad{color:var(--warn)}
+.assure{display:grid;gap:10px;padding:16px 18px;border-radius:20px;background:#fff;box-shadow:0 0 0 1px var(--line);font-size:13.5px;color:var(--ink-2)}
+.assure div{display:flex;gap:10px;align-items:flex-start}
+.assure svg{width:17px;height:17px;flex-shrink:0;color:var(--blue);margin-top:1px}
+/* mobile bar */
+.mbar{display:none}
+@media (max-width:1040px){
+  .co-sum{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:45;padding:0 max(12px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));gap:0;pointer-events:none}
+  .co-sum > *{pointer-events:auto}
+  .co-sum .assure{display:none}
+  .sum{border-radius:22px;box-shadow:0 0 0 1px var(--line),0 -10px 40px -10px rgba(6,16,42,.35);max-height:calc(100dvh - 120px);overflow:auto}
+  .co-sum:not(.open) .sum-ev,.co-sum:not(.open) .sum-body,.co-sum:not(.open) .promo,.co-sum:not(.open) .promo-msg{display:none}
+  .mbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px 12px 18px;cursor:pointer;background:none;border:0;width:100%;text-align:left}
+  .mbar span{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+  .mbar #mGo{color:#fff;font-size:14px}
+  .mbar b{font-size:20px;font-weight:600;letter-spacing:-.03em;display:block}
+  .co-sum .sum-tot{display:none}
+}
+
+/* Confirmation */
+.done{text-align:center;padding:30px 10px 10px}
+.done .ok-ic{width:64px;height:64px;border-radius:50%;background:rgba(18,161,80,.12);color:var(--ok);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.done h2{font-size:clamp(40px,5vw,68px);letter-spacing:-.055em}
+.done h2 em{color:var(--blue)}
+.done p{color:var(--ink-2);margin:12px auto 0;max-width:34em}
+.order{display:inline-flex;gap:10px;align-items:center;margin-top:16px;font-family:var(--f-mono);font-size:13px;background:var(--ice);padding:8px 14px;border-radius:999px}
+.passes{display:grid;gap:14px;margin-top:28px;text-align:left}
+.tk{display:grid;grid-template-columns:minmax(0,1fr) 180px;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px var(--line),0 24px 40px -30px rgba(6,16,42,.5);position:relative;animation:tkIn .8s var(--ease) both}
+@keyframes tkIn{from{transform:translateY(24px) rotateX(18deg);opacity:0}}
+.tk::before,.tk::after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;background:var(--ice);right:168px}
+.tk::before{top:-12px}.tk::after{bottom:-12px}
+.tk-main{padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-right:2px dashed var(--line-2)}
+.tk-main .t1{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2);gap:10px}
+.tk-main .t1 b{font-weight:600;color:var(--ink);letter-spacing:-.03em;font-size:14px}
+.tk-main h3{font-size:26px;letter-spacing:-.045em}
+.tk-main .t2{font-family:var(--f-serif);font-style:italic;color:var(--ink-2);font-size:17px;margin-top:2px}
+.tk-f{display:flex;gap:22px;flex-wrap:wrap}
+.tk-f span{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tk-f b{font-size:20px;font-weight:600;letter-spacing:-.03em}
+.tk-code{padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:linear-gradient(160deg,#F7FAFF,#E8F0FD)}
+.tk-code canvas{width:100%;height:84px}
+.tk-code small{font-family:var(--f-mono);font-size:10.5px;color:var(--ink-2)}
+@media (max-width:620px){.tk{grid-template-columns:minmax(0,1fr)}.tk-main{border-right:0;border-bottom:2px dashed var(--line-2)}.tk::before,.tk::after{display:none}}
+.done-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+
+.expired{position:fixed;inset:0;z-index:80;background:rgba(6,16,42,.55);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.expired .box{background:#fff;border-radius:24px;padding:28px;max-width:420px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.expired h3{font-size:26px}
+.expired p{color:var(--ink-2)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;box-shadow:0 20px 40px -10px rgba(6,16,42,.5);max-width:calc(100vw - 32px)}
+@media (max-width:1040px){.toast{bottom:calc(100px + env(safe-area-inset-bottom,0px))}}
+.fade-in{animation:fadeIn .5s var(--ease)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){.fade-in,.tk{animation:none}.card-in{transition:none}}
+</style>
+</head>
+<body>
+<header class="co-h">
+  <div class="wrap">
+    <a href="index.html" class="logo" aria-label="Gatefold home"><svg viewBox="0 0 26 18" aria-hidden="true"><path fill="currentColor" d="M0 2a2 2 0 0 1 2-2h22a2 2 0 0 1 2 2v3.5a3.5 3.5 0 0 0 0 7V16a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-3.5a3.5 3.5 0 0 0 0-7z"/><path d="M17.5 3v12" stroke="#1F5EFF" stroke-width="1.6" stroke-dasharray="2 2"/></svg>gatefold</a>
+    <ol class="steps" id="steps" aria-label="Checkout steps">
+      <li data-s="1"><b>1</b><span>Tickets</span></li><li class="sep" aria-hidden="true"></li>
+      <li data-s="2"><b>2</b><span>Seats</span></li><li class="sep" aria-hidden="true"></li>
+      <li data-s="3"><b>3</b><span>Payment</span></li>
+    </ol>
+    <div class="timer" id="timer" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg><span><i class="tl" style="font-style:normal">Held for </i><b class="num" id="timerT">10:00</b></span></div>
+    <a href="index.html" class="back-link">← All events</a>
+  </div>
+</header>
+
+<div class="wrap" style="padding-top:22px">
+  <div class="ev-banner" id="banner"><img id="bannerImg" src="hero.webp" alt="" hidden><div class="ev-in"><h1 id="evTitle">Halcyon Drive</h1><div class="ev-chips" id="evChips"></div></div></div>
+</div>
+
+<main class="wrap co">
+  <div class="co-main">
+    <section class="panel fade-in" id="s1" aria-labelledby="s1h">
+      <div class="panel-h"><h2 id="s1h">Choose <em>tickets</em></h2><p>Every price is all-in. The booking fee is already inside it.</p></div>
+      <div class="dates" id="dates" role="group" aria-label="Show date"></div>
+      <div class="types" id="types"></div>
+      <div class="perks"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>No fees added later</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"/></svg>Mobile tickets</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Resale at face value</span></div>
+      <div class="nav-row"><span class="note" id="s1note">Up to 8 tickets per order.</span><button class="btn btn-blue" id="to2" disabled>Choose seats <span class="arr">→</span></button></div>
+    </section>
+
+    <section class="panel fade-in" id="s2" aria-labelledby="s2h" hidden>
+      <div class="panel-h"><h2 id="s2h">Pick your <em>seats</em></h2><p id="s2p">Click a section, then choose seats. Prices shown are all-in.</p></div>
+      <div class="seat-tools"><div class="legend" id="legend"></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label class="pricef" for="maxP">Up to <b class="num" id="maxPv">£95</b><input type="range" id="maxP" min="0" max="100" step="1" value="100"></label><button class="btn btn-line btn-sm" id="best" type="button">Best available</button></div></div>
+      <div class="mapbox"><svg id="plan" viewBox="0 0 640 470" role="img" aria-label="Seating plan"></svg></div>
+      <div id="secpane"></div>
+      <div class="picked" id="picked"></div>
+      <div class="nav-row"><button class="btn btn-line" id="back1" type="button">← Back</button><button class="btn btn-blue" id="to3" disabled>Continue to payment <span class="arr">→</span></button></div>
+    </section>
+
+    <section class="panel fade-in" id="s3" aria-labelledby="s3h" hidden>
+      <div class="panel-h"><h2 id="s3h">Details and <em>payment</em></h2><p>Your tickets go to the app on this email. You can transfer them later.</p></div>
+      <div class="demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg><span>Demo checkout. Nothing is charged and nothing you type leaves this page, so don't use a real card. <button type="button" id="fillDemo">Fill demo details</button></span></div>
+      <form id="payForm" novalidate>
+        <fieldset class="fs"><legend>Contact</legend>
+          <div class="fgrid">
+            <div class="field"><label for="fName">Full name</label><input id="fName" autocomplete="off" placeholder="Alex Morgan"><span class="err"></span></div>
+            <div class="field"><label for="fEmail">Email</label><input id="fEmail" type="email" autocomplete="off" placeholder="alex@email.com"><span class="err"></span></div>
+            <div class="field full"><label for="fPhone">Mobile number <span style="color:var(--dim);font-weight:400">(for ticket transfers)</span></label><input id="fPhone" type="tel" autocomplete="off" placeholder="+44 7700 900123"><span class="err"></span></div>
+          </div>
+        </fieldset>
+        <fieldset class="fs"><legend>Extras</legend>
+          <div class="addons" id="addons"></div>
+        </fieldset>
+        <fieldset class="fs"><legend>Payment</legend>
+          <div class="express"><button type="button" class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/></svg>Pay with phone wallet</button><button type="button" class="exp alt">Pay by bank</button></div>
+          <div class="or">or pay by card</div>
+          <div class="paywrap">
+            <div class="fgrid">
+              <div class="field full"><label for="cNum">Card number</label><input id="cNum" inputmode="numeric" autocomplete="off" placeholder="1234 1234 1234 1234" maxlength="23"><span class="err"></span></div>
+              <div class="field"><label for="cExp">Expiry</label><input id="cExp" inputmode="numeric" autocomplete="off" placeholder="MM / YY" maxlength="7"><span class="err"></span></div>
+              <div class="field"><label for="cCvc">Security code</label><input id="cCvc" inputmode="numeric" autocomplete="off" placeholder="3 digits" maxlength="4"><span class="err"></span></div>
+              <div class="field full"><label for="cName">Name on card</label><input id="cName" autocomplete="off" placeholder="As printed on the card"><span class="err"></span></div>
+            </div>
+            <div class="card3d" id="card3d" aria-hidden="true"><div class="card-in">
+              <div class="cf front"><div class="top"><span>gatefold pay</span><span id="cBrand">Card</span></div><div class="chip-ic"></div><div class="no num" id="cNoV">•••• •••• •••• ••••</div><div class="bot"><div><span>Card holder</span><b id="cNameV">Your name</b></div><div><span>Expires</span><b id="cExpV">MM/YY</b></div></div></div>
+              <div class="cf back"><div class="strip"></div><div class="sig"><span id="cCvcV">•••</span></div><small>Security code is the 3 digits on the back.</small></div>
+            </div></div>
+          </div>
+        </fieldset>
+        <label class="terms" for="fTerms"><input type="checkbox" id="fTerms"><span>I agree to the purchase terms. Tickets can be resold at face value but not refunded unless the event is cancelled or moved.</span></label>
+        <div class="nav-row"><button class="btn btn-line" id="back2" type="button">← Back</button><button class="btn btn-blue" id="payBtn" type="submit">Pay <span class="num" id="payAmt">£0.00</span></button></div>
+      </form>
+    </section>
+
+    <section class="panel fade-in" id="s4" aria-labelledby="s4h" hidden>
+      <div class="done">
+        <div class="ok-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h2 id="s4h">You're <em>in.</em></h2>
+        <p id="doneTxt">Your tickets are in the Gatefold app. We've also emailed a receipt.</p>
+        <div class="order num" id="orderNo">Order GF-000000</div>
+        <div class="passes" id="passes"></div>
+        <div class="done-acts"><a class="btn btn-ink" href="index.html">Back to events</a><button class="btn btn-line" id="again" type="button">Buy more tickets</button></div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="co-sum" id="sumWrap" aria-label="Order summary">
+    <div class="sum">
+      <button class="mbar" id="mbar" type="button" aria-expanded="false"><div><span>Total · <span id="mCount">0 tickets</span> <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 7.5L6 4.5l3 3" stroke="currentColor" stroke-width="1.6" fill="none"/></svg></span><b class="num" id="mTot">£0.00</b></div><span class="btn btn-blue btn-sm" id="mGo">Continue</span></button>
+      <div class="sum-ev"><div class="th" id="sumTh"></div><div><b id="sumEv">Halcyon Drive</b><span id="sumMeta">Riverside Arena</span></div></div>
+      <div class="sum-body" id="sumBody"></div>
+      <div class="sum-tot"><span>Total</span><b class="num" id="sumTot">£0.00</b></div>
+      <div class="promo"><input id="promo" placeholder="Promo or presale code" aria-label="Promo or presale code"><button class="btn btn-line btn-sm" id="promoBtn" type="button">Apply</button></div>
+      <div class="promo-msg" id="promoMsg" hidden></div>
+    </div>
+    <div class="assure">
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/></svg><span>If the show is cancelled you get a full refund automatically.</span></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Can't go? Resell at face value from the app.</span></div>
+    </div>
+  </aside>
+</main>
+
+<div class="tip" id="tip" role="status"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="expired" id="expired" hidden><div class="box" role="alertdialog" aria-labelledby="expH"><h3 id="expH">Your hold ran out</h3><p>We held your seats for 10 minutes. They're back on sale now, but you can pick again.</p><button class="btn btn-blue" id="expBtn" type="button">Start again</button></div></div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=v=>'£'+v.toFixed(2);
+let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,2800); }
+function seed(str){ let h=0; for(const ch of str) h=(h*31+ch.charCodeAt(0))|0; return ()=>((h=Math.imul(h^h>>>15,2246822507)^Math.imul(h^h>>>13,3266489909))>>>0)/4294967296; }
+
+/* ---------- Events (same invented list as the landing page) ---------- */
+const DAY=864e5, today=new Date(); today.setHours(0,0,0,0);
+const dOff=n=>new Date(today.getTime()+n*DAY);
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const EV=[
+ {id:'halcyon', t:'Halcyon Drive', s:'Neon Requiem Tour', c:'Concerts', city:'London', venue:'Riverside Arena', off:12, time:'20:00', from:42, plan:'arena'},
+ {id:'mira', t:'Mira Okafor', s:'Small Hours, live', c:'Concerts', city:'Manchester', venue:'The Foundry', off:13, time:'19:30', from:32, plan:'arena'},
+ {id:'northbank', t:'Northbank FC v Ashdown City', s:'League match', c:'Sport', city:'London', venue:'Northbank Stadium', off:14, time:'15:00', from:28, plan:'arena'},
+ {id:'keeper', t:'The Lighthouse Keeper', s:'A new play', c:'Theatre', city:'London', venue:'Alder Theatre', off:16, time:'19:30', from:24, plan:'theatre'},
+ {id:'velvet', t:'Velvet Static', s:'Club tour', c:'Concerts', city:'Berlin', venue:'Halle 9', off:18, time:'21:00', from:39, plan:'ga'},
+ {id:'dana', t:'Dana Pryce: Overtime', s:'Stand-up', c:'Comedy', city:'Dublin', venue:'The Lantern Rooms', off:19, time:'20:00', from:22, plan:'theatre'},
+ {id:'lowlight', t:'Lowlight Festival', s:'Three days, four stages', c:'Festivals', city:'Glasgow', venue:'Kelvin Fields', off:27, time:'12:00', from:89, plan:'ga'},
+ {id:'hoops', t:'Capital Hoops Finals Night', s:'Basketball', c:'Sport', city:'London', venue:'Docklands Arena', off:28, time:'19:45', from:35, plan:'arena'},
+ {id:'ferro', t:'Saint Ferro', s:'Orchestral nights', c:'Concerts', city:'Paris', venue:'Salle Aurore', off:22, time:'20:30', from:48, plan:'theatre'},
+ {id:'paper', t:'Paper Moons', s:'Family show', c:'Family', city:'London', venue:'Southmoor Hall', off:6, time:'14:00', from:18, plan:'theatre'},
+ {id:'atlas', t:'Atlas & The Tide', s:'Album launch', c:'Concerts', city:'London', venue:'The Glasshouse', off:0, time:'20:30', from:30, plan:'ga'},
+ {id:'rook', t:'Rook Theatre Company: Macbeth', s:'Shakespeare, in the round', c:'Theatre', city:'London', venue:'The Round House Yard', off:0, time:'19:00', from:26, plan:'theatre'},
+ {id:'lena', t:'Lena Voss Quartet', s:'Jazz', c:'Concerts', city:'London', venue:'Basement 22', off:3, time:'21:00', from:20, plan:'ga'},
+ {id:'thames', t:'Thames Rowing Cup', s:'Finals day', c:'Sport', city:'London', venue:'Putney Embankment', off:7, time:'11:00', from:15, plan:'ga'},
+ {id:'mira2', t:'Mira Okafor', s:'Small Hours, live', c:'Concerts', city:'London', venue:'Riverside Arena', off:20, time:'19:30', from:38, plan:'arena'},
+ {id:'kit', t:'Open Mic Marathon', s:'Twelve comics, one night', c:'Comedy', city:'London', venue:'The Lantern Rooms', off:1, time:'20:00', from:12, plan:'theatre'},
+ {id:'orbit', t:'Orbit Ensemble', s:'Live score to a silent film', c:'Concerts', city:'Amsterdam', venue:'Het Pakhuis', off:9, time:'20:00', from:27, plan:'theatre'},
+ {id:'lisb', t:'Fado at Midnight', s:'Late show', c:'Concerts', city:'Lisbon', venue:'Casa da Ribeira', off:4, time:'23:30', from:25, plan:'theatre'}
+];
+const hashId=(location.hash||'').slice(1);
+let pick=null; try{ pick=JSON.parse(localStorage.getItem('gf-pick')||'null'); }catch(e){}
+const E=EV.find(e=>e.id===hashId) || EV.find(e=>pick&&e.id===pick.id) || EV[0];
+const r2=v=>Math.round(v);
+/* price zones per plan, scaled from the event's "from" price */
+const Z = E.plan==='arena'
+  ? {a:{n:'Floor standing',p:r2(E.from*2.26),c:'#0B2A6F',t:'#fff'},b:{n:'Lower tier',p:r2(E.from*1.71),c:'#1F5EFF',t:'#fff'},c:{n:'Lower tier',p:r2(E.from*1.38),c:'#5EA8FF',t:'#06102A'},d:{n:'Upper tier',p:E.from,c:'#B9DAFF',t:'#06102A'}}
+  : E.plan==='theatre'
+  ? {a:{n:'Premium stalls',p:r2(E.from*2.4),c:'#0B2A6F',t:'#fff'},b:{n:'Stalls',p:r2(E.from*1.75),c:'#1F5EFF',t:'#fff'},c:{n:'Dress circle',p:r2(E.from*1.3),c:'#5EA8FF',t:'#06102A'},d:{n:'Upper circle',p:E.from,c:'#B9DAFF',t:'#06102A'}}
+  : {};
+
+/* show dates: the listed one plus later shows */
+const SHOWS=[0,1,7].map((k,i)=>({off:E.off+k, time:i===1?(E.time>'18:00'?'19:00':E.time):E.time, left:i===0?'Selling fast':i===1?'Few left':''})).filter((x,i)=>E.plan!=='ga'||i<2);
+const fmt=n=>{ const d=dOff(n); return {wd:WD[d.getDay()], day:d.getDate(), mo:MO[d.getMonth()]}; };
+
+/* ticket types */
+const TYPES = E.plan==='ga'
+  ? [{k:'ga',n:'General admission',d:'Standing. Doors one hour before the first act.',p:E.from,seated:false},
+     {k:'early',n:'Early entry',d:'In 45 minutes before general admission, front of the room.',p:r2(E.from*1.4),seated:false,badge:['Few left','hot']},
+     {k:'vip',n:'VIP',d:'Early entry, a private bar and a signed poster.',p:r2(E.from*2.9),seated:false,badge:['Limited','blue']}]
+  : E.plan==='arena'
+  ? [{k:'seat',n:'Seated tickets',d:'Choose exact seats on the plan in the next step.',p:Z.d.p,max:Z.b.p,seated:true},
+     {k:'floor',n:'Floor standing',d:'Standing in front of the stage. No seat numbers.',p:Z.a.p,seated:false,zone:'a',badge:['Selling fast','hot']},
+     {k:'vip',n:'VIP package',d:'A lower-tier seat, a lounge before the show and a tour poster.',p:r2(E.from*3.9),seated:true,vip:true,badge:['Limited','blue']},
+     {k:'acc',n:'Accessible seating',d:'Step-free platform seats. A companion ticket is free.',p:Z.c.p,seated:false,acc:true}]
+  : [{k:'seat',n:'Seated tickets',d:'Choose exact seats on the plan in the next step.',p:Z.d.p,max:Z.a.p,seated:true},
+     {k:'acc',n:'Accessible seating',d:'Step-free stalls seats. A companion ticket is free.',p:Z.c.p,seated:false,acc:true}];
+
+/* ---------- State ---------- */
+const S={show:0, q:{}, step:1, sec:null, seats:new Set(), addons:{protect:false,park:false,poster:false}, promo:null, hold:0, holdT:null, paid:false};
+TYPES.forEach(t=>S.q[t.k]=0);
+if(pick && pick.id===E.id && pick.seats && pick.seats.length){ S.q[pick.ga?'floor':'seat']=pick.seats.length; }
+else { const first=TYPES[0]; S.q[first.k]=2; }
+const seatedQty=()=>TYPES.filter(t=>t.seated).reduce((s,t)=>s+S.q[t.k],0);
+const totalQty=()=>TYPES.reduce((s,t)=>s+S.q[t.k],0);
+const needsSeats=()=>E.plan!=='ga' && seatedQty()>0;
+
+/* ---------- Banner, header ---------- */
+function renderBanner(){
+  const d=fmt(SHOWS[S.show].off);
+  $('evTitle').innerHTML=esc(E.t).replace(/(\S+)$/,'<em>$1</em>');
+  const isHal=E.id==='halcyon'||E.venue==='Riverside Arena';
+  $('bannerImg').hidden=!isHal; $('banner').classList.toggle('plain',!isHal);
+  const ic={cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',clk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'};
+  $('evChips').innerHTML=`<span>${ic.cal}${d.wd} ${d.day} ${d.mo}</span><span>${ic.clk}${SHOWS[S.show].time}</span><span>${ic.pin}${esc(E.venue)}, ${esc(E.city)}</span><span>${esc(E.s)}</span>`;
+  $('sumEv').textContent=E.t; $('sumMeta').textContent=`${d.wd} ${d.day} ${d.mo} · ${SHOWS[S.show].time} · ${E.venue}`;
+  $('sumTh').innerHTML=isHal?'<img src="stage.webp" alt="">':'';
+  document.title=`${E.t} · Gatefold Checkout`;
+}
+function renderSteps(){
+  document.querySelectorAll('#steps li[data-s]').forEach(li=>{ const s=+li.dataset.s; li.className=''; if(s===2&&!needsSeats()) li.classList.add('skip'); if(S.step>s||S.step===4) li.classList.add('done'); else if(S.step===s) li.classList.add('on'); });
+}
+
+/* ---------- Step 1 ---------- */
+function renderDates(){
+  $('dates').innerHTML=SHOWS.map((sh,i)=>{ const d=fmt(sh.off); return `<button type="button" class="dt" data-i="${i}" aria-pressed="${i===S.show}"><span>${d.wd.toUpperCase()}</span><b>${d.day} ${d.mo}</b><small>${sh.time}${sh.left?` · <span class="lt">${sh.left}</span>`:''}</small></button>`; }).join('');
+}
+function renderTypes(){
+  const tot=totalQty();
+  $('types').innerHTML=TYPES.map(t=>{ const q=S.q[t.k];
+    const price=t.max?`From ${money(t.p)} <small>to ${money(t.max)} each</small>`:`${money(t.p)} <small>each${t.acc?' · companion free':''}</small>`;
+    return `<div class="tt ${q?'on':''}"><div><h3>${esc(t.n)}${t.badge?` <span class="badge ${t.badge[1]}">${t.badge[0]}</span>`:''}</h3><p>${esc(t.d)}</p><div class="price num">${price}</div></div>
+      <div class="qty" role="group" aria-label="${esc(t.n)} quantity"><button type="button" data-k="${t.k}" data-d="-1" aria-label="One fewer" ${q<=0?'disabled':''}>−</button><output class="num" aria-live="polite">${q}</output><button type="button" data-k="${t.k}" data-d="1" aria-label="One more" ${tot>=8?'disabled':''}>+</button></div></div>`; }).join('');
+  $('to2').disabled=tot===0;
+  $('to2').innerHTML=(needsSeats()?'Choose seats':'Continue to payment')+' <span class="arr">→</span>';
+  $('s1note').textContent=tot>=8?'That\u2019s the maximum of 8 tickets per order.':'Up to 8 tickets per order.';
+}
+$('dates').addEventListener('click',e=>{ const b=e.target.closest('.dt'); if(!b) return; S.show=+b.dataset.i; S.seats.clear(); S.sec=null; renderDates(); renderBanner(); renderSummary(); });
+$('types').addEventListener('click',e=>{ const b=e.target.closest('button[data-k]'); if(!b||b.disabled) return; const k=b.dataset.k; S.q[k]=Math.max(0,Math.min(8,S.q[k]+(+b.dataset.d))); if(totalQty()>8) S.q[k]--; S.seats.clear(); renderTypes(); renderSteps(); renderSummary(); });
+
+/* ---------- Step 2: plans ---------- */
+const plan=$('plan'), tip=$('tip');
+let SECS=[], SEATS=[];
+function buildArena(){
+  SECS=[]; const cx=320, cy=120;
+  const ring=(r0,r1,a0,a1,n,prefix,tierFn,sold)=>{ const step=(a1-a0)/n, pad=1.1*Math.sign(step); for(let i=0;i<n;i++){ SECS.push({id:prefix+String(i+1).padStart(2,'0'),r0,r1,s:a0+i*step+pad,e:a0+(i+1)*step-pad,cx,cy,z:tierFn(i,n),sold:sold.includes(i)}); } };
+  ring(150,222,192,-12,12,'1',(i,n)=>{ const m=Math.abs(i-(n-1)/2); return m<2?'c':m<4.5?'b':'c'; },[0,11]);
+  ring(232,300,196,-16,14,'2',()=>'d',[6]);
+  SECS.forEach(s=>{ s.name='Section '+s.id; });
+  const pt=(s,r,a)=>{ const t=a*Math.PI/180; return [s.cx+r*Math.cos(t), s.cy+r*Math.sin(t)]; }, f=v=>v.toFixed(1);
+  let g=`<rect x="230" y="20" width="180" height="46" rx="8" fill="#06102A"/><text x="320" y="48" text-anchor="middle" font-family="Geist Mono, monospace" font-size="12" letter-spacing="3" fill="#F4F8FF">STAGE</text>`;
+  g+=`<g class="sec" data-id="FLOOR"><path d="M228 80 H412 L436 210 H204 Z" fill="${Z.a.c}"/><text x="320" y="152" text-anchor="middle" fill="#fff">FLOOR · STANDING</text></g>`;
+  SECS.forEach(s=>{ const o1=pt(s,s.r1,s.s),o2=pt(s,s.r1,s.e),i2=pt(s,s.r0,s.e),i1=pt(s,s.r0,s.s); s.cxy=pt(s,(s.r0+s.r1)/2,(s.s+s.e)/2); const T=Z[s.z];
+    g+=`<g class="sec ${s.sold?'sold':''}" data-id="${s.id}" tabindex="${s.sold?-1:0}" role="button" aria-label="${s.name}, ${s.sold?'sold out':money(T.p)}"><path d="M${f(o1[0])} ${f(o1[1])} A${s.r1} ${s.r1} 0 0 0 ${f(o2[0])} ${f(o2[1])} L${f(i2[0])} ${f(i2[1])} A${s.r0} ${s.r0} 0 0 1 ${f(i1[0])} ${f(i1[1])}Z" fill="${T.c}"/><text x="${f(s.cxy[0])}" y="${f(s.cxy[1]+4)}" text-anchor="middle" fill="${T.t}">${s.id}</text></g>`; });
+  g+=`<text x="320" y="462" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" letter-spacing="2" fill="#7D8AA4">ENTRANCES · GATES A–F</text>`;
+  plan.setAttribute('viewBox','0 0 640 470'); plan.innerHTML=g;
+}
+function buildTheatre(){
+  SEATS=[]; const cx=320, cy=-300, rnd=seed(E.id+'-'+S.show);
+  const rows=[];
+  'ABCDEFGHIJKL'.split('').forEach((r,i)=>rows.push({r, R:410+i*17, W:190, z:i<3?'a':'b', sec:'Stalls'}));
+  ['AA','BB','CC','DD','EE'].forEach((r,i)=>rows.push({r, R:642+i*17, W:250, z:'c', sec:'Dress circle'}));
+  ['K1','K2','K3'].forEach((r,i)=>rows.push({r:'U'+(i+1), R:746+i*16, W:272, z:'d', sec:'Upper circle'}));
+  let g=`<path d="M190 6 H450 V30 Q320 62 190 30 Z" fill="#06102A"/><text x="320" y="31" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" letter-spacing="3" fill="#F4F8FF">STAGE</text>`;
+  rows.forEach((row,ri)=>{
+    const span=2*Math.asin(row.W/row.R)*180/Math.PI, n=Math.max(6,Math.round(row.R*span*Math.PI/180/12.5)), a0=90+span/2, a1=90-span/2, gap=row.sec!=='Stalls'||n<18?0:1;
+    for(let k=0;k<n;k++){
+      const a=a0+(a1-a0)*(k/(n-1||1)); if(gap && Math.abs(k-(n-1)/2)<.6) continue;
+      const t=a*Math.PI/180, x=cx+row.R*Math.cos(t), y=cy+row.R*Math.sin(t);
+      const id=row.r+'-'+(k+1), taken=rnd()<(row.z==='a'?.55:.38);
+      SEATS.push({id,row:row.r,n:k+1,x,y,z:row.z,sec:row.sec,taken});
+    }
+  });
+  SEATS.forEach(s=>{ g+=`<circle class="seat ${s.taken?'taken':''}" data-id="${s.id}" cx="${s.x.toFixed(1)}" cy="${s.y.toFixed(1)}" r="5.2" fill="${s.taken?'#DCE3EE':Z[s.z].c}" tabindex="${s.taken?-1:0}" role="button" aria-label="${s.sec}, row ${s.row}, seat ${s.n}${s.taken?', taken':', '+money(Z[s.z].p)}"/>`; });
+  const lbl=(y,t)=>`<text x="320" y="${y}" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" letter-spacing="2" fill="#7D8AA4">${t}</text>`;
+  g+=lbl(322,'STALLS')+lbl(429,'DRESS CIRCLE')+lbl(505,'UPPER CIRCLE');
+  plan.setAttribute('viewBox','30 0 580 520'); plan.innerHTML=g;
+}
+function renderLegend(){
+  const keys=Object.keys(Z);
+  $('legend').innerHTML=keys.map(k=>`<span><i style="background:${Z[k].c}"></i>${money(Z[k].p)}</span>`).join('')+'<span><i style="background:#DCE3EE"></i>Taken</span>';
+  const maxv=Math.max(...keys.map(k=>Z[k].p)); $('maxP').min=Math.min(...keys.map(k=>Z[k].p)); $('maxP').max=maxv; if(+$('maxP').value>maxv||+$('maxP').value<+$('maxP').min) $('maxP').value=maxv; $('maxPv').textContent=money(+$('maxP').value).replace('.00','');
+}
+function applyPriceFilter(){
+  const m=+$('maxP').value; $('maxPv').textContent=money(m).replace('.00','');
+  if(E.plan==='arena') plan.querySelectorAll('.sec').forEach(g=>{ const s=SECS.find(x=>x.id===g.dataset.id); const z=g.dataset.id==='FLOOR'?'a':s.z; g.classList.toggle('out',Z[z].p>m); });
+  else plan.querySelectorAll('.seat').forEach(c=>{ const s=SEATS.find(x=>x.id===c.dataset.id); c.classList.toggle('out',Z[s.z].p>m); });
+}
+const seatPrice=id=>{ if(E.plan==='theatre'){ const s=SEATS.find(x=>x.id===id); return Z[s.z].p; } const sec=SECS.find(x=>x.id===S.sec); return Z[sec.z].p; };
+const vipT=()=>TYPES.find(t=>t.vip);
+function viewImg(xy){ const [x,y]=xy; const dx=(x-320)/300, dist=Math.min(1,Math.hypot(x-320,y-43)/(E.plan==='theatre'?520:300)); const ox=(50+dx*28).toFixed(1), oy=(42+dist*10).toFixed(1), z=(1.55-dist*.5).toFixed(2); return `<img src="hero-1200.webp" alt="" style="object-position:${ox}% ${oy}%;transform:scale(${z});transform-origin:${ox}% 55%">`; }
+function renderSecPane(){
+  const need=seatedQty();
+  if(E.plan==='theatre'){
+    const last=[...S.seats].pop(); const s=last?SEATS.find(x=>x.id===last):null;
+    $('secpane').innerHTML=`<div class="secpane"><div class="view">${viewImg(s?[s.x,s.y]:[320,300])}<span>${s?`VIEW FROM ${s.sec.toUpperCase()} ROW ${s.row}`:'VIEW FROM THE STALLS'}</span></div><div class="hint" style="text-align:left">${S.seats.size<need?`Choose <b>${need-S.seats.size}</b> more seat${need-S.seats.size>1?'s':''} on the plan, or use <b>Best available</b>.`:'All seats chosen. You can still swap any seat by clicking it.'}</div></div>`;
+    return;
+  }
+  if(!S.sec){ $('secpane').innerHTML=`<div class="secpane"><div class="view">${viewImg([320,330])}<span>VIEW FROM SECTION 106</span></div><div class="hint" style="text-align:left">Choose a section on the plan to see its seats and the view of the stage. You need <b>${need}</b> seat${need>1?'s':''}.</div></div>`; return; }
+  const sec=SECS.find(x=>x.id===S.sec), T=Z[sec.z], rnd=seed(sec.id);
+  let grid=`<div class="seats" role="group" aria-label="Seats in ${sec.name}"><span></span><div class="stage-l">STAGE THIS WAY</div><span></span>`;
+  for(const r of 'ABCDEFG'){ grid+=`<span class="rl">${r}</span>`; for(let n=1;n<=14;n++){ const id=r+n, taken=rnd()<.42; grid+=`<button class="st ${taken?'taken':''}" style="--tc:${T.c}" data-s="${id}" aria-label="Row ${r} seat ${n}${taken?', taken':''}" aria-pressed="${S.seats.has(id)}" ${taken?'disabled':''}></button>`; } grid+=`<span class="rl">${r}</span>`; }
+  grid+='</div>';
+  $('secpane').innerHTML=`<div class="secpane"><div class="view">${viewImg(sec.cxy)}<span>VIEW FROM ${sec.name.toUpperCase()}</span></div><div><div class="grid-h"><b>${sec.name} · ${T.n}</b><span class="num">${money(T.p)} each</span></div>${grid}</div></div>`;
+}
+function renderPicked(){
+  const need=seatedQty();
+  const list=[...S.seats];
+  $('picked').innerHTML=list.map(id=>`<span class="chip">${E.plan==='theatre'?(()=>{const s=SEATS.find(x=>x.id===id); return `${s.sec} · ${s.row}${s.n}`;})():`Sec ${S.sec} · ${id[0]}${id.slice(1)}`}<button type="button" data-rm="${id}" aria-label="Remove seat">×</button></span>`).join('');
+  $('to3').disabled=list.length!==need;
+  $('s2p').textContent=E.plan==='theatre'?`Choose ${need} seat${need>1?'s':''} on the plan. Prices shown are all-in.`:`Click a section, then choose ${need} seat${need>1?'s':''}. Prices shown are all-in.`;
+}
+function selectSeat(id){
+  const need=seatedQty();
+  if(S.seats.has(id)) S.seats.delete(id);
+  else { if(S.seats.size>=need){ const first=[...S.seats][0]; S.seats.delete(first); } S.seats.add(id); startHold(); }
+  if(E.plan==='theatre') plan.querySelectorAll('.seat').forEach(c=>c.classList.toggle('on',S.seats.has(c.dataset.id)));
+  renderSecPane(); renderPicked(); renderSummary();
+}
+function pickSection(id){ if(id==='FLOOR'){ toast('Floor is standing only. Add Floor standing tickets in step 1.'); return; } const s=SECS.find(x=>x.id===id); if(!s||s.sold) return; if(S.sec!==id){ S.sec=id; S.seats.clear(); }
+  plan.querySelectorAll('.sec').forEach(g=>g.classList.toggle('sel',g.dataset.id===id)); plan.classList.add('chosen'); renderSecPane(); renderPicked(); renderSummary(); }
+function bestAvailable(){
+  const need=seatedQty(), m=+$('maxP').value;
+  if(E.plan==='theatre'){
+    const rows=[...new Set(SEATS.map(s=>s.row))];
+    for(const r of rows){ const rs=SEATS.filter(s=>s.row===r && !s.taken && Z[s.z].p<=m).sort((a,b)=>Math.abs(a.n-10)-Math.abs(b.n-10)); const all=SEATS.filter(s=>s.row===r).sort((a,b)=>a.n-b.n);
+      for(let i=0;i+need<=all.length;i++){ const block=all.slice(i,i+need); if(block.every(s=>!s.taken && Z[s.z].p<=m)){ S.seats=new Set(block.map(s=>s.id)); plan.querySelectorAll('.seat').forEach(c=>c.classList.toggle('on',S.seats.has(c.dataset.id))); startHold(); renderSecPane(); renderPicked(); renderSummary(); toast(`Best available: row ${r}, ${need} together`); return; } } }
+  } else {
+    const order=[...SECS].filter(s=>!s.sold && Z[s.z].p<=m).sort((a,b)=>Math.hypot(a.cxy[0]-320,a.cxy[1]-60)-Math.hypot(b.cxy[0]-320,b.cxy[1]-60));
+    for(const s of order){ const rnd=seed(s.id); const map={}; for(const r of 'ABCDEFG') for(let n=1;n<=14;n++) map[r+n]=rnd()<.42;
+      for(const r of 'ABCDEFG'){ for(let n=1;n+need-1<=14;n++){ const ids=Array.from({length:need},(_,k)=>r+(n+k)); if(ids.every(id=>!map[id])){ pickSection(s.id); S.seats=new Set(ids); startHold(); renderSecPane(); renderPicked(); renderSummary(); toast(`Best available: ${s.name}, row ${r}`); return; } } } }
+  }
+  toast('No block of seats together at that price. Try raising the price limit.');
+}
+plan.addEventListener('pointermove',e=>{
+  const g=e.target.closest('.sec,.seat'); if(!g){ tip.classList.remove('on'); return; }
+  if(g.classList.contains('seat')){ const s=SEATS.find(x=>x.id===g.dataset.id); tip.innerHTML=`<b>${s.sec} · Row ${s.row} · Seat ${s.n}</b>${s.taken?'Taken':money(Z[s.z].p)+' all-in'}`; }
+  else { const id=g.dataset.id; if(id==='FLOOR') tip.innerHTML=`<b>Floor standing</b>${money(Z.a.p)} · add in step 1`; else { const s=SECS.find(x=>x.id===id); tip.innerHTML=`<b>${s.name}</b>${s.sold?'Sold out':money(Z[s.z].p)+' each · '+Z[s.z].n}`; } }
+  tip.style.left=e.clientX+'px'; tip.style.top=e.clientY+'px'; tip.classList.add('on'); },{passive:true});
+plan.addEventListener('pointerleave',()=>tip.classList.remove('on'));
+plan.addEventListener('click',e=>{ const c=e.target.closest('.seat'); if(c){ const s=SEATS.find(x=>x.id===c.dataset.id); if(!s.taken && !c.classList.contains('out')) selectSeat(s.id); return; } const g=e.target.closest('.sec'); if(g && !g.classList.contains('out')) pickSection(g.dataset.id); });
+plan.addEventListener('keydown',e=>{ if(e.key!=='Enter'&&e.key!==' ') return; const t=e.target.closest('.seat,.sec'); if(!t) return; e.preventDefault(); t.dispatchEvent(new MouseEvent('click',{bubbles:true})); });
+$('secpane').addEventListener('click',e=>{ const b=e.target.closest('.st'); if(b&&!b.disabled) selectSeat(b.dataset.s); });
+$('picked').addEventListener('click',e=>{ const b=e.target.closest('[data-rm]'); if(b) selectSeat(b.dataset.rm); });
+$('maxP').addEventListener('input',applyPriceFilter);
+$('best').addEventListener('click',bestAvailable);
+
+/* ---------- Hold timer ---------- */
+const mmss=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+function startHold(){ if(S.holdT) return; S.hold=600; $('timer').hidden=false; tick(); S.holdT=setInterval(tick,1000); }
+function tick(){ $('timerT').textContent=mmss(S.hold); $('timer').classList.toggle('low',S.hold<=120); if(S.hold<=0){ clearInterval(S.holdT); S.holdT=null; $('expired').hidden=false; return; } S.hold--; }
+function stopHold(){ clearInterval(S.holdT); S.holdT=null; $('timer').hidden=true; }
+$('expBtn').addEventListener('click',()=>{ $('expired').hidden=true; stopHold(); S.seats.clear(); S.sec=null; go(1); });
+
+/* ---------- Step 3: details, extras, card ---------- */
+const ADDONS=[
+  {k:'protect', n:'Ticket protection', d:'Get your money back if illness or travel problems stop you going.', p:()=>+(ticketsTotal()*.06).toFixed(2)},
+  {k:'park', n:'Parking', d:'A space in the venue car park, valid from three hours before doors.', p:()=>14, hide:()=>E.plan==='ga'&&E.c==='Festivals'},
+  {k:'poster', n:E.c==='Sport'?'Match programme':'Tour poster', d:E.c==='Sport'?'Collect it at any kiosk on the day.':'A numbered print, collect it at the merch stand.', p:()=>E.c==='Sport'?6:18}
+];
+function renderAddons(){ $('addons').innerHTML=ADDONS.filter(a=>!(a.hide&&a.hide())).map(a=>`<label class="addon" for="ad-${a.k}"><input type="checkbox" id="ad-${a.k}" data-k="${a.k}" ${S.addons[a.k]?'checked':''}><div><b>${a.n}</b><span>${a.d}</span></div><span class="ap num">+${money(a.p())}</span></label>`).join(''); }
+$('addons').addEventListener('change',e=>{ const i=e.target.closest('input[data-k]'); if(!i) return; S.addons[i.dataset.k]=i.checked; renderSummary(); });
+
+const digits=v=>v.replace(/\D/g,'');
+function luhn(n){ let s=0,alt=false; for(let i=n.length-1;i>=0;i--){ let d=+n[i]; if(alt){ d*=2; if(d>9) d-=9; } s+=d; alt=!alt; } return n.length>=13 && s%10===0; }
+const brand=n=>/^4/.test(n)?'Visa':/^(5[1-5]|2[2-7])/.test(n)?'Mastercard':/^3[47]/.test(n)?'Amex':'Card';
+$('cNum').addEventListener('input',e=>{ const d=digits(e.target.value).slice(0,19); e.target.value=d.replace(/(.{4})/g,'$1 ').trim(); $('cBrand').textContent=brand(d); const shown=(d+'•'.repeat(Math.max(0,16-d.length))).slice(0,Math.max(16,d.length)); $('cNoV').textContent=shown.replace(/(.{4})/g,'$1 ').trim(); clearErr(e.target); });
+$('cExp').addEventListener('input',e=>{ let d=digits(e.target.value).slice(0,4); if(d.length>=3) d=d.slice(0,2)+' / '+d.slice(2); else if(d.length===2 && !/\/$/.test(e.target.value)) d=d+' / '; e.target.value=d; $('cExpV').textContent=e.target.value.replace(/\s/g,'')||'MM/YY'; clearErr(e.target); });
+$('cCvc').addEventListener('input',e=>{ e.target.value=digits(e.target.value).slice(0,4); $('cCvcV').textContent=e.target.value||'•••'; clearErr(e.target); });
+$('cName').addEventListener('input',e=>{ $('cNameV').textContent=e.target.value||'Your name'; clearErr(e.target); });
+$('cCvc').addEventListener('focus',()=>$('card3d').classList.add('flip'));
+$('cCvc').addEventListener('blur',()=>$('card3d').classList.remove('flip'));
+['fName','fEmail','fPhone'].forEach(id=>$(id).addEventListener('input',e=>clearErr(e.target)));
+function setErr(el,msg){ const f=el.closest('.field'); f.classList.add('bad'); f.querySelector('.err').textContent=msg; }
+function clearErr(el){ const f=el.closest('.field'); if(!f) return; f.classList.remove('bad'); f.querySelector('.err').textContent=''; }
+function validate(){
+  let ok=true, first=null; const bad=(el,m)=>{ setErr(el,m); ok=false; first=first||el; };
+  if($('fName').value.trim().length<2) bad($('fName'),'Enter the name for the booking.');
+  if(!/^\S+@\S+\.\S+$/.test($('fEmail').value.trim())) bad($('fEmail'),'Enter a full email address, like name@email.com.');
+  if(digits($('fPhone').value).length<8) bad($('fPhone'),'Enter a mobile number so friends can send you tickets.');
+  const n=digits($('cNum').value); if(!luhn(n)) bad($('cNum'),'This card number isn\u2019t valid. Check the 16 digits.');
+  const [mm,yy]=$('cExp').value.split('/').map(x=>+digits(x)); const now=new Date(); const exp=new Date(2000+(yy||0),(mm||1),0);
+  if(!(mm>=1&&mm<=12)||!yy||exp<now) bad($('cExp'),'Use a future date in MM / YY.');
+  if(!/^\d{3,4}$/.test($('cCvc').value)) bad($('cCvc'),'Enter the 3 digits on the back.');
+  if($('cName').value.trim().length<2) bad($('cName'),'Enter the name as it appears on the card.');
+  if(!$('fTerms').checked){ ok=false; toast('Tick the box to agree to the purchase terms.'); }
+  if(first) first.focus();
+  return ok;
+}
+$('fillDemo').addEventListener('click',()=>{ const set=(id,v)=>{ $(id).value=v; $(id).dispatchEvent(new Event('input')); }; set('fName','Alex Morgan'); set('fEmail','alex@example.com'); set('fPhone','+44 7700 900123'); set('cNum','4242424242424242'); set('cExp','1229'); set('cCvc','123'); set('cName','Alex Morgan'); $('fTerms').checked=true; toast('Demo details filled in'); });
+document.querySelectorAll('.exp').forEach(b=>b.addEventListener('click',()=>toast('Wallet and bank payments are not part of this demo. Use the card form.')));
+$('payForm').addEventListener('submit',e=>{ e.preventDefault(); if(!validate()) return;
+  const b=$('payBtn'); b.disabled=true; b.innerHTML='<span class="spin"></span> Confirming payment';
+  setTimeout(()=>{ S.paid=true; stopHold(); try{ localStorage.removeItem('gf-pick'); }catch(err){} b.innerHTML='Pay <span class="num" id="payAmt"></span>'; b.disabled=false; renderDone(); go(4); },reduce?200:1600); });
+
+/* ---------- Summary ---------- */
+function lines(){
+  const L=[];
+  if(needsSeats()){
+    const ids=[...S.seats];
+    const vip=vipT(); let vipLeft=vip?S.q.vip:0;
+    ids.forEach(id=>{ const base=seatPrice(id); const isVip=vipLeft>0; if(isVip) vipLeft--; const label=E.plan==='theatre'?(()=>{const s=SEATS.find(x=>x.id===id); return `${s.sec} · Row ${s.row} · Seat ${s.n}`;})():`Sec ${S.sec} · Row ${id[0]} · Seat ${id.slice(1)}`; L.push({n:(isVip?'VIP · ':'')+label, p:isVip?vip.p:base}); });
+    const missing=seatedQty()-ids.length; if(missing>0) L.push({n:`${missing} seat${missing>1?'s':''} still to choose`, p:null});
+  }
+  TYPES.filter(t=>!t.seated && S.q[t.k]).forEach(t=>{ const q=S.q[t.k]; L.push({n:`${q} × ${t.n}${t.acc?' + companion':''}`, p:t.p*q}); });
+  return L;
+}
+const ticketsTotal=()=>lines().reduce((s,l)=>s+(l.p||0),0);
+function addonsTotal(){ return ADDONS.filter(a=>S.addons[a.k] && !(a.hide&&a.hide())).reduce((s,a)=>s+a.p(),0); }
+function promoOff(){ return S.promo?+(ticketsTotal()*.1).toFixed(2):0; }
+function grand(){ return ticketsTotal()+addonsTotal()-promoOff(); }
+function renderSummary(){
+  const L=lines(), t=ticketsTotal(), fee=t-t/1.1;
+  let h='';
+  if(!L.length) h='<div class="sum-empty">No tickets yet. Choose how many in step 1.</div>';
+  L.forEach(l=>{ h+=`<div class="sum-row"><span>${esc(l.n)}</span><b class="num">${l.p==null?'–':money(l.p)}</b></div>`; });
+  if(t>0) h+=`<div class="sum-row sub"><span>Includes booking fees</span><b class="num">${money(fee)}</b></div>`;
+  ADDONS.forEach(a=>{ if(S.addons[a.k] && !(a.hide&&a.hide())) h+=`<div class="sum-row"><span>${a.n}</span><b class="num">${money(a.p())}</b></div>`; });
+  if(S.promo) h+=`<div class="sum-row" style="color:var(--ok)"><span>${esc(S.promo)} · 10% off tickets</span><b class="num">−${money(promoOff())}</b></div>`;
+  $('sumBody').innerHTML=h;
+  const g=grand(); $('sumTot').textContent=money(g); $('mTot').textContent=money(g); $('payAmt').textContent=money(g);
+  const q=totalQty(); $('mCount').textContent=`${q} ticket${q===1?'':'s'}`;
+  const nextBtn={1:$('to2'),2:$('to3'),3:$('payBtn')}[S.step];
+  $('mGo').textContent=S.step===3?'Pay':S.step===4?'Done':'Continue'; $('mGo').style.opacity=(nextBtn&&nextBtn.disabled)?.4:1;
+}
+$('promoBtn').addEventListener('click',()=>{ const v=$('promo').value.trim().toUpperCase(); const m=$('promoMsg'); m.hidden=false;
+  if(['FANCLUB','PRESALE','GATEFOLD'].includes(v)){ S.promo=v; m.className='promo-msg ok'; m.textContent='Code applied. 10% off tickets.'; }
+  else { S.promo=null; m.className='promo-msg bad'; m.textContent=v?`We couldn't find "${v}". Codes come in presale emails, for example PRESALE.`:'Enter a code first.'; }
+  renderSummary(); });
+$('mbar').addEventListener('click',e=>{ if(e.target.closest('#mGo')){ const b={1:$('to2'),2:$('to3'),3:$('payBtn')}[S.step]; if(b&&!b.disabled) b.click(); return; } const w=$('sumWrap'); w.classList.toggle('open'); $('mbar').setAttribute('aria-expanded',w.classList.contains('open')); });
+
+/* ---------- Confirmation ---------- */
+function drawBars(cv,s){ const r=seed(String(s)), dpr=Math.min(2,devicePixelRatio||1), w=cv.clientWidth||150, h=cv.clientHeight||84; cv.width=w*dpr; cv.height=h*dpr; const x=cv.getContext('2d'); x.scale(dpr,dpr); x.fillStyle='#0A1630'; let px=0; while(px<w){ const bw=1+Math.floor(r()*3); if(r()>.42) x.fillRect(px,0,bw,h); px+=bw+(r()>.6?1:0); } }
+let codeN=1, codeT=null;
+function renderDone(){
+  const d=fmt(SHOWS[S.show].off), on='GF-'+Math.floor(100000+Math.random()*899999);
+  $('orderNo').textContent='Order '+on;
+  $('doneTxt').textContent=`Your tickets for ${E.t} are in the Gatefold app. A receipt is on its way to ${$('fEmail').value.trim()}.`;
+  const L=lines().filter(l=>l.p!=null);
+  const tix=[]; L.forEach(l=>{ const m=l.n.match(/^(\d+) × (.+)$/); if(m){ for(let i=0;i<+m[1];i++) tix.push({where:m[2].replace(' + companion',''),row:'–',seat:'–'}); } else { const mm=l.n.match(/(Sec \S+|Stalls|Dress circle|Upper circle|Premium stalls).*Row (\S+) · Seat (\S+)/); tix.push({where:mm?mm[1]:l.n,row:mm?mm[2]:'–',seat:mm?mm[3]:'–'}); } });
+  $('passes').innerHTML=tix.map((t,i)=>`<div class="tk" style="animation-delay:${i*.12}s"><div class="tk-main"><div class="t1"><b>gatefold</b><span>Ticket ${i+1} of ${tix.length}</span></div><div><h3>${esc(E.t)}</h3><div class="t2">${esc(E.s)}</div></div><div class="tk-f"><div><span>Date</span><b>${d.day} ${d.mo}</b></div><div><span>Doors</span><b>${SHOWS[S.show].time}</b></div><div><span>Where</span><b>${esc(t.where)}</b></div><div><span>Row</span><b>${t.row}</b></div><div><span>Seat</span><b>${t.seat}</b></div></div></div><div class="tk-code"><canvas data-i="${i}" aria-label="Ticket barcode"></canvas><small>Refreshes every 15s</small></div></div>`).join('');
+  requestAnimationFrame(()=>document.querySelectorAll('.tk-code canvas').forEach(c=>drawBars(c,on+c.dataset.i+codeN)));
+  clearInterval(codeT); codeT=setInterval(()=>{ codeN++; document.querySelectorAll('.tk-code canvas').forEach(c=>drawBars(c,on+c.dataset.i+codeN)); },15000);
+}
+$('again').addEventListener('click',()=>{ S.seats.clear(); S.sec=null; TYPES.forEach(t=>S.q[t.k]=0); S.q[TYPES[0].k]=2; S.addons={protect:false,park:false,poster:false}; S.promo=null; $('payForm').reset(); go(1); });
+
+/* ---------- Navigation ---------- */
+function go(n){
+  if(n===2 && !needsSeats()) n=3;
+  S.step=n;
+  ['s1','s2','s3','s4'].forEach((id,i)=>{ $(id).hidden=(i+1)!==n; });
+  if(n===2){ if(E.plan==='arena'){ buildArena(); if(S.sec) pickSection(S.sec); } else { buildTheatre(); plan.querySelectorAll('.seat').forEach(c=>c.classList.toggle('on',S.seats.has(c.dataset.id))); } renderLegend(); applyPriceFilter(); renderSecPane(); renderPicked(); }
+  if(n===3){ renderAddons(); if(!needsSeats()) startHold(); }
+  $('sumWrap').hidden=n===4; document.querySelector('.co').classList.toggle('fin',n===4);
+  renderSteps(); renderSummary();
+  const top=document.querySelector('.ev-banner').getBoundingClientRect().bottom+scrollY-70;
+  if(scrollY>top) scrollTo({top,behavior:reduce?'auto':'smooth'});
+}
+$('to2').addEventListener('click',()=>go(2));
+$('to3').addEventListener('click',()=>go(3));
+$('back1').addEventListener('click',()=>go(1));
+$('back2').addEventListener('click',()=>go(needsSeats()?2:1));
+
+/* ---------- Init ---------- */
+renderBanner(); renderDates(); renderTypes(); renderSummary(); renderSteps();
+if(pick && pick.id===E.id && pick.seats && pick.seats.length && !pick.ga && E.plan==='arena'){ S.sec=pick.sec; go(2); S.seats=new Set(pick.seats); startHold(); renderSecPane(); renderPicked(); renderSummary(); toast(`Your seats in Section ${pick.sec} are held for 10 minutes`); }
+else if(pick && pick.id===E.id && pick.ga){ go(3); toast('Your standing tickets are held for 10 minutes'); }
+})();
+</script>
+</body>
+</html>
