@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vaultline Share Market</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a trading floor for car shares. Market list first, then one project's market (chart, order book, ticket), then the rules. One dark world, same as the main site. */
+:root{
+  color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --ink:#07060B; --ink-2:#0C0A12; --panel:#120F1A; --panel-2:#191526;
+  --line:rgba(255,255,255,.075); --line-2:rgba(255,255,255,.13);
+  --text:#ECEEF6; --muted:#99B3C6; --dim:#6B7C9E; --lime:#D3D7E7; --lime-2:#99B3C6; --lime-ink:#221831;
+  --up:#6FD3A6; --down:#F2958F; --warn:#F2C46B;
+  --common:#A9B4C8; --uncommon:#5FD3A0; --rare:#86ADFF; --epic:#B98CFF; --legendary:#F6BC45;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{overflow-x:clip}
+body{margin:0;background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--ink)}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(70% 50% at 70% -10%,rgba(70,87,121,.35),transparent 70%),radial-gradient(60% 40% at 0% 30%,rgba(34,24,49,.6),transparent 70%),var(--ink)}
+.page{position:relative;z-index:1}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+img{display:block;max-width:100%}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--f-mono)}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:-.025em;line-height:1;margin:0;text-wrap:balance}
+p{margin:0}
+.up{color:var(--up)} .down{color:var(--down)}
+
+/* header */
+header.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(7,6,11,.72);backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);border-bottom:1px solid var(--line)}
+header.site .wrap{display:flex;align-items:center;gap:22px;height:64px}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;font-family:var(--f-display);font-weight:700;font-size:21px;letter-spacing:-.03em;font-stretch:108%}
+.logo svg{width:22px;height:22px}
+.logo i{font-style:normal;color:var(--lime)}
+.crumb{color:var(--dim);font-size:14px;display:flex;gap:8px;align-items:center;min-width:0}
+.crumb a{text-decoration:none;color:var(--muted)}
+.crumb a:hover{color:var(--text)}
+.crumb span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.balance{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;border:1px solid var(--line-2);border-radius:999px;font-size:13px;color:var(--muted);background:rgba(255,255,255,.03);white-space:nowrap}
+.balance b{color:var(--text);font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;border:1px solid transparent;font-weight:600;font-size:14.5px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:transform .3s var(--ease),background .2s,border-color .2s,box-shadow .3s,opacity .2s}
+.btn:active{transform:scale(.97)}
+.btn-lime{background:linear-gradient(180deg,#F4F5FB,#D3D7E7 55%,#B9C3DA);color:#221831;box-shadow:0 0 0 1px rgba(211,215,231,.55),0 10px 30px -10px rgba(153,179,198,.55),inset 0 1px 0 rgba(255,255,255,.8)}
+.btn-ghost{background:rgba(255,255,255,.04);border-color:var(--line-2);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,.09)}
+.btn-sm{height:36px;padding:0 14px;font-size:13px}
+.btn[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none}
+@media (max-width:700px){.crumb{display:none}.balance .lbl{display:none}}
+
+.preview{border-bottom:1px solid var(--line);background:rgba(153,179,198,.06);font-size:13px;color:var(--muted)}
+.preview .wrap{display:flex;gap:10px 16px;align-items:center;justify-content:center;flex-wrap:wrap;padding-block:9px;text-align:center}
+.preview b{color:var(--text);font-weight:500}
+.preview a{color:var(--lime)}
+
+/* hero */
+.hero{padding-block:56px 28px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px 48px;align-items:end}
+.hero h1{font-size:clamp(42px,6vw,86px);font-stretch:115%;font-weight:760;letter-spacing:-.045em;line-height:.9}
+.hero h1 em{font-style:normal;color:var(--muted);display:block}
+.hero p{color:#C3CBDD;font-size:17px;max-width:32em;margin-top:18px}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{padding:16px 18px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.025)}
+.kpi span{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.kpi b{display:block;font-family:var(--f-display);font-size:28px;font-weight:700;letter-spacing:-.02em;margin-top:4px}
+.kpi small{font-size:12.5px;color:var(--muted)}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr);padding-top:36px}}
+
+/* market list */
+.mk-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.02);color:var(--muted);cursor:pointer;font-size:13px}
+.fchip[aria-pressed="true"]{background:var(--text);color:var(--ink);border-color:var(--text)}
+.search{height:36px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);padding:0 14px;outline:none;font-size:13.5px;width:220px;max-width:100%}
+.search:focus{border-color:var(--muted)}
+.table{border:1px solid var(--line);border-radius:24px;background:rgba(18,15,26,.6);backdrop-filter:blur(12px);overflow:hidden}
+.trow{display:grid;grid-template-columns:minmax(0,2.3fr) 1fr 1fr 1fr 1fr 120px 92px;gap:12px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line)}
+.trow:last-child{border-bottom:0}
+.thead{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-block:12px}
+.thead span:not(:first-child),.trow > .r{text-align:right}
+.prow{cursor:pointer;transition:background .2s}
+.prow:hover{background:rgba(255,255,255,.03)}
+.pcell{display:flex;align-items:center;gap:12px;min-width:0}
+.pthumb{width:74px;height:46px;flex-shrink:0;border-radius:12px;background:radial-gradient(80% 90% at 50% 85%,color-mix(in srgb,var(--c) 28%,transparent),transparent),#0D0B13;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;padding:0 4px 3px}
+.pthumb img{width:100%;height:auto}
+.pname{min-width:0}
+.pname b{display:block;font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pname span{font-size:12px;color:var(--muted)}
+.trow .v{font-family:var(--f-mono);font-size:13.5px}
+.trow .v small{display:block;font-size:11px;color:var(--dim)}
+.spark{width:120px;height:34px}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c);border:1px solid color-mix(in srgb,var(--c) 40%,transparent)}
+.owned{font-size:10.5px;color:var(--lime);border:1px solid rgba(211,215,231,.35);border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:2px}
+@media (max-width:980px){
+  .trow{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}
+  .thead{display:none}
+  .trow > .r{text-align:right}
+  .trow .c-ref,.trow .c-list,.trow .c-spark,.trow .c-24{display:none}
+  .trow .c-btn{grid-column:1/-1}
+  .trow .c-btn .btn{width:100%}
+}
+
+/* detail */
+.detail{padding-block:12px 40px}
+.back{display:inline-flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:14px;margin-bottom:14px;background:none;border:0;cursor:pointer;padding:0}
+.back:hover{color:var(--text)}
+.dhead{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center;padding:18px;border-radius:26px;border:1px solid var(--line);background:linear-gradient(120deg,color-mix(in srgb,var(--c) 10%,transparent),transparent 45%),rgba(18,15,26,.6)}
+.dimg{width:200px;height:110px;border-radius:18px;background:radial-gradient(70% 60% at 50% 85%,color-mix(in srgb,var(--c) 30%,transparent),transparent 75%),#0D0B13;display:flex;align-items:flex-end;justify-content:center;padding:0 10px 8px}
+.dimg img{width:100%;height:auto;filter:drop-shadow(0 10px 12px rgba(0,0,0,.55))}
+.dmeta{min-width:0;display:grid;gap:6px}
+.dmeta .k{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.dmeta h2{font-size:clamp(28px,3.4vw,44px);font-stretch:108%;letter-spacing:-.035em}
+.dprice{text-align:right;display:grid;gap:2px}
+.dprice span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.dprice b{font-family:var(--f-display);font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.dprice small{font-size:13px}
+@media (max-width:860px){.dhead{grid-template-columns:minmax(0,1fr)}.dimg{width:100%;height:150px}.dprice{text-align:left}}
+
+.dgrid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;margin-top:16px;align-items:start}
+@media (max-width:1080px){.dgrid{grid-template-columns:minmax(0,1fr)}.side{order:-1}}
+.main{display:grid;gap:16px;min-width:0}
+.card{border:1px solid var(--line);border-radius:24px;background:rgba(18,15,26,.7);backdrop-filter:blur(12px);padding:18px;min-width:0}
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.card-h h3{font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em}
+.card-h .sub{font-size:12.5px;color:var(--dim)}
+.seg{display:inline-flex;padding:3px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.seg button{height:28px;padding:0 12px;border-radius:999px;border:0;background:none;color:var(--muted);cursor:pointer;font-size:12.5px}
+.seg button[aria-pressed="true"]{background:var(--text);color:var(--ink)}
+
+/* chart */
+.chart{position:relative;height:260px}
+.chart svg{width:100%;height:100%;display:block;overflow:visible}
+.chart .tip{position:absolute;top:0;transform:translateX(-50%);pointer-events:none;background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px;padding:6px 9px;font-size:12px;white-space:nowrap;opacity:0;transition:opacity .15s}
+.chart .tip.on{opacity:1}
+.chart .tip b{font-family:var(--f-mono);font-weight:500}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:6px;background:var(--lime)}
+.legend i.ref{background:none;border-top:2px dashed var(--dim);height:0}
+
+/* book + trades */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}}
+.book{display:grid;gap:2px;font-family:var(--f-mono);font-size:12.5px}
+.bhead,.brow{display:grid;grid-template-columns:1fr .7fr 1fr;gap:8px;padding:5px 8px;position:relative}
+.bhead{font-family:var(--f-body);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.bhead span:not(:first-child),.brow span:not(:first-child){text-align:right}
+.brow{border-radius:6px;cursor:pointer;isolation:isolate}
+.brow::before{content:"";position:absolute;right:0;top:0;bottom:0;width:var(--d);z-index:-1;border-radius:6px;opacity:.14}
+.brow.ask::before{background:var(--down)} .brow.bid::before{background:var(--up)}
+.brow.ask span:first-child{color:var(--down)} .brow.bid span:first-child{color:var(--up)}
+.brow:hover{background:rgba(255,255,255,.04)}
+.brow.you span:nth-child(2)::after{content:" you";font-size:10px;color:var(--lime)}
+.spread{display:flex;justify-content:space-between;gap:8px;padding:9px 8px;margin:4px 0;border-block:1px dashed var(--line-2);font-family:var(--f-body);font-size:12.5px;color:var(--muted)}
+.spread b{font-family:var(--f-mono);color:var(--text);font-weight:500}
+.empty-b{padding:10px 8px;color:var(--dim);font-family:var(--f-body);font-size:13px}
+.trades{display:grid;gap:0;font-size:12.5px;max-height:330px;overflow:auto}
+.tr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 10px;padding:9px 2px;border-bottom:1px solid var(--line);align-items:baseline}
+.tr:last-child{border-bottom:0}
+.tr .t{font-family:var(--f-mono);color:var(--dim);font-size:11.5px}
+.tr .w{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.tr .w b{color:var(--text);font-weight:500}
+.tr .a{font-family:var(--f-mono);text-align:right}
+.tr .a small{display:block;color:var(--dim);font-size:11px}
+.tr.new{animation:flash 1.4s var(--ease)}
+@keyframes flash{from{background:rgba(211,215,231,.12)}}
+
+/* side: ticket, position, vote */
+.side{display:grid;gap:16px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 80px)}
+@media (max-width:1080px){.side{position:static}}
+.ticket .tabs{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);margin-bottom:14px}
+.ticket .tabs button{height:40px;border:0;border-radius:12px;background:none;color:var(--muted);font-weight:600;cursor:pointer}
+.ticket .tabs button[aria-selected="true"].b{background:rgba(111,211,166,.14);color:var(--up)}
+.ticket .tabs button[aria-selected="true"].s{background:rgba(242,149,143,.14);color:var(--down)}
+.modes{display:flex;gap:6px;margin-bottom:14px}
+.modes button{flex:1;height:32px;border-radius:10px;border:1px solid var(--line-2);background:none;color:var(--muted);font-size:12.5px;cursor:pointer}
+.modes button[aria-pressed="true"]{border-color:var(--lime);color:var(--text);background:rgba(211,215,231,.06)}
+.fld{display:grid;gap:7px;margin-bottom:14px}
+.fld-h{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--muted)}
+.fld-h b{font-family:var(--f-mono);color:var(--text);font-weight:500;font-size:13px}
+input[type=range]{width:100%;accent-color:var(--lime)}
+.quick{display:flex;gap:6px}
+.quick button{flex:1;height:28px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--muted);font-size:12px;cursor:pointer}
+.quick button:hover{color:var(--text);border-color:var(--line-2)}
+.money{display:flex;align-items:center;height:46px;border-radius:14px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);padding:0 14px;gap:6px}
+.money:focus-within{border-color:var(--muted)}
+.money span{color:var(--dim)}
+.money input{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;font-family:var(--f-mono);font-size:16px}
+.money em{font-style:normal;font-size:12px;color:var(--dim)}
+.gauge{position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--down) 0%,var(--warn) 22%,var(--up) 38%,var(--up) 62%,var(--warn) 78%,var(--down) 100%);opacity:.75;margin-top:4px}
+.gauge i{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--text);border:3px solid var(--ink);transform:translate(-50%,-50%);transition:left .25s var(--ease)}
+.gauge-l{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);font-family:var(--f-mono)}
+.hint{font-size:12.5px;padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line);color:var(--muted)}
+.hint.good{border-color:rgba(111,211,166,.3);color:#BFEBD6}
+.hint.warn{border-color:rgba(242,196,107,.35);color:#F6DDA8}
+.hint.bad{border-color:rgba(242,149,143,.35);color:#F7C4C0}
+.sum{display:grid;gap:7px;margin:14px 0;padding:14px 0;border-block:1px solid var(--line);font-size:13.5px}
+.sum div{display:flex;justify-content:space-between;gap:10px}
+.sum span{color:var(--muted)}
+.sum b{font-family:var(--f-mono);font-weight:500}
+.sum .tot b{font-size:16px;color:var(--text)}
+.after{font-size:12.5px;color:var(--dim);margin-top:10px;display:grid;gap:4px}
+.after b{color:var(--muted);font-weight:500}
+.go{width:100%;height:52px;border-radius:16px;font-size:15px}
+.go.buy{background:linear-gradient(180deg,#9BE7C3,#6FD3A6);color:#0C2A1D;box-shadow:0 10px 30px -12px rgba(111,211,166,.7)}
+.go.sell{background:linear-gradient(180deg,#F8B8B3,#F2958F);color:#3A0F0C;box-shadow:0 10px 30px -12px rgba(242,149,143,.7)}
+.none{padding:18px;border-radius:16px;border:1px dashed var(--line-2);color:var(--muted);font-size:13.5px;text-align:center;display:grid;gap:10px;justify-items:center}
+.pos dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0}
+.pos dt{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.pos dd{margin:2px 0 0;font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:-.02em}
+.mylist{display:grid;gap:6px;margin-top:14px}
+.myl{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line);font-size:12.5px}
+.myl b{font-family:var(--f-mono);font-weight:500}
+.myl button{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:12px}
+.vote{display:grid;gap:10px;font-size:13.5px;color:var(--muted)}
+.vote .vh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.vote .vh b{color:var(--text);font-weight:600}
+.vote .vh span{font-family:var(--f-mono);font-size:12.5px;color:var(--lime)}
+.vbars{display:grid;gap:6px}
+.vbar{display:grid;grid-template-columns:70px minmax(0,1fr) 44px;gap:8px;align-items:center;font-size:12.5px}
+.vbar i{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden}
+.vbar i em{display:block;height:100%;background:var(--lime-2)}
+.vbar .p{font-family:var(--f-mono);text-align:right}
+.vote p.n{font-size:12.5px;line-height:1.5;padding:10px 12px;border-radius:12px;background:rgba(153,179,198,.06);border:1px solid rgba(153,179,198,.2)}
+
+/* rules */
+.rules{padding-block:70px 40px}
+.s-head{display:flex;justify-content:space-between;align-items:end;gap:20px 48px;flex-wrap:wrap;margin-bottom:34px}
+.s-head h2{font-size:clamp(36px,5vw,68px);font-stretch:110%;letter-spacing:-.04em;max-width:12em}
+.s-head h2 em{font-style:normal;color:var(--muted)}
+.s-head p{color:var(--muted);max-width:30em;font-size:16px}
+.paths{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:860px){.paths{grid-template-columns:minmax(0,1fr)}}
+.path{border:1px solid var(--line);border-radius:26px;padding:22px;background:rgba(255,255,255,.02)}
+.path h3{font-size:24px;font-stretch:108%;display:flex;align-items:center;gap:10px}
+.path h3 i{width:10px;height:10px;border-radius:50%;background:var(--pc)}
+.steps{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:0;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px minmax(0,1fr);gap:2px 12px;padding:12px 0;border-top:1px solid var(--line);position:relative}
+.steps li::before{content:counter(s,decimal-leading-zero);font-family:var(--f-mono);font-size:12px;color:var(--pc);padding-top:2px}
+.steps b{font-weight:600}
+.steps span{grid-column:2;color:var(--muted);font-size:14px}
+.rgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+@media (max-width:980px){.rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.rgrid{grid-template-columns:minmax(0,1fr)}}
+.rule{border:1px solid var(--line);border-radius:20px;padding:18px;background:rgba(255,255,255,.02);display:grid;gap:6px;align-content:start}
+.rule .q{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.rule b{font-family:var(--f-display);font-size:21px;font-weight:700;letter-spacing:-.02em;font-stretch:106%}
+.rule p{color:var(--muted);font-size:14px}
+.example{margin-top:16px;border:1px solid rgba(153,179,198,.25);border-radius:22px;padding:20px;background:rgba(153,179,198,.05);display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 18px}
+.example .mono{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);padding-top:3px}
+.example p{color:#C3CBDD}
+.example b{color:var(--text);font-weight:600}
+@media (max-width:620px){.example{grid-template-columns:minmax(0,1fr)}}
+footer{padding-block:28px 48px;color:var(--dim);font-size:12.5px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+footer a{color:var(--muted)}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;background:var(--panel-2);border:1px solid var(--line-2);color:var(--text);padding:12px 18px;border-radius:999px;font-size:13.5px;box-shadow:0 20px 50px -14px rgba(0,0,0,.8);max-width:calc(100vw - 32px)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<div class="page">
+<div class="preview"><div class="wrap"><span><b>Roadmap preview.</b> The share market is not live yet. Everything here runs on demo USDC in your browser.</span><a href="index.html">Back to Vaultline</a></div></div>
+<header class="site">
+  <div class="wrap">
+    <a href="index.html" class="logo" aria-label="Vaultline home"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h5l4 9 4-9h5l-7.2 16H10.2z" fill="#D3D7E7"/><path d="M10 4h4l-2 4.5z" fill="#07060B"/></svg><span>vaultline<i>.</i></span></a>
+    <nav class="crumb" aria-label="Breadcrumb"><a href="#" id="crumbMk">Share market</a><span id="crumbP" hidden></span></nav>
+    <div class="hdr-r"><div class="balance num"><span class="lbl">USDC</span><b id="bal">100,000</b></div></div>
+  </div>
+</header>
+
+<main>
+  <!-- market list -->
+  <section id="list" class="wrap">
+    <div class="hero">
+      <div>
+        <h1>Share Market. <em>Buy into a car that already exists.</em></h1>
+        <p>Every project has its own market. Owners list any part of their share at their price, buyers take all or part of it, and ownership moves the moment the trade settles.</p>
+      </div>
+      <div class="kpis num">
+        <div class="kpi"><span>Traded, 24h</span><b id="kVol">$0</b><small id="kTrades">0 trades</small></div>
+        <div class="kpi"><span>Listed now</span><b id="kListed">$0</b><small id="kLots">0 listings</small></div>
+        <div class="kpi"><span>Projects trading</span><b id="kProj">0</b><small>across three Vaults</small></div>
+        <div class="kpi"><span>Seller fee</span><b>2.5%</b><small>buyers pay no fee</small></div>
+      </div>
+    </div>
+    <div class="mk-bar">
+      <div class="chips" id="vf" role="group" aria-label="Vault filter"></div>
+      <input class="search" id="q" type="search" placeholder="Search car or project" aria-label="Search car or project">
+    </div>
+    <div class="table" role="table" aria-label="Projects">
+      <div class="trow thead" role="row"><span>Project</span><span>Price per 1%</span><span>24h</span><span>vs. value</span><span>Listed</span><span>30 days</span><span></span></div>
+      <div id="rows"></div>
+    </div>
+  </section>
+
+  <!-- project market -->
+  <section id="detail" class="wrap detail" hidden>
+    <button class="back" id="back" type="button">← All projects</button>
+    <div class="dhead" id="dhead"></div>
+    <div class="dgrid">
+      <div class="main">
+        <div class="card">
+          <div class="card-h"><h3>Price per 1%</h3><div class="seg" id="range" role="group" aria-label="Chart range"><button type="button" data-r="7">7D</button><button type="button" data-r="30" aria-pressed="true">30D</button><button type="button" data-r="90">90D</button></div></div>
+          <div class="chart" id="chart"><div class="tip" id="tip"></div></div>
+          <div class="legend"><span><i></i>Trade price</span><span><i class="ref"></i>Reference value</span></div>
+        </div>
+        <div class="two">
+          <div class="card">
+            <div class="card-h"><h3>Order book</h3><span class="sub">Tap a row to fill the ticket</span></div>
+            <div class="book" id="book"></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3>Trades</h3><span class="sub" id="trCount"></span></div>
+            <div class="trades" id="trades"></div>
+          </div>
+        </div>
+      </div>
+      <aside class="side">
+        <div class="card ticket" id="ticket"></div>
+        <div class="card pos" id="pos"></div>
+        <div class="card vote" id="vote"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- rules -->
+  <section class="wrap rules" id="rules" aria-labelledby="rulesH">
+    <div class="s-head">
+      <h2 id="rulesH">How the market works. <em>Start to finish.</em></h2>
+      <p>The full path for a seller and a buyer, from the first listing to the moment the share changes hands.</p>
+    </div>
+    <div class="paths">
+      <div class="path" style="--pc:var(--down)">
+        <h3><i></i>Selling</h3>
+        <ol class="steps">
+          <li><b>Choose how much</b><span>Any part of your share, in steps of 0.5%. Sell 2% of a 10% share and keep the other 8%.</span></li>
+          <li><b>Set your price</b><span>You set the price per 1%. The ticket shows the reference value and where your price sits against it before you list.</span></li>
+          <li><b>Sell now or list</b><span>Sell to the best open offer at once, or list at your price and wait for a buyer.</span></li>
+          <li><b>While it's listed</b><span>The listed part is locked so it can't be sold twice. It still earns Yield and still votes. Cancel any time for free.</span></li>
+          <li><b>A buyer takes it</b><span>All of it or part of it, down to 0.5%. The rest stays listed at the same price.</span></li>
+          <li><b>Settlement</b><span>USDC lands in your balance minus the 2.5% fee. The share leaves your project page. Listings that don't sell expire after 30 days.</span></li>
+        </ol>
+      </div>
+      <div class="path" style="--pc:var(--up)">
+        <h3><i></i>Buying</h3>
+        <ol class="steps">
+          <li><b>Pick a project</b><span>Each car trades on its own. Compare the price per 1% with the reference value and the trade history.</span></li>
+          <li><b>Buy now or make an offer</b><span>Buy now takes the cheapest listings first. An offer sits in the book at your price until a seller accepts it or you cancel it.</span></li>
+          <li><b>See the full cost first</b><span>The ticket shows which listings fill, the average price and the total. Buyers pay no fee.</span></li>
+          <li><b>Pay</b><span>USDC leaves your balance and the trade settles in one step. There's no waiting period.</span></li>
+          <li><b>Own it</b><span>The share appears in My projects at once, with its ownership percentage.</span></li>
+          <li><b>Votes and Yield</b><span>Your voting power counts from the next vote. Yield is paid to whoever holds the share on the payout date.</span></li>
+        </ol>
+      </div>
+    </div>
+    <div class="rgrid">
+      <div class="rule"><span class="q">Part or whole?</span><b>Any part</b><p>Sell any amount from 0.5% up to everything you hold, in 0.5% steps. Buyers can also take part of a listing.</p></div>
+      <div class="rule"><span class="q">Who sets the price?</span><b>The seller</b><p>The seller names the price per 1%. Buyers can also post offers. The book shows both sides, so the spread is visible.</p></div>
+      <div class="rule"><span class="q">Fair price hint</span><b>Reference value</b><p>The car's latest valuation divided by 100. Within 10% of it is marked fair. Beyond 20%, the ticket warns you before you list.</p></div>
+      <div class="rule"><span class="q">Fees</span><b>2.5% on the seller</b><p>Taken from the proceeds when a trade settles. Listing, cancelling and offers are free. Buyers pay no fee.</p></div>
+      <div class="rule"><span class="q">Votes during a sale</span><b>Fixed when a vote opens</b><p>Voting power is counted when a vote opens. A share sold mid-vote still counts for the seller in that vote. The buyer votes from the next one. This stops anyone from buying a vote.</p></div>
+      <div class="rule"><span class="q">Limits</span><b>Max 50% per owner</b><p>No one can buy above half of a car, so no single owner decides a vote alone. Listings last 30 days, and offers last 7.</p></div>
+    </div>
+    <div class="example"><span class="mono">Example</span><p>You hold <b>10%</b> of Project #1847, a 911 with a reference value of <b>$936 per 1%</b>. You list <b>2%</b> at <b>$950</b>. A buyer takes 1.5% the next day: you receive <b>$1,389.38</b> ($1,425 minus the $35.63 fee), and 0.5% stays listed. A vote opened two days ago, so your full 10% still counts in it. The buyer votes with 1.5% from the next vote.</p></div>
+  </section>
+</main>
+<footer><div class="wrap"><span>Concept interface. Projects, prices, owners and trades are examples. Demo USDC has no value.</span><a href="index.html">Vaultline home</a></div></footer>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const money=(v,d)=>'$'+(d?v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):Math.round(v).toLocaleString('en-US'));
+const pct=v=>(+(+v).toFixed(2)).toString()+'%';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,3200); }
+function seed(str){ let h=0; for(const ch of str) h=(h*31+ch.charCodeAt(0))|0; return ()=>((h=Math.imul(h^h>>>15,2246822507)^Math.imul(h^h>>>13,3266489909))>>>0)/4294967296; }
+const R=Math.random, wallet=r=>'0x'+Math.floor((r||R)()*65535).toString(16).padStart(4,'0')+'…'+Math.floor((r||R)()*65535).toString(16).padStart(4,'0');
+const step=v=>Math.round(v*2)/2;
+
+/* ---------- data ---------- */
+const CARS={ '911':['Porsche 911 Carrera',2024], gtr:['Nissan GT-R',2024], m3:['BMW M3 Competition',2022], supra:['Toyota GR Supra',2024], huracan:['Lamborghini Huracán',2023], '750s':['McLaren 750S',2024], sf90:['Ferrari SF90 Stradale',2023], 'ford-gt':['Ford GT',2020], nsx:['Acura NSX Type S',2022], rs6:['Audi RS 6 Avant',2024] };
+const VAULT={street:'Street',track:'Track',collector:'Collector'};
+const RAR=v=>v>=500000?['Legendary','var(--legendary)']:v>=200000?['Epic','var(--epic)']:v>=120000?['Rare','var(--rare)']:v>=60000?['Uncommon','var(--uncommon)']:['Common','var(--common)'];
+const P=[
+  {no:1847,car:'911',vk:'street',vault:90000,idx:1.04,owners:214,mine:10,vote:{h:62,res:{Yield:46,Hold:31,Recycle:23}}},
+  {no:1852,car:'huracan',vk:'track',vault:330000,idx:.97,owners:96,mine:0,vote:null},
+  {no:1839,car:'nsx',vk:'track',vault:180000,idx:1.06,owners:143,mine:2,vote:{h:20,res:{Yield:58,Hold:27,Recycle:15}}},
+  {no:1861,car:'750s',vk:'collector',vault:380000,idx:1.01,owners:41,mine:0,vote:null},
+  {no:1866,car:'ford-gt',vk:'collector',vault:1100000,idx:1.12,owners:18,mine:0,vote:{h:110,res:{Hold:64,Yield:30,Recycle:6}}},
+  {no:1829,car:'m3',vk:'track',vault:100000,idx:.95,owners:122,mine:0,vote:null},
+  {no:1833,car:'supra',vk:'street',vault:50000,idx:1.08,owners:188,mine:0,vote:null},
+  {no:1858,car:'gtr',vk:'track',vault:140000,idx:1.02,owners:131,mine:0,vote:{h:34,res:{Yield:41,Recycle:33,Hold:26}}},
+  {no:1844,car:'sf90',vk:'track',vault:560000,idx:.99,owners:57,mine:0,vote:null},
+  {no:1826,car:'rs6',vk:'track',vault:100000,idx:1.01,owners:109,mine:0,vote:null}
+];
+const DAY=864e5, now0=Date.now();
+P.forEach(p=>{
+  const r=seed('p'+p.no); p.ref=p.vault*p.idx/100; p.name=CARS[p.car][0]; p.year=CARS[p.car][1]; p.id='p'+p.no;
+  /* 90 days of daily closes drifting from purchase price to today's reference */
+  const start=p.vault/100; let v=start; p.hist=[];
+  for(let d=90;d>=0;d--){ const target=start+(p.ref-start)*(1-d/90); v=v+(target-v)*.18+(r()-.5)*p.ref*.022; p.hist.push({t:now0-d*DAY,v}); }
+  p.hist[p.hist.length-1].v=p.ref*(1+(r()-.5)*.03);
+  p.last=p.hist[p.hist.length-1].v; p.prev=p.hist[p.hist.length-2].v;
+  p.asks=Array.from({length:4+Math.floor(r()*4)},()=>({id:'a'+Math.floor(r()*1e9),who:wallet(r),pct:step(.5+r()*4),per:Math.round(p.ref*(1+.005+r()*.11))}));
+  p.bids=Array.from({length:3+Math.floor(r()*4)},()=>({id:'b'+Math.floor(r()*1e9),who:wallet(r),pct:step(.5+r()*3),per:Math.round(p.ref*(1-.01-r()*.09))}));
+  p.trades=Array.from({length:14},(_,i)=>{ const h=p.hist[p.hist.length-1-Math.floor(i/3)]; return {t:now0-i*(2+r()*5)*3600e3,buyer:wallet(r),seller:wallet(r),pct:step(.5+r()*3),per:Math.round(h.v*(1+(r()-.5)*.02))}; });
+  p.vol24=p.trades.filter(t=>now0-t.t<DAY).reduce((s,t)=>s+t.pct*t.per,0);
+  if(p.vote) p.vote.ends=now0+p.vote.h*3600e3;
+});
+const byId=Object.fromEntries(P.map(p=>[p.id,p]));
+const S={usdc:100000, vf:'all', q:'', cur:null, side:'buy', bmode:'now', range:30, buyPct:1, offerPct:1, offerPer:0, sellPct:1, sellPer:0, sellMode:'list'};
+const FEE=.025, CAP=50, MINLOT=.5;
+const listed=p=>p.asks.filter(a=>a.you).reduce((s,a)=>s+a.pct,0);
+const free=p=>Math.max(0,p.mine-listed(p));
+const asksSorted=p=>p.asks.slice().sort((a,b)=>a.per-b.per);
+const bidsSorted=p=>p.bids.slice().sort((a,b)=>b.per-a.per);
+const prem=(per,p)=>(per/p.ref-1)*100;
+
+/* ---------- market list ---------- */
+function spark(p){ const h=p.hist.slice(-30), mn=Math.min(...h.map(x=>x.v)), mx=Math.max(...h.map(x=>x.v)), up=p.last>=h[0].v;
+  const pts=h.map((x,i)=>`${(i/(h.length-1)*120).toFixed(1)},${(30-(x.v-mn)/((mx-mn)||1)*26).toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 120 34" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${up?'var(--up)':'var(--down)'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`; }
+function renderList(){
+  $('vf').innerHTML=[['all','All'],...Object.entries(VAULT)].map(([k,n])=>`<button type="button" class="fchip" data-v="${k}" aria-pressed="${S.vf===k}">${n}</button>`).join('');
+  const q=S.q.trim().toLowerCase();
+  const rows=P.filter(p=>(S.vf==='all'||p.vk===S.vf)&&(!q||(p.name+' #'+p.no).toLowerCase().includes(q))).sort((a,b)=>(b.mine-a.mine)||(b.vol24-a.vol24));
+  $('rows').innerHTML=rows.length?rows.map(p=>{ const ch=(p.last/p.prev-1)*100, pr=prem(p.last,p), r=RAR(p.vault), lst=p.asks.reduce((s,a)=>s+a.pct,0);
+    return `<div class="trow prow" role="row" tabindex="0" data-p="${p.id}" style="--c:${r[1]}">
+      <div class="pcell"><div class="pthumb"><img src="cars/${p.car}.webp" alt="" loading="lazy"></div><div class="pname"><b>${esc(p.name)}${p.mine?`<span class="owned">You own ${pct(p.mine)}</span>`:''}</b><span>#${p.no} · ${VAULT[p.vk]} Vault · <span class="chip" style="--c:${r[1]}">${r[0]}</span></span></div></div>
+      <div class="v r num">${money(p.last)}<small>${money(p.last*100)} car</small></div>
+      <div class="v r num c-24 ${ch>=0?'up':'down'}">${ch>=0?'+':''}${ch.toFixed(1)}%</div>
+      <div class="v r num c-ref ${Math.abs(pr)<=10?'':'down'}">${pr>=0?'+':''}${pr.toFixed(1)}%<small>value ${money(p.ref)}</small></div>
+      <div class="v r num c-list">${pct(lst)}<small>${p.asks.length} listing${p.asks.length===1?'':'s'}</small></div>
+      <div class="r c-spark">${spark(p)}</div>
+      <div class="r c-btn"><button type="button" class="btn btn-ghost btn-sm">Trade</button></div></div>`; }).join('') : `<div class="trow"><span style="color:var(--muted)">No project matches that search.</span></div>`;
+  const vol=P.reduce((s,p)=>s+p.vol24,0), lv=P.reduce((s,p)=>s+p.asks.reduce((a,x)=>a+x.pct*x.per,0),0);
+  $('kVol').textContent=money(vol); $('kTrades').textContent=P.reduce((s,p)=>s+p.trades.filter(t=>Date.now()-t.t<DAY).length,0)+' trades';
+  $('kListed').textContent=money(lv); $('kLots').textContent=P.reduce((s,p)=>s+p.asks.length,0)+' listings'; $('kProj').textContent=P.length;
+}
+$('vf').addEventListener('click',e=>{ const b=e.target.closest('.fchip'); if(!b) return; S.vf=b.dataset.v; renderList(); });
+$('q').addEventListener('input',e=>{ S.q=e.target.value; renderList(); });
+$('rows').addEventListener('click',e=>{ const r=e.target.closest('.prow'); if(r) open(r.dataset.p); });
+$('rows').addEventListener('keydown',e=>{ const r=e.target.closest('.prow'); if(r&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); open(r.dataset.p); } });
+
+/* ---------- routing ---------- */
+function open(id){ if(location.hash!=='#'+id) location.hash=id; else route(); }
+function route(){
+  const id=location.hash.slice(1), p=byId[id];
+  $('list').hidden=!!p; $('detail').hidden=!p; $('crumbP').hidden=!p;
+  if(p){ S.cur=p; S.buyPct=Math.min(1,maxBuy(p))||.5; S.offerPer=Math.round(p.ref*.97); S.sellPer=Math.round(p.ref); S.sellPct=Math.min(1,free(p))||.5; $('crumbP').textContent='/ #'+p.no+' '+p.name; renderDetail(); scrollTo({top:0,behavior:'auto'}); }
+  else { S.cur=null; renderList(); }
+}
+addEventListener('hashchange',route);
+$('back').addEventListener('click',()=>{ location.hash=''; });
+$('crumbMk').addEventListener('click',e=>{ e.preventDefault(); location.hash=''; });
+
+/* ---------- detail ---------- */
+function renderDetail(){ renderHead(); renderChart(); renderBook(); renderTrades(); renderTicket(); renderPos(); renderVote(); }
+function renderHead(){
+  const p=S.cur, ch=(p.last/p.prev-1)*100, pr=prem(p.last,p), r=RAR(p.vault);
+  $('dhead').style.setProperty('--c',r[1]);
+  $('dhead').innerHTML=`<div class="dimg"><img src="cars/${p.car}.webp" alt="${esc(p.name)}"></div>
+    <div class="dmeta"><div class="k"><span>Project #${p.no}</span><span>·</span><span>${VAULT[p.vk]} Vault</span><span class="chip" style="--c:${r[1]}">${r[0]}</span><span>· ${p.owners} owners</span></div>
+      <h2>${esc(p.name)}</h2><div class="k num"><span>Bought for ${money(p.vault)}</span><span>·</span><span>Valued at ${money(p.ref*100)}</span><span class="${p.idx>=1?'up':'down'}">${p.idx>=1?'+':''}${((p.idx-1)*100).toFixed(1)}%</span></div></div>
+    <div class="dprice num"><span>Last price per 1%</span><b>${money(p.last)}</b><small class="${ch>=0?'up':'down'}">${ch>=0?'+':''}${ch.toFixed(1)}% today</small><small style="color:var(--muted)">${pr>=0?'+':''}${pr.toFixed(1)}% vs. value ${money(p.ref)}</small></div>`;
+}
+function renderChart(){
+  const p=S.cur, el=$('chart'), W=el.clientWidth||600, H=260, padL=8, padR=56, padT=12, padB=24;
+  const h=p.hist.slice(-(S.range+1)); const vals=h.map(x=>x.v).concat([p.ref]);
+  let mn=Math.min(...vals), mx=Math.max(...vals); const pad=(mx-mn)*.15||p.ref*.02; mn-=pad; mx+=pad;
+  const X=i=>padL+i/(h.length-1)*(W-padL-padR), Y=v=>padT+(1-(v-mn)/(mx-mn))*(H-padT-padB);
+  const line=h.map((x,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(x.v).toFixed(1)}`).join(' ');
+  const area=line+` L${X(h.length-1).toFixed(1)} ${H-padB} L${X(0).toFixed(1)} ${H-padB} Z`;
+  const ticks=4, grid=Array.from({length:ticks+1},(_,i)=>mn+(mx-mn)*i/ticks);
+  const up=h[h.length-1].v>=h[0].v, col=up?'var(--up)':'var(--down)';
+  const fmtD=t=>{ const d=new Date(t); return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}); };
+  el.querySelector('svg')?.remove();
+  el.insertAdjacentHTML('afterbegin',`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Price per 1% over ${S.range} days">
+    <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${up?'#6FD3A6':'#F2958F'}" stop-opacity=".22"/><stop offset="1" stop-color="${up?'#6FD3A6':'#F2958F'}" stop-opacity="0"/></linearGradient></defs>
+    ${grid.map(v=>`<line x1="${padL}" x2="${W-padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="rgba(255,255,255,.06)"/><text x="${W-padR+8}" y="${(Y(v)+4).toFixed(1)}" fill="#6B7C9E" font-size="11" font-family="Geist Mono, monospace">${money(v)}</text>`).join('')}
+    <line x1="${padL}" x2="${W-padR}" y1="${Y(p.ref).toFixed(1)}" y2="${Y(p.ref).toFixed(1)}" stroke="#6B7C9E" stroke-dasharray="4 4"/>
+    <path d="${area}" fill="url(#ga)"/><path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <circle cx="${X(h.length-1).toFixed(1)}" cy="${Y(h[h.length-1].v).toFixed(1)}" r="4" fill="${col}" stroke="#07060B" stroke-width="2"/>
+    <text x="${padL}" y="${H-6}" fill="#6B7C9E" font-size="11" font-family="Geist Mono, monospace">${fmtD(h[0].t)}</text><text x="${W-padR}" y="${H-6}" text-anchor="end" fill="#6B7C9E" font-size="11" font-family="Geist Mono, monospace">Today</text>
+    <line id="cx" x1="0" x2="0" y1="${padT}" y2="${H-padB}" stroke="rgba(255,255,255,.25)" opacity="0"/><circle id="cd" r="4" fill="#ECEEF6" opacity="0"/></svg>`);
+  const svg=el.querySelector('svg'), tip=$('tip');
+  svg.onpointermove=e=>{ const r=svg.getBoundingClientRect(), x=(e.clientX-r.left)/r.width*W; const i=Math.max(0,Math.min(h.length-1,Math.round((x-padL)/(W-padL-padR)*(h.length-1)))); const pt=h[i];
+    svg.querySelector('#cx').setAttribute('x1',X(i)); svg.querySelector('#cx').setAttribute('x2',X(i)); svg.querySelector('#cx').setAttribute('opacity',1);
+    const c=svg.querySelector('#cd'); c.setAttribute('cx',X(i)); c.setAttribute('cy',Y(pt.v)); c.setAttribute('opacity',1);
+    tip.style.left=(X(i)/W*100)+'%'; tip.innerHTML=`${fmtD(pt.t)} · <b>${money(pt.v)}</b> · ${((pt.v/p.ref-1)*100).toFixed(1)}% vs. value`; tip.classList.add('on'); };
+  svg.onpointerleave=()=>{ tip.classList.remove('on'); svg.querySelector('#cx').setAttribute('opacity',0); svg.querySelector('#cd').setAttribute('opacity',0); };
+}
+$('range').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; S.range=+b.dataset.r; $('range').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b)); renderChart(); });
+addEventListener('resize',()=>{ if(S.cur) renderChart(); });
+
+function renderBook(){
+  const p=S.cur, A=asksSorted(p).slice(0,7).reverse(), B=bidsSorted(p).slice(0,7), mx=Math.max(1,...A.map(a=>a.pct),...B.map(b=>b.pct));
+  const row=(o,k)=>`<div class="brow ${k} ${o.you?'you':''}" style="--d:${(o.pct/mx*100).toFixed(0)}%" data-k="${k}" data-per="${o.per}" title="${o.who}"><span>${money(o.per)}</span><span>${pct(o.pct)}</span><span>${money(o.pct*o.per)}</span></div>`;
+  const ba=asksSorted(p)[0], bb=bidsSorted(p)[0];
+  $('book').innerHTML=`<div class="bhead"><span>Price per 1%</span><span>Share</span><span>Total</span></div>
+    ${A.length?A.map(a=>row(a,'ask')).join(''):'<div class="empty-b">No listings right now.</div>'}
+    <div class="spread"><span>Spread <b>${ba&&bb?money(ba.per-bb.per):'–'}</b></span><span>Value <b>${money(p.ref)}</b></span></div>
+    ${B.length?B.map(b=>row(b,'bid')).join(''):'<div class="empty-b">No offers right now.</div>'}`;
+}
+$('book').addEventListener('click',e=>{ const r=e.target.closest('.brow'); if(!r) return; const per=+r.dataset.per;
+  if(r.dataset.k==='ask'){ S.side='buy'; S.bmode='now'; } else { if(S.cur.mine>0){ S.side='sell'; S.sellMode='now'; } else { S.side='buy'; S.bmode='offer'; S.offerPer=per; } }
+  if(S.side==='sell'&&S.sellMode!=='now') S.sellPer=per; renderTicket(); if(innerWidth<1080) $('ticket').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}); });
+
+function renderTrades(fresh){
+  const p=S.cur, T=p.trades.slice().sort((a,b)=>b.t-a.t).slice(0,30);
+  const ago=t=>{ const m=Math.max(0,Math.round((Date.now()-t)/60000)); return m<1?'now':m<60?m+'m':m<1440?Math.round(m/60)+'h':Math.round(m/1440)+'d'; };
+  $('trCount').textContent=p.trades.length+' trades';
+  $('trades').innerHTML=T.map((t,i)=>`<div class="tr ${fresh&&i===0?'new':''}"><span class="t">${ago(t.t)}</span><span class="w">${t.buyer==='You'?'<b>You</b>':t.buyer} bought from ${t.seller==='You'?'<b>you</b>':t.seller}</span><span class="a num">${pct(t.pct)} · ${money(t.per)}<small>${money(t.pct*t.per)}</small></span></div>`).join('');
+}
+
+/* ---------- ticket ---------- */
+function maxBuy(p){ const avail=p.asks.filter(a=>!a.you).reduce((s,a)=>s+a.pct,0); return Math.max(0,Math.min(avail,CAP-p.mine)); }
+function fillBuy(p,amt){ let left=amt, cost=0; const used=[]; for(const a of asksSorted(p).filter(a=>!a.you)){ if(left<=0) break; const take=Math.min(a.pct,left); used.push({a,take}); cost+=take*a.per; left=+(left-take).toFixed(2); } return {used,cost,filled:+(amt-left).toFixed(2)}; }
+function fillSell(p,amt){ let left=amt, gross=0; const used=[]; for(const b of bidsSorted(p).filter(b=>!b.you)){ if(left<=0) break; const take=Math.min(b.pct,left); used.push({b,take}); gross+=take*b.per; left=+(left-take).toFixed(2); } return {used,gross,filled:+(amt-left).toFixed(2)}; }
+function band(pr){ const a=Math.abs(pr); return a<=10?['good','Fair: within 10% of the reference value.']:a<=20?['warn',pr>0?'High: buyers usually pay closer to the reference value.':'Low: you would sell well under the reference value.']:['bad',pr>0?'Far above value: this listing is unlikely to sell.':'Far below value: check the price before you list.']; }
+function voteNote(p,buying){ if(!p.vote) return 'No vote is open, so voting power moves with the share right away.'; return buying?'A vote is open. Your new share votes from the next vote.':'A vote is open. Your full share still counts for you in it, even if this sells.'; }
+function slider(id,val,max,label){ return `<div class="fld"><div class="fld-h"><span>${label}</span><b id="${id}V">${pct(val)}</b></div><input type="range" id="${id}" min="${MINLOT}" max="${Math.max(MINLOT,max)}" step="0.5" value="${val}" ${max<MINLOT?'disabled':''} aria-label="${label}"><div class="quick" data-for="${id}">${[.25,.5,1].map(f=>`<button type="button" data-f="${f}">${f===1?'Max':f*100+'%'}</button>`).join('')}</div></div>`; }
+function renderTicket(){
+  const p=S.cur, t=$('ticket'); let h=`<div class="tabs" role="tablist"><button type="button" class="b" role="tab" aria-selected="${S.side==='buy'}" data-side="buy">Buy</button><button type="button" class="s" role="tab" aria-selected="${S.side==='sell'}" data-side="sell">Sell</button></div>`;
+  if(S.side==='buy'){
+    h+=`<div class="modes"><button type="button" data-bm="now" aria-pressed="${S.bmode==='now'}">Buy now</button><button type="button" data-bm="offer" aria-pressed="${S.bmode==='offer'}">Make an offer</button></div>`;
+    if(S.bmode==='now'){
+      const mx=maxBuy(p); S.buyPct=Math.min(Math.max(MINLOT,S.buyPct),Math.max(MINLOT,mx)); const f=fillBuy(p,S.buyPct), avg=f.filled?f.cost/f.filled:0, pr=avg?prem(avg,p):0;
+      h+= mx<MINLOT ? `<div class="none">${p.mine>=CAP?'You already hold the 50% maximum for one owner.':'Nothing is listed right now. Make an offer and sellers can accept it.'}</div>` :
+        slider('buyPct',S.buyPct,mx,'Share to buy')+
+        `<div class="hint ${band(pr)[0]}">Average ${money(avg,1)} per 1%, ${pr>=0?'+':''}${pr.toFixed(1)}% vs. value. Fills ${f.used.length} listing${f.used.length===1?'':'s'}, cheapest first.</div>
+        <div class="sum num"><div><span>${pct(f.filled)} × ${money(avg,1)}</span><b>${money(f.cost,1)}</b></div><div><span>Buyer fee</span><b>$0.00</b></div><div class="tot"><span>You pay</span><b>${money(f.cost,1)}</b></div></div>
+        <button type="button" class="btn go buy" id="go" ${f.cost>S.usdc?'disabled':''}>${f.cost>S.usdc?'Not enough USDC':`Buy ${pct(f.filled)} for ${money(f.cost)}`}</button>
+        <div class="after"><span>After this you own <b>${pct(p.mine+f.filled)}</b> of #${p.no}.</span><span>${voteNote(p,true)}</span></div>`;
+    } else {
+      const mx=Math.max(MINLOT,CAP-p.mine), pr=prem(S.offerPer,p), tot=S.offerPct*S.offerPer;
+      h+=slider('offerPct',Math.min(S.offerPct,mx),mx,'Share you want')+
+        `<div class="fld"><div class="fld-h"><span>Your price per 1%</span><b>${pr>=0?'+':''}${pr.toFixed(1)}% vs. value</b></div><label class="money"><span>$</span><input id="offerPer" inputmode="numeric" value="${S.offerPer}" aria-label="Offer price per 1%"><em>value ${money(p.ref)}</em></label></div>
+        <div class="hint">Your offer sits in the order book for 7 days. Any owner can accept all or part of it. The USDC stays in your balance until it fills.</div>
+        <div class="sum num"><div><span>${pct(S.offerPct)} × ${money(S.offerPer)}</span><b>${money(tot,1)}</b></div><div class="tot"><span>You pay if it fills</span><b>${money(tot,1)}</b></div></div>
+        <button type="button" class="btn go buy" id="go" ${tot>S.usdc||!(S.offerPer>0)?'disabled':''}>Place offer</button>`;
+    }
+  } else {
+    if(p.mine<=0){ h+=`<div class="none"><span>You don't own a share of #${p.no} yet.</span><button type="button" class="btn btn-ghost btn-sm" data-side="buy">Buy a share</button></div>`; }
+    else {
+      const fr=free(p);
+      h+=`<div class="modes"><button type="button" data-sm="list" aria-pressed="${S.sellMode==='list'}">List at my price</button><button type="button" data-sm="now" aria-pressed="${S.sellMode==='now'}">Sell to best offer</button></div>`;
+      if(fr<MINLOT){ h+=`<div class="none">All of your share is already listed. Cancel a listing to change it.</div>`; }
+      else if(S.sellMode==='list'){
+        S.sellPct=Math.min(Math.max(MINLOT,S.sellPct),fr); const pr=prem(S.sellPer,p), b=band(pr), gross=S.sellPct*S.sellPer, fee=gross*FEE, pos=Math.max(0,Math.min(100,50+pr*2.5));
+        const crosses=bidsSorted(p).filter(x=>!x.you).some(x=>x.per>=S.sellPer);
+        h+=slider('sellPct',S.sellPct,fr,`Share to sell, of ${pct(fr)} free`)+
+          `<div class="fld"><div class="fld-h"><span>Price per 1%</span><b>${pr>=0?'+':''}${pr.toFixed(1)}% vs. value</b></div><label class="money"><span>$</span><input id="sellPer" inputmode="numeric" value="${S.sellPer}" aria-label="Price per 1%"><em>value ${money(p.ref)}</em></label>
+            <div class="gauge" aria-hidden="true"><i style="left:${pos}%"></i></div><div class="gauge-l"><span>−20%</span><span>value</span><span>+20%</span></div></div>
+          <div class="hint ${b[0]}">${b[1]}${crosses?' An open offer already meets this price, so part of it sells at once.':''}</div>
+          <div class="sum num"><div><span>${pct(S.sellPct)} × ${money(S.sellPer)}</span><b>${money(gross,1)}</b></div><div><span>Fee 2.5%</span><b>−${money(fee,1)}</b></div><div class="tot"><span>You receive when it sells</span><b>${money(gross-fee,1)}</b></div></div>
+          <button type="button" class="btn go sell" id="go" ${!(S.sellPer>0)?'disabled':''}>List ${pct(S.sellPct)} at ${money(S.sellPer)}</button>
+          <div class="after"><span>While listed, the share still earns Yield and still votes. Cancel any time.</span><span>${voteNote(p,false)}</span></div>`;
+      } else {
+        const bids=p.bids.filter(x=>!x.you).reduce((s,x)=>s+x.pct,0), mx=Math.min(fr,bids); S.sellPct=Math.min(Math.max(MINLOT,S.sellPct),Math.max(MINLOT,mx));
+        if(mx<MINLOT){ h+=`<div class="none">No open offers right now. List at your price instead.</div>`; }
+        else { const f=fillSell(p,S.sellPct), avg=f.gross/f.filled, pr=prem(avg,p), fee=f.gross*FEE;
+          h+=slider('sellPct',S.sellPct,mx,'Share to sell now')+
+          `<div class="hint ${band(pr)[0]}">Average ${money(avg,1)} per 1%, ${pr>=0?'+':''}${pr.toFixed(1)}% vs. value. Fills ${f.used.length} offer${f.used.length===1?'':'s'}, highest first.</div>
+          <div class="sum num"><div><span>${pct(f.filled)} × ${money(avg,1)}</span><b>${money(f.gross,1)}</b></div><div><span>Fee 2.5%</span><b>−${money(fee,1)}</b></div><div class="tot"><span>You receive now</span><b>${money(f.gross-fee,1)}</b></div></div>
+          <button type="button" class="btn go sell" id="go">Sell ${pct(f.filled)} now</button>
+          <div class="after"><span>After this you own <b>${pct(p.mine-f.filled)}</b> of #${p.no}.</span><span>${voteNote(p,false)}</span></div>`; }
+      }
+    }
+  }
+  t.innerHTML=h;
+}
+$('ticket').addEventListener('click',e=>{
+  const s=e.target.closest('[data-side]'); if(s){ S.side=s.dataset.side; renderTicket(); return; }
+  const bm=e.target.closest('[data-bm]'); if(bm){ S.bmode=bm.dataset.bm; renderTicket(); return; }
+  const sm=e.target.closest('[data-sm]'); if(sm){ S.sellMode=sm.dataset.sm; renderTicket(); return; }
+  const q=e.target.closest('.quick button'); if(q){ const id=q.parentElement.dataset.for, inp=$(id); S[id]=Math.max(MINLOT,step(+inp.max*+q.dataset.f)); renderTicket(); return; }
+  if(e.target.closest('#go')) execute();
+});
+$('ticket').addEventListener('input',e=>{
+  const id=e.target.id;
+  if(e.target.type==='range'){ S[id]=+e.target.value; renderTicket(); const el=$(id); if(el) el.focus(); return; }
+  if(id==='sellPer'||id==='offerPer'){ const v=+e.target.value.replace(/[^\d]/g,''); S[id]=v; const pos=e.target.selectionStart; renderTicket(); const el=$(id); if(el){ el.focus(); try{ el.setSelectionRange(pos,pos); }catch(_){} } }
+});
+
+/* ---------- execution ---------- */
+function trade(p,t){ p.trades.push(t); p.last=t.per; p.hist[p.hist.length-1].v=t.per; if(Date.now()-t.t<DAY) p.vol24+=t.pct*t.per; }
+function execute(){
+  const p=S.cur;
+  if(S.side==='buy' && S.bmode==='now'){
+    const f=fillBuy(p,S.buyPct); if(!f.filled||f.cost>S.usdc) return;
+    f.used.forEach(({a,take})=>{ a.pct=+(a.pct-take).toFixed(2); trade(p,{t:Date.now(),buyer:'You',seller:a.who,pct:take,per:a.per}); });
+    p.asks=p.asks.filter(a=>a.pct>=MINLOT-1e-9); S.usdc-=f.cost; p.mine=+(p.mine+f.filled).toFixed(2);
+    toast(`Bought ${pct(f.filled)} of #${p.no} for ${money(f.cost)}. It's in your projects now.`);
+  } else if(S.side==='buy'){
+    const o={id:'b'+Date.now(),who:'You',you:true,pct:S.offerPct,per:S.offerPer}; p.bids.push(o);
+    toast(`Offer placed: ${pct(o.pct)} at ${money(o.per)} per 1%.`);
+    if(o.per>=p.ref*.98) setTimeout(()=>{ if(!p.bids.includes(o)) return; const cost=o.pct*o.per; if(cost>S.usdc) return; p.bids=p.bids.filter(x=>x!==o); S.usdc-=cost; p.mine=+(p.mine+o.pct).toFixed(2); trade(p,{t:Date.now(),buyer:'You',seller:wallet(),pct:o.pct,per:o.per}); toast(`An owner accepted your offer: ${pct(o.pct)} of #${p.no}.`); refresh(true); },reduce?600:5000);
+  } else if(S.sellMode==='now'){
+    const f=fillSell(p,S.sellPct); if(!f.filled) return;
+    f.used.forEach(({b,take})=>{ b.pct=+(b.pct-take).toFixed(2); trade(p,{t:Date.now(),buyer:b.who,seller:'You',pct:take,per:b.per}); });
+    p.bids=p.bids.filter(b=>b.pct>=MINLOT-1e-9); const net=f.gross*(1-FEE); S.usdc+=net; p.mine=+(p.mine-f.filled).toFixed(2);
+    toast(`Sold ${pct(f.filled)} for ${money(net,1)} after the 2.5% fee.`);
+  } else {
+    let amt=S.sellPct; const per=S.sellPer; let got=0, sold=0;
+    for(const b of bidsSorted(p).filter(b=>!b.you&&b.per>=per)){ if(amt<=0) break; const take=Math.min(b.pct,amt); b.pct=+(b.pct-take).toFixed(2); amt=+(amt-take).toFixed(2); sold+=take; got+=take*b.per; trade(p,{t:Date.now(),buyer:b.who,seller:'You',pct:take,per:b.per}); }
+    p.bids=p.bids.filter(b=>b.pct>=MINLOT-1e-9);
+    if(sold){ S.usdc+=got*(1-FEE); p.mine=+(p.mine-sold).toFixed(2); }
+    if(amt>=MINLOT){ const l={id:'a'+Date.now(),who:'You',you:true,pct:amt,per}; p.asks.push(l);
+      if(per<=p.ref*1.05) setTimeout(()=>{ if(!p.asks.includes(l)) return; const take=l.pct>=2?step(l.pct*.6):l.pct; l.pct=+(l.pct-take).toFixed(2); if(l.pct<MINLOT) p.asks=p.asks.filter(x=>x!==l);
+        S.usdc+=take*per*(1-FEE); p.mine=+(p.mine-take).toFixed(2); trade(p,{t:Date.now(),buyer:wallet(),seller:'You',pct:take,per}); toast(`A buyer took ${pct(take)} of your listing. ${money(take*per*(1-FEE),1)} is in your balance.`); refresh(true); },reduce?600:6000); }
+    toast(sold?`Sold ${pct(sold)} to open offers, listed ${pct(amt)} at ${money(per)}.`:`Listed ${pct(amt)} of #${p.no} at ${money(per)} per 1%.`);
+  }
+  refresh(true);
+}
+function refresh(fresh,passive){ $('bal').textContent=Math.round(S.usdc).toLocaleString('en-US'); if(S.cur){ renderHead(); renderChart(); renderBook(); renderTrades(fresh); if(!(passive && $('ticket').contains(document.activeElement))) renderTicket(); renderPos(); } else renderList(); }
+
+/* ---------- position + vote ---------- */
+function renderPos(){
+  const p=S.cur, mine=P.filter(x=>x.mine>0), val=p.mine*p.ref, cost=p.mine*p.vault/100, gain=val-cost, my=p.asks.filter(a=>a.you).concat(p.bids.filter(b=>b.you).map(b=>({...b,bid:true})));
+  $('pos').innerHTML=`<div class="card-h"><h3>Your position</h3><span class="sub num">USDC ${Math.round(S.usdc).toLocaleString('en-US')}</span></div>
+    <dl class="num"><div><dt>Share</dt><dd>${pct(p.mine)}</dd></div><div><dt>Value</dt><dd>${money(val)}</dd></div><div><dt>Voting power</dt><dd>${pct(p.mine)}</dd></div><div><dt>Since purchase</dt><dd class="${gain>=0?'up':'down'}">${p.mine?(gain>=0?'+':'−')+money(Math.abs(gain)):'–'}</dd></div></dl>
+    ${my.length?`<div class="mylist">${my.map(o=>`<div class="myl"><span>${o.bid?'Offer':'Listing'} <b>${pct(o.pct)}</b> at <b>${money(o.per)}</b></span><button type="button" data-cancel="${o.id}">Cancel</button></div>`).join('')}</div>`:''}
+    ${mine.length>1||(mine.length===1&&mine[0]!==p)?`<p style="font-size:12.5px;color:var(--dim);margin-top:12px">Also yours: ${mine.filter(x=>x!==p).map(x=>`<a href="#${x.id}">#${x.no} ${pct(x.mine)}</a>`).join(', ')}</p>`:''}`;
+}
+$('pos').addEventListener('click',e=>{ const b=e.target.closest('[data-cancel]'); if(!b) return; const p=S.cur; p.asks=p.asks.filter(a=>a.id!==b.dataset.cancel); p.bids=p.bids.filter(x=>x.id!==b.dataset.cancel); toast('Cancelled. Nothing was charged.'); refresh(); });
+function renderVote(){
+  const p=S.cur, v=p.vote;
+  if(!v){ $('vote').innerHTML=`<div class="vh"><b>No vote open</b></div><p class="n">Voting power moves with the share as soon as a trade settles. The next vote counts whoever holds the share when it opens.</p>`; return; }
+  const left=Math.max(0,v.ends-Date.now()), d=Math.floor(left/DAY), hh=Math.floor(left%DAY/3600e3);
+  $('vote').innerHTML=`<div class="vh"><b>Owner vote open</b><span>closes in ${d?d+'d ':''}${hh}h</span></div>
+    <div class="vbars">${Object.entries(v.res).map(([k,x])=>`<div class="vbar"><span>${k}</span><i><em style="width:${x}%"></em></i><span class="p">${x}%</span></div>`).join('')}</div>
+    <p class="n">Voting power for this vote was fixed when it opened. Shares sold now still count for their seller here. Buyers vote from the next one.</p>`;
+}
+
+/* ---------- other traders, so the book moves ---------- */
+setInterval(()=>{
+  if(document.hidden) return; const p=P[Math.floor(R()*P.length)];
+  if(R()<.55 && p.asks.filter(a=>!a.you).length>2){ const a=asksSorted(p).filter(a=>!a.you)[0]; const take=Math.min(a.pct,step(.5+R()*1.5)); a.pct=+(a.pct-take).toFixed(2); if(a.pct<MINLOT) p.asks=p.asks.filter(x=>x!==a); trade(p,{t:Date.now(),buyer:wallet(),seller:a.who,pct:take,per:a.per}); }
+  else p.asks.push({id:'a'+Date.now(),who:wallet(),pct:step(.5+R()*3),per:Math.round(p.ref*(1+.01+R()*.1))});
+  if(S.cur===p) refresh(true,true); else if(!S.cur) renderList();
+},reduce?12000:5500);
+
+route();
+})();
+</script>
+</body>
+</html>
