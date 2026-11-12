@@ -1351,6 +1351,52 @@ html.car3d-ready .show-fb{opacity:0}
 .pool-foot p{color:var(--muted);font-size:13.5px;max-width:60em}
 .pool-foot b{color:var(--text)}
 @media (max-width:640px){.pool{padding:14px;border-radius:22px}.pool-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.pc-img{height:84px}.pc-p{font-size:20px}.pc-y,.pc-tag{display:none}.pool-stats{gap:18px}.pool-stats dd{font-size:18px}}
+
+/* ===== Boss pass 1: compact hero, split car, bigger hint, guide cards ===== */
+.hero{padding-block:26px 34px}
+.hero h1{font-size:clamp(34px,5vw,76px);line-height:.98;letter-spacing:-.04em}
+@media (min-width:761px){.hero h1 .l1,.hero h1 .l2{display:inline}.hero h1 .l1{margin-right:.25em}}
+.hero .lede{margin-top:14px;font-size:clamp(15px,1.3vw,17px);max-width:44em}
+.hero-ctas{margin-top:20px}
+.hero-ctas .btn{height:50px}
+@media (min-width:761px){.stage{margin-top:0;aspect-ratio:16/7.6}}
+@media (max-width:760px){.split-key{gap:6px 16px;font-size:12.5px}.hero-hint{font-size:15px}}
+.hero-hint{font-size:16px;gap:10px;margin-top:10px;color:var(--muted);font-weight:500}
+.hero-hint svg{width:22px;height:22px}
+.drag-hint{font-size:15px}
+.drag-hint svg{width:20px;height:20px}
+.split-key{display:none;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:12px;font-size:13.5px;color:var(--muted)}
+html.car3d-ready .split-key{display:flex}
+.split-key span{display:inline-flex;align-items:center;gap:8px}
+.split-key i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.split-key .k-real i{background:linear-gradient(135deg,#D3D7E7,#8FB2D2)}
+.split-key .k-grid i{border:1px solid #99B3C6;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(153,179,198,.7) 3px 4px),repeating-linear-gradient(90deg,transparent 0 3px,rgba(153,179,198,.7) 3px 4px)}
+
+.guide-kick{margin:46px 0 14px;text-align:left;font-family:var(--f-display);font-size:clamp(22px,2.2vw,30px);font-weight:700;letter-spacing:-.025em}
+.guide-kick em{font-style:normal;color:var(--muted)}
+.facts{margin-top:0;gap:16px;align-items:stretch;position:relative;z-index:2}
+.guide-kick{position:relative;z-index:2}
+.fact{flex-direction:column;gap:18px;padding:30px 28px 28px;border-radius:26px;min-height:300px;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,rgba(38,42,64,.92),rgba(16,14,24,.94) 60%);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line-2);
+  transition:transform .45s var(--ease),border-color .45s var(--ease),background .45s var(--ease),box-shadow .45s var(--ease)}
+.fact .fn{position:absolute;top:22px;right:26px;font-family:var(--f-mono);font-size:13px;color:var(--dim)}
+.fact .ic{width:54px;height:54px;border-radius:16px}
+.fact .ic svg{width:26px;height:26px}
+.fact b{font-family:var(--f-display);font-size:clamp(20px,1.7vw,24px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.fact > div > span{font-size:15.5px;color:#C3CBDD;line-height:1.55;margin-top:10px}
+.fact .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease)}
+.fact .more > div{overflow:hidden}
+.fact .more p{margin:14px 0 0;padding-top:14px;border-top:1px solid var(--line-2);font-size:14.5px;line-height:1.6;color:var(--muted)}
+.fact .more p b{display:inline;font:inherit;font-weight:600;color:var(--text);letter-spacing:0}
+.fact .more-cue{margin-top:auto;font-size:13px;color:var(--dim);display:flex;align-items:center;gap:6px;transition:opacity .3s}
+@media (hover:hover){
+  .fact:hover{transform:translateY(-6px);border-color:rgba(153,179,198,.45);background:linear-gradient(180deg,rgba(52,60,88,.95),rgba(20,18,30,.95) 70%);box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+  .fact:hover .more{grid-template-rows:1fr}
+  .fact:hover .more-cue{opacity:0}
+}
+@media (hover:none){.fact .more{grid-template-rows:1fr}.fact .more-cue{display:none}}
+@media (max-width:820px){.fact{min-height:0}}
+.js .fact.sr-in{transition:opacity .9s var(--ease),translate 1.1s var(--ease),transform .45s var(--ease),border-color .45s var(--ease),background .45s var(--ease),box-shadow .45s var(--ease);transition-delay:calc(var(--d,0) * 90ms),calc(var(--d,0) * 90ms),0s,0s,0s,0s}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>document.documentElement.classList.add("js")</script>
@@ -1415,15 +1461,17 @@ html.car3d-ready .show-fb{opacity:0}
       <div class="hero-car" id="heroCars"></div>
       <div class="car-load" id="carLoad" aria-live="polite"><span id="carLoadTxt">Loading the 3D car…</span><i><b id="carBar"></b></i></div>
       <div class="gchip a"><small id="hcNo">Project #1847</small><b id="hcName">Porsche 911 Carrera</b><span id="hcVal">Vault $90,000</span></div>
-      <div class="gchip b"><small>Example share</small><div class="big num" id="hcPct">10%</div><span class="num" id="hcUsd">$9,000 · 10% of the votes</span></div>
+      <div class="gchip b"><small>Your share</small><div class="big num" id="hcPct">10%</div><span class="num" id="hcUsd">$9,000 of real metal</span></div>
     </div>
     <div class="dots" id="heroDots" role="tablist" aria-label="Featured projects"></div>
+    <div class="split-key" aria-hidden="true"><span class="k-real"><i></i>Your 10%: real metal</span><span class="k-grid"><i></i>The other 90%: owned by the pool</span></div>
     <div class="hero-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M4 12h16"/></svg>Drag the car to turn it</div>
 
+    <h2 class="guide-kick">The short version. <em>Three things to know.</em></h2>
     <div class="facts">
-      <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 4"/></svg></div><div><b>Your contribution sets your share</b><span>$5,000 in a $50,000 pool is 10%, whatever the Spin lands on.</span></div></div>
-      <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></div><div><b>Owners decide the car's fate</b><span>Yield, Hold or Recycle, weighted by voting power.</span></div></div>
-      <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></div><div><b>The car earns its keep</b><span>Vote for Yield and the car goes into rental work. Income is split by share.</span></div></div>
+      <div class="fact"><span class="fn">01</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 4"/></svg></div><div><b>Your contribution sets your share</b><span>$5,000 in a $50,000 pool is 10%, whatever the Spin lands on.</span><div class="more"><div><p>Your share is <b>your amount ÷ the pool</b>, locked the moment the pool fills. If the Spin lands on a $90,000 911, your 10% is $9,000 of that car. You hold the same 10% of its votes and 10% of anything it earns.</p></div></div></div><span class="more-cue">Hover for details <span class="arr">→</span></span></div>
+      <div class="fact"><span class="fn">02</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></div><div><b>Owners decide the car’s fate</b><span>Every decision about the car is a vote, weighted by share.</span><div class="more"><div><p>Owners vote on the big call: <b>Yield</b> puts it to work, <b>Hold</b> keeps it in its bay, <b>Recycle</b> rolls its value into the next Spin. Smaller calls too, like the colour of its wrap. 10% of the car is 10% of every vote.</p></div></div></div><span class="more-cue">Hover for details <span class="arr">→</span></span></div>
+      <div class="fact"><span class="fn">03</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></div><div><b>The car earns its keep</b><span>Vote for Yield and the car goes into rental work.</span><div class="more"><div><p>On Yield the car is rented out for <b>rental, chauffeur or taxi work</b>. The income is split by share and shows up in your profile. If owners change their mind, the next vote can bring it back to Hold.</p></div></div></div><span class="more-cue">Hover for details <span class="arr">→</span></span></div>
     </div>
   </div>
 </section>
@@ -1857,7 +1905,7 @@ function showHero(i){
   const write=()=>{
     $('hcNo').textContent=`Project #${f.no}`+(f.vk?' · '+VAULTS[f.vk].name:''); $('hcNo').style.color=RAR[r].c;
     $('hcName').textContent=c.name; $('hcName').className='nm-'+r; $('hcVal').textContent=`Vault ${money(f.v)}`;
-    $('hcPct').textContent='10%'; $('hcUsd').textContent=`${money(f.v/10)} · 10% of the votes`;
+    $('hcPct').textContent='10%'; $('hcUsd').textContent=`${money(f.v/10)} of real metal`;
     chips.forEach(x=>x.classList.remove('swap'));
   };
   clearTimeout(heroSwap);
@@ -2754,6 +2802,7 @@ renderer.setClearColor(0x000000,0);
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=1.05;
+renderer.localClippingEnabled=true;
 
 const scene=new THREE.Scene();
 const pmrem=new THREE.PMREMGenerator(renderer);
@@ -2778,6 +2827,53 @@ const rings=[0,1,2].map(i=>{ const m=new THREE.Mesh(new THREE.RingGeometry(.985,
 const paint=new THREE.MeshPhysicalMaterial({color:new THREE.Color(SH.PAINTS[0].hex),metalness:.55,roughness:.3,clearcoat:1,clearcoatRoughness:.03,envMapIntensity:1.25});
 const paintTarget=new THREE.Color(SH.PAINTS[0].hex);
 const lamps=[], wheels=[]; let loaded=false;
+
+/* hero split: your 10% stays real, the other 90% is scanned into a grid */
+const AX=new THREE.Vector3(0,0,1), solidPlane=new THREE.Plane(new THREE.Vector3(0,0,1),1e3), gridPlane=new THREE.Plane(new THREE.Vector3(0,0,-1),-1e3);
+const SPL={m0:0,m1:1,len:1,ready:false,start:0};
+const gridMat=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide,clippingPlanes:[gridPlane],toneMapped:false});
+gridMat.onBeforeCompile=sh=>{
+  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vW;').replace('#include <project_vertex>','#include <project_vertex>\nvW=(modelMatrix*vec4(transformed,1.0)).xyz;');
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vW;').replace('#include <dithering_fragment>',`#include <dithering_fragment>
+  vec3 q=vW/0.075; vec3 g=abs(fract(q-0.5)-0.5)/max(fwidth(q),vec3(1e-4));
+  float ln=1.0-clamp(min(min(g.x,g.y),g.z),0.0,1.0);
+  vec3 n=normalize(cross(dFdx(vW),dFdy(vW))); vec3 v=normalize(cameraPosition-vW);
+  float fr=pow(1.0-abs(dot(n,v)),2.0);
+  vec3 col=vec3(0.075,0.085,0.13)+vec3(0.6,0.7,0.78)*ln*0.85+vec3(0.6,0.7,0.78)*fr*0.35;
+  gl_FragColor=vec4(col,1.0);`);
+};
+const scanMat=new THREE.MeshBasicMaterial({color:0x99B3C6,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,toneMapped:false});
+const scanEdgeMat=new THREE.LineBasicMaterial({color:0xD3D7E7,transparent:true,opacity:0,toneMapped:false});
+const scan=new THREE.Group(); scan.add(new THREE.Mesh(new THREE.PlaneGeometry(1,1),scanMat)); scan.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(1,1)),scanEdgeMat)); scan.visible=false;
+car.add(scan);
+function setupSplit(model){
+  const box=new THREE.Box3();
+  model.traverse(o=>{ if(o.isMesh && !(o.material&&o.material.name==='Material')) box.expandByObject(o); });
+  const sz=box.getSize(new THREE.Vector3()), c=box.getCenter(new THREE.Vector3());
+  const alongX=sz.x>sz.z; AX.set(alongX?1:0,0,alongX?0:1);
+  SPL.m0=alongX?box.min.x:box.min.z; SPL.m1=alongX?box.max.x:box.max.z; SPL.len=SPL.m1-SPL.m0; SPL.c=c;
+  solidPlane.normal.copy(AX); gridPlane.normal.copy(AX).negate();
+  const mats=new Set(), add=[];
+  model.traverse(o=>{ if(!o.isMesh) return; const m=o.material; if(m&&m.name==='Material') return; (Array.isArray(m)?m:[m]).forEach(x=>mats.add(x)); add.push(o); });
+  mats.forEach(m=>{ m.clippingPlanes=[solidPlane]; m.needsUpdate=true; });
+  add.forEach(o=>{ const g=new THREE.Mesh(o.geometry,gridMat); g.position.copy(o.position); g.quaternion.copy(o.quaternion); g.scale.copy(o.scale); g.renderOrder=o.renderOrder; o.parent.add(g); });
+  const w=(alongX?sz.z:sz.x)*1.25, h=sz.y*1.25;
+  scan.scale.set(w,h,1); scan.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),AX);
+  SPL.ready=true;
+}
+function updateSplit(now,T){
+  if(!SPL.ready) return;
+  if(!SPL.start) SPL.start=now+700;
+  const sp=reduce?1:ss(Math.min(1,Math.max(0,(now-SPL.start)/2600)));
+  const split=sp*(1-T), pad=.02*SPL.len;
+  const lo=SPL.m0-pad+(.9*SPL.len+pad)*split;
+  solidPlane.constant=-lo; gridPlane.constant=lo;
+  const on=split>.002;
+  scan.visible=on;
+  if(on){ scan.position.set(SPL.c.x,SPL.c.y,SPL.c.z); scan.position.addScaledVector(AX,lo-AX.dot(SPL.c));
+    const pulse=.75+.25*Math.sin(now/380); const moving=sp<1?1:pulse;
+    scanMat.opacity=.10*moving*(1-T); scanEdgeMat.opacity=.85*moving*(1-T); }
+}
 
 /* showroom camera path, one keyframe per chapter */
 const KEYS=[
@@ -2823,12 +2919,12 @@ function loop(now){
   const p=SH.progress, T=ss(SH.t), mobile=W<=860;
   /* where the car sits on screen: the hero turntable, then the showroom's right side */
   const sr=stage.getBoundingClientRect();
-  const hx=sr.left+sr.width/2, hy=sr.top+sr.height*(mobile?.62:.6), hpx=Math.min(sr.width*(mobile?.86:.62),820);
+  const hx=sr.left+sr.width/2, hy=sr.top+sr.height*(mobile?.6:.56), hpx=Math.min(sr.width*(mobile?.92:.74),960);
   let sx=mobile?W/2:W*.67, sy=mobile?H*.3:H*.53, spx=mobile?W*.9:Math.min(W*.5,800);
   const rb=SH.rect; if(rb && rb.bottom<H) sy+=rb.bottom-H; /* leave with the section */
   const X=lerp(hx,sx,T), Y=lerp(hy,sy,T), PX=lerp(hpx,spx,T);
   /* orientation: slow turntable in the hero, scripted path in the showroom */
-  const time=(now-t0)/1000, turn=.35+(reduce?0:time*.16);
+  const time=(now-t0)/1000, turn=.35+(reduce?0:time*.42);
   const P=pathAt(p);
   const wantYaw=turn+wrap(P.yaw-turn)*T+drag, wantPitch=lerp(.15,P.pitch,T);
   if(!dragging){ dragV*=.92; drag+=dragV; }
@@ -2852,6 +2948,7 @@ function loop(now){
   if(!ignStart) ignStart=now; const it=(now-ignStart)/1000; const ign=it<.4?0:it<.5?1:it<.6?0:it<.7?1:Math.min(1,.6+it*.2);
   lamps.forEach(m=>m.emissiveIntensity=ign*1.8);
 
+  updateSplit(now,T);
   renderer.render(scene,camera);
   raf=requestAnimationFrame(loop);
 }
@@ -2869,6 +2966,7 @@ fetchCar().then(ab=>{ SH.status('Preparing…',100); return new Promise((ok,bad)
     else if(n==='silver'){ m.envMapIntensity=1.3; }
   });
   car.add(model); car.updateMatrixWorld(true);
+  setupSplit(model); car.updateMatrixWorld(true);
   renderer.compile(scene,camera);
   loaded=true; SH.ready=true; SH.failed=false;
   if(window.vlHeroLock) window.vlHeroLock();
