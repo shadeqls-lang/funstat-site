@@ -1632,6 +1632,42 @@ section.s{padding-block:var(--sec)}
 .row-head{margin-bottom:clamp(32px,3.5vw,48px)}
 #mega{padding-top:calc(var(--sec) * .7)}
 @media (max-width:760px){:root{--sec:76px}.hq{padding-bottom:var(--sec)}}
+
+/* ===== Pass 5: hover fixes, PIPELINE seams, type ===== */
+/* PIPELINE: letters no longer overlap, so no outline shows through a filled letter */
+.pipe-word{letter-spacing:0;font-size:clamp(56px,13.6vw,230px)}
+.pipe-word .pl{letter-spacing:0;margin:0 .004em}
+.pl.lit .pl-b{-webkit-text-stroke-color:transparent}
+.pl-b{transition:-webkit-text-stroke-color .5s var(--ease) .25s}
+
+/* guide cards: details slide up inside the card, nothing below moves */
+.facts{align-items:stretch}
+.fact{min-height:340px;justify-content:flex-start}
+.fact > div{position:static}
+.fact .more{position:absolute;left:0;right:0;bottom:0;display:block;padding:20px 28px 26px;background:linear-gradient(180deg,rgba(28,30,48,.0),rgba(28,30,48,.97) 22%,rgba(24,24,40,.98));
+  transform:translateY(101%);transition:transform .6s var(--ease);border-radius:0 0 26px 26px}
+.fact .more > div{overflow:visible}
+.fact .more p{margin:0;padding-top:16px}
+.fact .more-cue{transition:opacity .35s var(--ease),transform .5s var(--ease)}
+.fact > div > span{transition:opacity .45s var(--ease),filter .45s var(--ease)}
+.fact{min-height:360px}
+@media (hover:hover){.fact:hover .more{transform:none}.fact:hover .more-cue{opacity:0;transform:translateY(6px)}.fact:hover > div > span{opacity:0;filter:blur(2px)}}
+@media (hover:none){.fact{min-height:0}.fact .more{position:static;transform:none;background:none;padding:0}.fact .more p{margin-top:14px}}
+
+/* hotspots: the default tooltip steps aside while you hover another */
+.hq-art:hover .hs.on:not(:hover) span{opacity:0;transform:translate(-50%,6px)}
+.hs i{transition:transform .4s var(--ease)}
+.hs:hover i{transform:scale(1.25)}
+
+/* type */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-kerning:normal}
+body{font-feature-settings:"ss01","cv11"}
+h1,h2,h3,.st-top b,.xt b,.rm-win b,.fact b{text-wrap:balance}
+p,.fact span,.xt span,.hq-list li{text-wrap:pretty}
+h1,h2,.s-head h2,.row-head h2,.hq-head h2,.xhead h1,.guide-kick,.st-top b{font-family:var(--f-display);font-stretch:112%;font-weight:760;letter-spacing:-.038em}
+.s-head h2,.row-head h2,.hq-head h2{line-height:.98}
+.num,.mono,[class*="num"]{font-variant-numeric:tabular-nums}
+.btn{letter-spacing:-.005em}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>document.documentElement.classList.add("js");(function(){var x=/explore(\.html)?\/?$/.test(location.pathname);document.documentElement.dataset.page=x?'explore':'home';if(x)document.title='How it works · Vaultline';})()</script>
@@ -2917,7 +2953,8 @@ function setupReveal(){
     ['.v-bar',0],['.vtabs',0],['.pool',0],['.faq-side',0],['.faq details',1],['.mega-cta',0],
     ['.guide-kick',0],['.row-head',0],['.xt',1],['.rm-win li',1],['.xhead h1',0],['.xhead p',0],['.xh-jump',0],['.bay-card',0],['.hq-head',0]
   ];
-  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -8% 0px',threshold:.08});
+  const settle=el=>{ const d=+(el.style.getPropertyValue('--d')||0); setTimeout(()=>{ el.classList.add('sr-done'); el.classList.remove('sr-in','sr-scale','in'); el.style.removeProperty('--d'); },1250+d*90); };
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); settle(e.target); } }),{rootMargin:'0px 0px -8% 0px',threshold:.08});
   groups.forEach(([sel,stag])=>{ document.querySelectorAll(sel).forEach((el,i)=>{
     const r=el.getBoundingClientRect(); if(r.top<innerHeight*.92 && r.bottom>0) return;
     el.classList.add('sr-in'); if(/fan-item|mode|m-grid|proj|mkt/.test(sel)) el.classList.add('sr-scale');

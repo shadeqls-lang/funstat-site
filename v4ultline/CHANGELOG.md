@@ -5,6 +5,34 @@ Live: http://funstat.xyz/v4ultline/
 
 ---
 
+## 2026-11-14 · Hover fixes, typography, page upgrades
+
+### Bugs fixed
+- **PIPELINE seams** (outlines showing through filled letters): the letters overlapped because of negative letter spacing, so the next letter's outline was drawn over the fill. The letters no longer overlap, and a filled letter drops its outline.
+- **Guide cards pushed the page down on hover**: the details used to expand the card. Now they slide up inside the card and the short text fades out, so nothing around the card moves.
+- **Hover jumped instantly on revealed blocks** (tiles, path cards and anything else that fades in on scroll): the reveal animation was overriding the element's own transitions. The reveal now hands the transitions back once it has finished, so hover is smooth everywhere.
+- **Marketplace rows lost hover every ~5 s**: the whole list was redrawn on each live update. Rows are now updated in place, and only the cells that changed are touched.
+- **Vault hotspots**: the always-open Bay B-14 tooltip now steps aside while you hover another hotspot, so they no longer overlap.
+- **Profile header** overflowed by 1px on narrow phones: fixed.
+- **Marketplace**: the "You own" badge was cut off: fixed.
+
+### Typography (all pages)
+- Display headings use the same width (Archivo at 112%), weight and tracking everywhere.
+- Headings are balanced and paragraphs avoid orphans (`text-wrap`).
+- Antialiased rendering, kerning, Geist stylistic set, tabular figures for every number.
+
+### Page upgrades
+- **Profile**
+  - New "Coming up" row with live countdowns: the open vote you haven't cast yet, the next Yield payout with an estimate, and the Spin filling right now with a progress bar.
+  - The stat numbers count up on load.
+  - Home button in the header.
+- **Marketplace**
+  - **Watchlist**: star any project. Watched projects sort to the top and get their own "Watching" filter. The list is saved in your browser.
+  - Cells flash softly when a live price or listing changes, new rows slide in, and the car photo zooms on row hover.
+  - Home and Profile buttons in the header.
+
+---
+
 ## 2026-11-13 · Liquid PIPELINE, glowing share grid, smoothness, spacing
 
 ### PIPELINE fill (stronger)

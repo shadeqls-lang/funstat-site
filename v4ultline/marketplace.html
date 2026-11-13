@@ -278,6 +278,34 @@ html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
 .lenis.lenis-stopped{overflow:hidden}
+
+/* pass 5: watchlist, live cell flash, row hover */
+.star{flex:none;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;border:0;background:none;color:var(--dim);cursor:pointer;transition:color .3s var(--ease),transform .4s var(--ease),background .3s}
+.star svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round;transition:fill .3s}
+.star:hover{color:var(--text);background:rgba(255,255,255,.05);transform:scale(1.1)}
+.star[aria-pressed="true"]{color:var(--lime)}
+.star[aria-pressed="true"] svg{fill:currentColor}
+.prow{transition:background .35s var(--ease)}
+.prow .pthumb img{transition:transform .6s var(--ease)}
+.prow:hover .pthumb img{transform:scale(1.08)}
+.prow .tick{animation:cellTick 1.1s var(--ease)}
+@keyframes cellTick{0%{background:rgba(153,179,198,.2);border-radius:8px}100%{background:transparent}}
+.prow.enter{animation:rowIn .7s var(--ease)}
+@keyframes rowIn{from{opacity:0;transform:translateY(8px)}}
+.fchip{transition:background .3s var(--ease),color .3s,border-color .3s}
+.fchip:hover{color:var(--text);border-color:rgba(153,179,198,.4)}
+.hdr-r{display:flex;align-items:center;gap:10px}
+@media (max-width:640px){.hdr-r .btn{display:none}}
+.pname b{white-space:normal;overflow:visible;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.pname b .owned{margin-left:0}
+
+/* pass 5: type */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-kerning:normal}
+body{font-feature-settings:"ss01","cv11"}
+h1,h2,h3{text-wrap:balance}
+p,li,dd{text-wrap:pretty}
+h1,h2{font-stretch:112%;letter-spacing:-.038em}
+.num,[class*="num"]{font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -288,7 +316,7 @@ html.lenis,html.lenis body{height:auto}
   <div class="wrap">
     <a href="index.html" class="logo" aria-label="Vaultline home"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h5l4 9 4-9h5l-7.2 16H10.2z" fill="#D3D7E7"/><path d="M10 4h4l-2 4.5z" fill="#07060B"/></svg><span>vaultline<i>.</i></span></a>
     <nav class="crumb" aria-label="Breadcrumb"><a href="#" id="crumbMk">Share market</a><span id="crumbP" hidden></span></nav>
-    <div class="hdr-r"><div class="balance num"><span class="lbl">USDC</span><b id="bal">100,000</b></div></div>
+    <div class="hdr-r"><div class="balance num"><span class="lbl">USDC</span><b id="bal">100,000</b></div><a href="index.html" class="btn btn-ghost btn-sm">Home</a><a href="profile.html" class="btn btn-ghost btn-sm">Profile</a></div>
   </div>
 </header>
 
@@ -435,6 +463,8 @@ P.forEach(p=>{
   if(p.vote) p.vote.ends=now0+p.vote.h*3600e3;
 });
 const byId=Object.fromEntries(P.map(p=>[p.id,p]));
+const W=new Set((()=>{ try{ return JSON.parse(localStorage.getItem('vl-watch')||'[]'); }catch(e){ return []; } })());
+const saveW=()=>{ try{ localStorage.setItem('vl-watch',JSON.stringify([...W])); }catch(e){} };
 const S={usdc:100000, vf:'all', q:'', cur:null, side:'buy', bmode:'now', range:30, buyPct:1, offerPct:1, offerPer:0, sellPct:1, sellPer:0, sellMode:'list'};
 const FEE=.025, CAP=50, MINLOT=.5;
 const listed=p=>p.asks.filter(a=>a.you).reduce((s,a)=>s+a.pct,0);
@@ -448,26 +478,48 @@ function spark(p){ const h=p.hist.slice(-30), mn=Math.min(...h.map(x=>x.v)), mx=
   const pts=h.map((x,i)=>`${(i/(h.length-1)*120).toFixed(1)},${(30-(x.v-mn)/((mx-mn)||1)*26).toFixed(1)}`).join(' ');
   return `<svg class="spark" viewBox="0 0 120 34" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${up?'var(--up)':'var(--down)'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`; }
 function renderList(){
-  $('vf').innerHTML=[['all','All'],...Object.entries(VAULT)].map(([k,n])=>`<button type="button" class="fchip" data-v="${k}" aria-pressed="${S.vf===k}">${n}</button>`).join('');
+  $('vf').innerHTML=[['all','All'],...Object.entries(VAULT),['watch',`Watching${W.size?' '+W.size:''}`]].map(([k,n])=>`<button type="button" class="fchip" data-v="${k}" aria-pressed="${S.vf===k}">${n}</button>`).join('');
   const q=S.q.trim().toLowerCase();
-  const rows=P.filter(p=>(S.vf==='all'||p.vk===S.vf)&&(!q||(p.name+' #'+p.no).toLowerCase().includes(q))).sort((a,b)=>(b.mine-a.mine)||(b.vol24-a.vol24));
-  $('rows').innerHTML=rows.length?rows.map(p=>{ const ch=(p.last/p.prev-1)*100, pr=prem(p.last,p), r=RAR(p.vault), lst=p.asks.reduce((s,a)=>s+a.pct,0);
+  const rows=P.filter(p=>(S.vf==='all'||(S.vf==='watch'?W.has(p.id):p.vk===S.vf))&&(!q||(p.name+' #'+p.no).toLowerCase().includes(q))).sort((a,b)=>(b.mine-a.mine)||(W.has(b.id)-W.has(a.id))||(b.vol24-a.vol24));
+  patchRows(rows.length?rows.map(p=>{ const ch=(p.last/p.prev-1)*100, pr=prem(p.last,p), r=RAR(p.vault), lst=p.asks.reduce((s,a)=>s+a.pct,0);
     return `<div class="trow prow" role="row" tabindex="0" data-p="${p.id}" style="--c:${r[1]}">
-      <div class="pcell"><div class="pthumb"><img src="cars/${p.car}.webp" alt="" loading="lazy"></div><div class="pname"><b>${esc(p.name)}${p.mine?`<span class="owned">You own ${pct(p.mine)}</span>`:''}</b><span>#${p.no} · ${VAULT[p.vk]} Vault · <span class="chip" style="--c:${r[1]}">${r[0]}</span></span></div></div>
+      <div class="pcell"><button type="button" class="star" data-star="${p.id}" aria-pressed="${W.has(p.id)}" aria-label="${W.has(p.id)?'Stop watching':'Watch'} ${esc(p.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg></button><div class="pthumb"><img src="cars/${p.car}.webp" alt="" loading="lazy"></div><div class="pname"><b>${esc(p.name)}${p.mine?`<span class="owned">You own ${pct(p.mine)}</span>`:''}</b><span>#${p.no} · ${VAULT[p.vk]} Vault · <span class="chip" style="--c:${r[1]}">${r[0]}</span></span></div></div>
       <div class="v r num">${money(p.last)}<small>${money(p.last*100)} car</small></div>
       <div class="v r num c-24 ${ch>=0?'up':'down'}">${ch>=0?'+':''}${ch.toFixed(1)}%</div>
       <div class="v r num c-ref ${Math.abs(pr)<=10?'':'down'}">${pr>=0?'+':''}${pr.toFixed(1)}%<small>value ${money(p.ref)}</small></div>
       <div class="v r num c-list">${pct(lst)}<small>${p.asks.length} listing${p.asks.length===1?'':'s'}</small></div>
       <div class="r c-spark">${spark(p)}</div>
-      <div class="r c-btn"><button type="button" class="btn btn-ghost btn-sm">Trade</button></div></div>`; }).join('') : `<div class="trow"><span style="color:var(--muted)">No project matches that search.</span></div>`;
+      <div class="r c-btn"><button type="button" class="btn btn-ghost btn-sm">Trade</button></div></div>`; }).join('') : `<div class="trow"><span style="color:var(--muted)">${S.vf==='watch'?'Nothing on your watchlist yet. Tap the star on any project.':'No project matches that search.'}</span></div>`);
   const vol=P.reduce((s,p)=>s+p.vol24,0), lv=P.reduce((s,p)=>s+p.asks.reduce((a,x)=>a+x.pct*x.per,0),0);
   $('kVol').textContent=money(vol); $('kTrades').textContent=P.reduce((s,p)=>s+p.trades.filter(t=>Date.now()-t.t<DAY).length,0)+' trades';
   $('kListed').textContent=money(lv); $('kLots').textContent=P.reduce((s,p)=>s+p.asks.length,0)+' listings'; $('kProj').textContent=P.length;
 }
+/* rows are patched in place, so hover, focus and images survive the live updates; changed cells flash */
+function patchRows(html){
+  const box=$('rows'), tmp=document.createElement('div'); tmp.innerHTML=html;
+  const fresh=[...tmp.children];
+  if(!fresh.length || !fresh.every(e=>e.dataset.p)){ box.innerHTML=html; return; }
+  [...box.children].forEach(c=>{ if(!c.dataset.p) c.remove(); });
+  const old=new Map([...box.children].map(e=>[e.dataset.p,e])), first=!old.size;
+  fresh.forEach((n,i)=>{
+    let o=old.get(n.dataset.p);
+    if(o){
+      [...n.children].forEach((c,j)=>{ const oc=o.children[j]; if(!oc) return;
+        if(oc.innerHTML!==c.innerHTML){ oc.innerHTML=c.innerHTML; if(j>0 && j<5){ oc.classList.remove('tick'); void oc.offsetWidth; oc.classList.add('tick'); } }
+        const cls=c.className+(oc.classList.contains('tick')?' tick':''); if(oc.className!==cls) oc.className=cls; });
+      if(o.getAttribute('style')!==n.getAttribute('style')) o.setAttribute('style',n.getAttribute('style'));
+      old.delete(n.dataset.p);
+    } else { o=n; if(!first) o.classList.add('enter'); }
+    if(box.children[i]!==o) box.insertBefore(o,box.children[i]||null);
+  });
+  old.forEach(o=>o.remove());
+}
+$('rows').addEventListener('click',e=>{ const st=e.target.closest('.star'); if(!st) return; e.stopPropagation();
+  const id=st.dataset.star; W.has(id)?W.delete(id):W.add(id); saveW(); renderList(); },true);
 $('vf').addEventListener('click',e=>{ const b=e.target.closest('.fchip'); if(!b) return; S.vf=b.dataset.v; renderList(); });
 $('q').addEventListener('input',e=>{ S.q=e.target.value; renderList(); });
 $('rows').addEventListener('click',e=>{ const r=e.target.closest('.prow'); if(r) open(r.dataset.p); });
-$('rows').addEventListener('keydown',e=>{ const r=e.target.closest('.prow'); if(r&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); open(r.dataset.p); } });
+$('rows').addEventListener('keydown',e=>{ if(e.target.closest('.star')) return; const r=e.target.closest('.prow'); if(r&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); open(r.dataset.p); } });
 
 /* ---------- routing ---------- */
 function open(id){ if(location.hash!=='#'+id) location.hash=id; else route(); }
