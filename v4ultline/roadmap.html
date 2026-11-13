@@ -456,7 +456,7 @@ footer .legal{grid-column:1/-1;max-width:72em;line-height:1.6}
     <div class="wrap">
       <div class="mega-cta rv">
         <p>The fastest way to have a say in what comes next is a share of a car.</p>
-        <div class="hero-acts"><a class="btn btn-mist" href="index.html#spin" style="height:54px;padding:0 28px;font-size:15.5px">Join the next Spin <span class="arr">→</span></a><a class="btn btn-ghost" href="profile.html" style="height:54px">Your profile</a></div>
+        <div class="hero-acts"><a class="btn btn-mist" href="explore.html#spin" style="height:54px;padding:0 28px;font-size:15.5px">Join the next Spin <span class="arr">→</span></a><a class="btn btn-ghost" href="profile.html" style="height:54px">Your profile</a></div>
       </div>
     </div>
     <p class="mega" id="megaTxt" aria-label="Built in the open. One phase at a time."></p>
@@ -466,7 +466,7 @@ footer .legal{grid-column:1/-1;max-width:72em;line-height:1.6}
 <footer>
   <div class="wrap">
     <a href="index.html" class="logo" aria-label="vaultline home"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h5l4 9 4-9h5l-7.2 16H10.2z" fill="#D3D7E7"/><path d="M10 4h4l-2 4.5z" fill="#07060B"/></svg><span>vaultline<i>.</i></span></a>
-    <nav aria-label="Footer"><a href="index.html#how">How it works</a><a href="index.html#spin">Spin</a><a href="index.html#pools">Vaults</a><a href="profile.html">Profile</a><a href="marketplace.html">Share market preview</a><a href="#top">Back to top</a></nav>
+    <nav aria-label="Footer"><a href="explore.html#how">How it works</a><a href="explore.html#spin">Spin</a><a href="explore.html#pools">Vaults</a><a href="profile.html">Profile</a><a href="marketplace.html">Share market preview</a><a href="#top">Back to top</a></nav>
     <p class="legal">Concept roadmap. Phases, order, dates and progress are examples and can change. Nothing on this page is a promise of a feature or a date, or an offer or solicitation for any security or token. For adults 18+.</p>
   </div>
 </footer>
@@ -485,7 +485,7 @@ const IC={check:'<path d="M5 12l4 4 10-10"/>',q:'<circle cx="12" cy="12" r="9"/>
 const P=[
   {id:'live',s:'live',ph:'Now',t:'The base.',em:'Already running.',lede:'Everything on this page builds on four things you can use today.',
     target:'Live',feats:[['Spins','Pools fill, then the Spin picks a car from the Vault’s pool.'],['Three Vaults','Street, Track and Collector, each a collection of its own.'],['Projects and votes','Every car is a project. Your share is your voting power.'],['Yield','Rental income from the car, paid out by share.']],
-    links:[['index.html#how','How it works']]},
+    links:[['explore.html#how','How it works']]},
   {id:'market',s:'design',ph:'Phase 1 · Next',t:'Share Market.',em:'Sell part, keep the rest.',lede:'Every car gets its own market. List any part of your share at your price, or buy into a car that already exists. The rules are written and a working preview is up.',
     can:['Sell any part of a share, from 0.5% up','See the car’s value next to every price','Buy now, or post an offer and wait','Order book and trade history for every car'],
     open:['Final seller fee (2.5% in the preview)','Whether offers can be partly accepted','How listings show on the project page'],
@@ -579,7 +579,7 @@ const SHIP=[
   ['Oct 2026','Monthly Yield','Rental income now pays out every month, split by share.',null],
   ['Sep 2026','Profiles','Every card you own, your profit and your achievements on one page.',['profile.html','Your profile']],
   ['Aug 2026','Projects and votes','Every car is a project, and your share is your voting power.',null],
-  ['Jun 2026','Three Vaults','Street, Track and Collector, each with its own pool of cars.',['index.html#pools','The Vaults']]];
+  ['Jun 2026','Three Vaults','Street, Track and Collector, each with its own pool of cars.',['explore.html#pools','The Vaults']]];
 $('ship').innerHTML=SHIP.map(([d,t,x,l],i)=>`<article class="sh rv" style="transition-delay:${(i%3)*.06}s"><div class="d"><span><i class="mk live"></i>Shipped</span>${d}</div><b>${t}</b><p>${x}</p>${l?`<a href="${l[0]}">${l[1]} →</a>`:''}</article>`).join('');
 
 /* ---------- vote: three votes, kept in this browser ---------- */

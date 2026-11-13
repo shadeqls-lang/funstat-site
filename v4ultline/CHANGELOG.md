@@ -5,6 +5,48 @@ Live: http://funstat.xyz/v4ultline/
 
 ---
 
+## 2026-11-13 · Two pages, roadmap window, button layout, cleanup (boss edits 6–8)
+
+### New page: explore.html (How it works)
+- Everything below the vault moved to **explore.html**: Six steps, Three Vaults, Pick a Vault (the Spin), Rarities, Your project, Thirteen cars, FAQ.
+- New page head "How it all works." with jump links to every section.
+- The main page now runs: hero → Pipeline → Where your car lives → Everything else → Roadmap → pre-footer → footer.
+- On the main page, a new **"Everything else. On one page."** block has six tiles that open the matching section on explore.html, plus an **"Open how it works"** button styled like Join Spin.
+- Every link to a section on the other page now goes there automatically (`explore.html#spin`, `index.html#showroom`), including links on profile, roadmap and marketplace.
+- The 3D car is not downloaded on explore.html.
+- Note: `explore.html` is a copy of `index.html`. The page picks its sections by its file name. **Edit index.html, then copy it to explore.html.**
+
+### Profile
+- "My projects" (side drawer) in the header is replaced by a **Profile** button that opens profile.html.
+
+### Roadmap window (main page)
+- New block "The roadmap. What ships next." It shows 5 phases on a timeline (Live, Share Market, 3D Showroom, Race Manager, Upgrade Spin) with target dates and progress bars.
+- A **"Read the roadmap in detail"** button opens roadmap.html.
+
+### Button layout across the site
+- Header: in-page links on the left, compact; navigation buttons on the right. On the main page that is How it works, Profile and Join Spin. On explore.html it is Home, Profile and Join Spin.
+- Hero: "See the pipeline ↓" (in-page) is compact and sits on the left. "How it works →" and "Join Spin" (other page) sit on the right.
+- Pipeline step 4 and the section heads: navigation buttons are aligned right.
+
+### Symmetry and polish
+- Section heads are centered across the site (Six steps, Vaults, Spin, Rarities, Project, Cars, "Where your car lives", "The short version").
+- Blocks that pair a title with a button keep the title on the left and the button on the right on desktop. On mobile they are centered with a full-width button.
+- Mobile tiles show in a 2×3 grid instead of six stacked cards.
+- The roadmap window scrolls sideways on tablet and phone, with the line running through the dots.
+
+### Bug fixes
+- Header overflowed the screen on phones (page scrolled sideways): fixed.
+- Bay card covered the vault photo on phones: it now sits under the photo.
+- On explore.html the logo goes to the main page.
+- The "Simulated activity" ticker is hidden (filler, scrolled like a marquee).
+
+### Palette (no yellow, no green)
+- Legendary gold and its foils are now pearl/ice (#DCE4F4, #EEF2FB). Uncommon green is now glacier blue (#8FB2D2). The warm glows on the Spin bay are recoloured to match.
+- The hero chip had a greenish background: it now uses the palette.
+- Market up/down (gain/loss) colours are unchanged.
+
+---
+
 ## 2026-11-13 · Pipeline and the vault bay (boss edits 4–5)
 
 ### Showroom → PIPELINE
