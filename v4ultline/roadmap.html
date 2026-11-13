@@ -348,6 +348,14 @@ footer nav a{text-decoration:none;color:var(--muted);transition:color .2s}
 footer nav a:hover{color:var(--text)}
 footer .legal{grid-column:1/-1;max-width:72em;line-height:1.6}
 @media (max-width:700px){footer .wrap{grid-template-columns:minmax(0,1fr)}}
+
+/* soft layer: page cross-fade, Lenis */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.42s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
 </style>
 </head>
 <body>
@@ -654,5 +662,8 @@ document.addEventListener('click',e=>{ const a=e.target.closest('a[href^="#"]');
   scrollTo({top:el.getBoundingClientRect().top+scrollY-88,behavior:reduce?'auto':'smooth'}); history.replaceState(null,'','#'+id); });
 })();
 </script>
+<script>window.SOFT_REVEAL=[];</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="soft.js"></script>
 </body>
 </html>

@@ -90,7 +90,7 @@ header.site .wrap{display:flex;align-items:center;gap:22px;height:64px}
 .stat.hero-s b{font-size:44px;color:var(--up)}
 @media (max-width:1000px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat.hero-s{grid-column:1/-1}}
 
-.sec{padding-block:56px 0}
+.sec{padding-block:clamp(72px,8vw,112px) 0}
 .sec-h{display:flex;justify-content:space-between;align-items:end;gap:14px 32px;flex-wrap:wrap;margin-bottom:18px}
 .sec-h h2{font-size:clamp(32px,4vw,52px);font-stretch:110%;letter-spacing:-.04em}
 .sec-h h2 em{font-style:normal;color:var(--muted)}
@@ -190,6 +190,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:
 footer a{color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;background:var(--panel-2);border:1px solid var(--line-2);color:var(--text);padding:12px 18px;border-radius:999px;font-size:13.5px;box-shadow:0 20px 50px -14px rgba(0,0,0,.8);max-width:calc(100vw - 32px)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* soft layer: page cross-fade, Lenis */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.42s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
 </style>
 <style>
 /* collectible cards, shared with the main site */
@@ -602,5 +610,8 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) links
 ['profit','collection','achievements','activity'].forEach(id=>io.observe($(id)));
 })();
 </script>
+<script>window.SOFT_REVEAL=['.sec .sec-h','.stat','.sec > .wrap > *:not(.sec-h)'];</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="soft.js"></script>
 </body>
 </html>

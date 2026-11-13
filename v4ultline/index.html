@@ -1496,6 +1496,8 @@ nav.main a{font-size:13px;padding:7px 11px}
 .row-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px 48px;flex-wrap:wrap;margin-bottom:40px}
 .row-head h2{font-size:clamp(38px,5vw,68px);font-stretch:110%;letter-spacing:-.04em}
 .row-head h2 em{font-style:normal;color:var(--muted)}
+.row-head h2 em{display:block}
+.stats b small{display:block;margin-top:2px;font-size:12px;color:var(--muted);font-weight:400}
 .row-head p{margin-top:14px;color:var(--muted);font-size:16.5px;max-width:32em}
 .big-cta{height:54px;padding:0 28px;font-size:15.5px}
 .xtiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
@@ -1560,6 +1562,76 @@ nav.main a{font-size:13px;padding:7px 11px}
   .mega-cta{text-align:center;justify-content:center}
 }
 @media (max-width:1060px){.rm-win::before{left:130px;width:calc(4 * 236px)}}
+
+/* ===== Pass 4: liquid PIPELINE ===== */
+@property --wx{syntax:'<length>';inherits:false;initial-value:0px}
+.pipe-word{font-size:clamp(64px,15.5vw,260px)}
+.pipe-word .pw-row{display:flex;justify-content:center;white-space:nowrap}
+.pipe-word .pl{position:relative;display:inline-block;transform-origin:50% 90%;transition:transform .9s cubic-bezier(.2,.9,.25,1.25)}
+.pl-b{display:block;color:transparent;-webkit-text-stroke:1px rgba(153,179,198,.24);transition:-webkit-text-stroke-color .6s}
+.pl-f,.pl-g{position:absolute;left:0;right:0;top:-.1em;bottom:-.1em;padding-top:.1em;color:transparent}
+.pl-f{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='200' viewBox='0 0 90 200' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='.48' stop-color='%23FFFFFF'/%3E%3Cstop offset='.53' stop-color='%23E4E9F5'/%3E%3Cstop offset='.66' stop-color='%23B7C9DB'/%3E%3Cstop offset='.84' stop-color='%2381A0BD'/%3E%3Cstop offset='1' stop-color='%23465779'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 100 Q22.5 91 45 100 T90 100 V200 H0Z' fill='url(%23g)'/%3E%3C/svg%3E");
+  background-repeat:repeat-x;background-size:.9em 2em;background-position-y:calc(var(--lp,0) * -1.1em);
+  -webkit-background-clip:text;background-clip:text}
+.pl-g{text-shadow:0 0 .06em rgba(238,242,251,.9),0 0 .22em rgba(153,179,198,.75),0 0 .6em rgba(70,87,121,.6);opacity:0;transition:opacity .8s var(--ease)}
+.pl.filling .pl-g{opacity:calc(var(--lp,0) * .45)}
+.pl.lit{transform:scale(1.035)}
+.pl.lit .pl-b{-webkit-text-stroke-color:rgba(211,215,231,.5)}
+.pl.lit .pl-g{animation:plLit 1.6s var(--ease) forwards}
+@keyframes plLit{0%{opacity:1}35%{opacity:.95}100%{opacity:.32}}
+.pipe-word.full .pl-g{animation:plWaveGlow 3.2s ease-in-out infinite;animation-delay:calc(var(--i) * 140ms)}
+@keyframes plWaveGlow{0%,100%{opacity:.3}40%{opacity:.85}}
+.pipe-word.full .pl{transform:none}
+@media (prefers-reduced-motion:reduce){.pl,.pl-g{transition:none;animation:none!important}}
+
+/* ===== Pass 4: share highlight ===== */
+.gchip{transition:border-color .6s var(--ease),box-shadow .8s var(--ease),background .6s var(--ease),transform .8s var(--ease)}
+.gchip.b b,.gchip.b small{transition:color .6s var(--ease),text-shadow .8s var(--ease)}
+html.share-scan .gchip.b,html.share-ping .gchip.b{border-color:rgba(211,215,231,.75);background:rgba(34,30,52,.92);box-shadow:0 0 0 1px rgba(211,215,231,.25),0 0 48px -6px rgba(153,179,198,.75);transform:translateY(-2px) scale(1.03)}
+html.share-scan .gchip.b b,html.share-ping .gchip.b b{color:#fff;text-shadow:0 0 18px rgba(211,215,231,.85)}
+html.share-scan .gchip.b small,html.share-ping .gchip.b small{color:#D3D7E7}
+.split-key span{transition:color .6s var(--ease)}
+.split-key i{transition:box-shadow .8s var(--ease),transform .8s var(--ease)}
+html.share-scan .split-key .k-real,html.share-ping .split-key .k-real{color:var(--text)}
+html.share-scan .split-key .k-real i,html.share-ping .split-key .k-real i{box-shadow:0 0 14px 2px rgba(211,215,231,.7);transform:scale(1.15)}
+html.share-scan .split-key .k-grid i{box-shadow:0 0 10px rgba(153,179,198,.6)}
+
+/* step 2: the share bar fills and glows, the grid has a running scan */
+.ex-bar i{width:0;transition:width 1.4s cubic-bezier(.22,1,.36,1) .25s}
+.chap li.on .ex-bar i{width:10%;animation:barGlow 2.6s ease-in-out 1.6s infinite}
+@keyframes barGlow{0%,100%{box-shadow:0 0 6px rgba(211,215,231,.4)}50%{box-shadow:0 0 18px 2px rgba(211,215,231,.9)}}
+.ex-bar::after{content:"";position:absolute;top:0;bottom:0;left:10%;width:18%;background:linear-gradient(90deg,transparent,rgba(211,215,231,.35),transparent);transform:translateX(-100%);opacity:0}
+.chap li.on .ex-bar::after{animation:gridRun 2.6s cubic-bezier(.5,0,.3,1) 1.4s infinite}
+@keyframes gridRun{0%{transform:translateX(500%);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(-60%);opacity:0}}
+.ex-row.big b{transition:text-shadow .6s}
+.chap li.on .ex-row.big b{text-shadow:0 0 22px rgba(153,179,198,.55)}
+
+/* ===== Pass 4: softness everywhere ===== */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.42s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+.btn{transition:transform .35s var(--ease),background .35s var(--ease),border-color .35s var(--ease),color .35s var(--ease),box-shadow .45s var(--ease)}
+.rm-win .rm-bar i{transition:width 1.6s cubic-bezier(.22,1,.36,1) calc(.25s + var(--d,0) * 140ms)}
+.rm-win li.sr-in:not(.in) .rm-bar i{width:0}
+.rm-dot{transition:background .6s var(--ease),box-shadow .8s var(--ease)}
+.rm-win li.sr-in:not(.in) .rm-dot{box-shadow:none}
+.xt,.fact,.hs i,.bay-card{will-change:transform}
+.hs span{transition:opacity .35s var(--ease),transform .45s var(--ease)}
+.chap li{transition:opacity .7s var(--ease),transform .9s var(--ease),visibility 0s .9s}
+.chap li.on{transition:opacity .7s var(--ease) .15s,transform .9s var(--ease) .15s,visibility 0s}
+
+/* ===== Pass 4: one vertical rhythm ===== */
+:root{--sec:clamp(84px,9vw,128px)}
+section.s{padding-block:var(--sec)}
+.hq{padding-block:var(--sec) calc(var(--sec) + 40px)}
+#explore-cta{padding-bottom:calc(var(--sec) * .5)}
+#roadmap-win{padding-top:calc(var(--sec) * .5)}
+.xhead{padding-block:clamp(56px,7vw,96px) 0}
+.pg-x#how{padding-top:calc(var(--sec) * .6)!important}
+.pg-x#spin{padding-top:24px!important}
+.s-head{margin-bottom:clamp(36px,4vw,56px)}
+.row-head{margin-bottom:clamp(32px,3.5vw,48px)}
+#mega{padding-top:calc(var(--sec) * .7)}
+@media (max-width:760px){:root{--sec:76px}.hq{padding-bottom:var(--sec)}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>document.documentElement.classList.add("js");(function(){var x=/explore(\.html)?\/?$/.test(location.pathname);document.documentElement.dataset.page=x?'explore':'home';if(x)document.title='How it works · Vaultline';})()</script>
@@ -1631,7 +1703,7 @@ nav.main a{font-size:13px;padding:7px 11px}
   <div class="show-pin">
     <img class="show-fb" id="showFb" src="cars/911.webp" alt="Porsche 911 Carrera">
     <div class="drag-hint" id="dragHint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M4 12h16"/></svg>Drag to look around</div>
-    <h2 class="pipe-word" id="showH" aria-label="The pipeline: how a car goes from Spin to your share"><span class="pw-base" aria-hidden="true">PIPELINE</span><span class="pw-fill" aria-hidden="true">PIPELINE</span><span class="pw-edge" aria-hidden="true">PIPELINE</span></h2>
+    <h2 class="pipe-word" id="showH" aria-label="The pipeline: how a car goes from Spin to your share"><span class="pw-row" aria-hidden="true"><span class="pl" style="--i:0"><span class="pl-b">P</span><span class="pl-f">P</span><span class="pl-g">P</span></span><span class="pl" style="--i:1"><span class="pl-b">I</span><span class="pl-f">I</span><span class="pl-g">I</span></span><span class="pl" style="--i:2"><span class="pl-b">P</span><span class="pl-f">P</span><span class="pl-g">P</span></span><span class="pl" style="--i:3"><span class="pl-b">E</span><span class="pl-f">E</span><span class="pl-g">E</span></span><span class="pl" style="--i:4"><span class="pl-b">L</span><span class="pl-f">L</span><span class="pl-g">L</span></span><span class="pl" style="--i:5"><span class="pl-b">I</span><span class="pl-f">I</span><span class="pl-g">I</span></span><span class="pl" style="--i:6"><span class="pl-b">N</span><span class="pl-f">N</span><span class="pl-g">N</span></span><span class="pl" style="--i:7"><span class="pl-b">E</span><span class="pl-f">E</span><span class="pl-g">E</span></span></span></h2>
     <div class="wrap show-grid">
       <div class="show-copy">
         <p class="show-kick">Project #1847 · Porsche 911 Carrera 4S</p>
@@ -2478,7 +2550,7 @@ function renderProject(){
   const cnt = owners.length-1 + parseInt((others(p).n.match(/\d+/)||[0])[0],10);
   $('projMain').innerHTML = `<div class="p-stage" style="--c:${R.c}"><div class="tag"><span class="chip r-${r}" style="--c:${R.c}">${R.name}</span><span class="status"><i></i>Voting · closes in ${timeLeft(p)}</span></div>${media(car,false)}</div>
     <div class="p-head"><div><small>PROJECT #${p.no} · ${car.reg}${p.sample?' · EXAMPLE':''}</small><h3 class="nm-${r}">${car.name}</h3></div><span class="status" style="height:28px">Bonded storage · insured</span></div>
-    <div class="stats num"><div><span>Project value</span><b>${money(p.vault)}</b></div><div><span>Owners</span><b>${num(cnt)}</b></div><div><span>Your share</span><b class="l">${pct(p.share)} · ${money(p.vault*p.share/100)}</b></div><div><span>Voting power</span><b class="l">${pct(p.share)}</b></div></div>
+    <div class="stats num"><div><span>Project value</span><b>${money(p.vault)}</b></div><div><span>Owners</span><b>${num(cnt)}</b></div><div><span>Your share</span><b class="l">${pct(p.share)}<small>${money(p.vault*p.share/100)}</small></b></div><div><span>Voting power</span><b class="l">${pct(p.share)}</b></div></div>
     <div class="own"><div class="own-h"><span>Ownership</span><span>${p.last?escapeHtml(p.last):'Updated live'}</span></div>
       <div class="own-bar">${owners.map((o,i)=>`<i style="width:${o.pct}%;background:${o.you?'var(--lime)':o.others?'#2A2638':['#9AA7C0','#7C8AA8','#5E6C8C'][i%3]}" title="${o.n} ${pct(o.pct)}"></i>`).join('')}</div>
       <div class="own-leg">${owners.map((o,i)=>`<div class="${o.you?'me':''}"><i style="background:${o.you?'var(--lime)':o.others?'#2A2638':['#9AA7C0','#7C8AA8','#5E6C8C'][i%3]}"></i><span class="${o.you?'':'mono'}">${o.n}</span><b class="num">${pct(o.pct)}</b></div>`).join('')}</div>
@@ -2842,7 +2914,8 @@ function setupReveal(){
   const groups=[
     ['.s-head',0],['.hq-copy',0],['.hq-art',0],['.hq-list li',1],['.facts .fact',1],['.pipe .node',1],['.paths .path',1],['.loop',0],['.m-grid > *',1],
     ['.fan-item',1],['.proj > *',1],['.proj-tabs',0],['.modes .mode',1],['.up-run',0],['.mkt > *',1],
-    ['.v-bar',0],['.vtabs',0],['.pool',0],['.faq-side',0],['.faq details',1],['.mega-cta',0]
+    ['.v-bar',0],['.vtabs',0],['.pool',0],['.faq-side',0],['.faq details',1],['.mega-cta',0],
+    ['.guide-kick',0],['.row-head',0],['.xt',1],['.rm-win li',1],['.xhead h1',0],['.xhead p',0],['.xh-jump',0],['.bay-card',0],['.hq-head',0]
   ];
   const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -8% 0px',threshold:.08});
   groups.forEach(([sel,stag])=>{ document.querySelectorAll(sel).forEach((el,i)=>{
@@ -2985,12 +3058,42 @@ idleStrip(); addEventListener('resize',()=>{ if(!S.busy) idleStrip(); });
     SH.spinAt=performance.now(); clearTimeout(playReel.t); playReel.t=setTimeout(()=>reel.classList.add('landed'),dur);
   }
   const clamp=v=>Math.min(1,Math.max(0,v));
+  /* PIPELINE: progress is eased toward the scroll position so the fill never jumps */
+  const PW={target:0,cur:0,raf:0,pls:[...document.querySelectorAll('.pipe-word .pl')],word:document.querySelector('.pipe-word'),state:[]};
+  const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  PW.paint=function(){
+    sec.style.setProperty('--pp',PW.cur.toFixed(4));
+    const n=PW.pls.length, w=clamp(PW.cur/.9)*n;
+    PW.pls.forEach((el,i)=>{
+      const lp=clamp(w-i), st=lp>=1?2:lp>0?1:0;
+      el.style.setProperty('--lp',lp.toFixed(4));
+      if(PW.state[i]!==st){ el.classList.toggle('filling',st===1); el.classList.toggle('lit',st===2); PW.state[i]=st; }
+    });
+    PW.word.classList.toggle('full',w>=n);
+  };
+  PW.fs=[...document.querySelectorAll('.pipe-word .pl-f')];
+  PW.step=function(now){
+    PW.raf=0; const d=PW.target-PW.cur;
+    PW.cur=RM||Math.abs(d)<.0005?PW.target:PW.cur+d*.12;
+    PW.paint();
+    /* the liquid surface rolls sideways while a letter is filling */
+    let waving=false;
+    if(!RM) PW.state.forEach((st,i)=>{ if(st===1){ waving=true; PW.fs[i].style.backgroundPositionX=(((now||0)/1000*.8+i*.23)%.9).toFixed(3)+'em'; } });
+    if(PW.cur!==PW.target || (waving && SH.t>0)) PW.raf=requestAnimationFrame(PW.step);
+  };
+  PW.kick=function(){ if(!PW.raf) PW.raf=requestAnimationFrame(PW.step); };
+  /* step 2 example: count the share up when the step opens */
+  function countShare(){
+    const b=document.querySelector('#chap li:nth-child(2) .ex-row.big b'); if(!b) return;
+    const t0=performance.now(), dur=RM?0:1400;
+    (function f(t){ const k=dur?Math.min(1,(t-t0)/dur):1, e=1-Math.pow(1-k,3); b.textContent=Math.round(e*10)+'%'; if(k<1) requestAnimationFrame(f); })(t0);
+  }
   function measure(){
     const r=sec.getBoundingClientRect(), span=Math.max(1,r.height-innerHeight);
     SH.rect=r; SH.progress=clamp(-r.top/span); SH.t=clamp(1-r.top/innerHeight);
     const c=Math.min(3,Math.floor(SH.progress*4+.0001));
-    if(c!==SH.chapter){ SH.chapter=c; lis.forEach((li,i)=>li.classList.toggle('on',i===c)); segs.forEach((g,i)=>g.classList.toggle('on',i<=c)); }
-    sec.style.setProperty('--pp',(SH.t>=1?SH.progress:0).toFixed(4));
+    if(c!==SH.chapter){ SH.chapter=c; lis.forEach((li,i)=>li.classList.toggle('on',i===c)); segs.forEach((g,i)=>g.classList.toggle('on',i<=c)); if(c===1) countShare(); }
+    PW.target=SH.t>=1?SH.progress:0; PW.kick();
     if(c===0 && SH.t>.75 && !reelPlayed) playReel();
     if((c!==0 || SH.t<.3) && reelPlayed){ reelPlayed=false; }
     $('dragHint').classList.toggle('on',SH.ready && c===3 && SH.t>=1);
@@ -3094,14 +3197,20 @@ const lamps=[], wheels=[]; let loaded=false;
 const AX=new THREE.Vector3(0,0,1), solidPlane=new THREE.Plane(new THREE.Vector3(0,0,1),1e3), gridPlane=new THREE.Plane(new THREE.Vector3(0,0,-1),-1e3);
 const SPL={m0:0,m1:1,len:1,ready:false,start:0};
 const gridMat=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide,clippingPlanes:[gridPlane],toneMapped:false});
+const GU={uScan:{value:0},uAx:{value:new THREE.Vector3(0,0,1)},uGlow:{value:0},uPulse:{value:-99},uPulseA:{value:0}};
 gridMat.onBeforeCompile=sh=>{
+  Object.assign(sh.uniforms,GU);
   sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vW;').replace('#include <project_vertex>','#include <project_vertex>\nvW=(modelMatrix*vec4(transformed,1.0)).xyz;');
-  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vW;').replace('#include <dithering_fragment>',`#include <dithering_fragment>
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vW;\nuniform float uScan,uGlow,uPulse,uPulseA;\nuniform vec3 uAx;').replace('#include <dithering_fragment>',`#include <dithering_fragment>
   vec3 q=vW/0.075; vec3 g=abs(fract(q-0.5)-0.5)/max(fwidth(q),vec3(1e-4));
   float ln=1.0-clamp(min(min(g.x,g.y),g.z),0.0,1.0);
   vec3 n=normalize(cross(dFdx(vW),dFdy(vW))); vec3 v=normalize(cameraPosition-vW);
   float fr=pow(1.0-abs(dot(n,v)),2.0);
   vec3 col=vec3(0.075,0.085,0.13)+vec3(0.6,0.7,0.78)*ln*0.85+vec3(0.6,0.7,0.78)*fr*0.35;
+  float ax=dot(vW,uAx);
+  float band=exp(-abs(ax-uScan)*7.0)*uGlow;
+  float pul=exp(-abs(ax-uPulse)*10.0)*uPulseA;
+  col+=vec3(0.78,0.86,0.96)*ln*(band*1.7+pul*1.5)+vec3(0.55,0.66,0.8)*(band*0.16+pul*0.1);
   gl_FragColor=vec4(col,1.0);`);
 };
 const scanMat=new THREE.MeshBasicMaterial({color:0x99B3C6,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,toneMapped:false});
@@ -3132,6 +3241,19 @@ function updateSplit(now,T){
   solidPlane.constant=-lo; gridPlane.constant=lo;
   const on=split>.002;
   scan.visible=on;
+  GU.uScan.value=lo; GU.uAx.value.copy(AX);
+  GU.uGlow.value=on?(sp<1?1:.42+.18*Math.sin(now/520))*(1-T):0;
+  /* after the first sweep, a pulse of light runs through the grid into your 10% every few seconds */
+  let pa=0;
+  if(sp>=1 && !reduce && on){
+    const ph=((now-SPL.start-2600)%4600)/4600, run=Math.min(1,ph/.62);
+    GU.uPulse.value=SPL.m0+(lo-SPL.m0)*(1-Math.pow(1-run,2)); pa=run<1?Math.sin(run*Math.PI)*.9+.25:0;
+    if(ph>=.6 && ph<.66 && !SPL.pinged){ SPL.pinged=true; root.classList.add('share-ping'); setTimeout(()=>root.classList.remove('share-ping'),1100); }
+    if(ph<.5) SPL.pinged=false;
+  }
+  GU.uPulseA.value=pa*(1-T);
+  const scanning=on && sp>0 && sp<1;
+  if(scanning!==SPL.scanning){ SPL.scanning=scanning; root.classList.toggle('share-scan',scanning); if(!scanning&&sp>=1){ root.classList.add('share-ping'); setTimeout(()=>root.classList.remove('share-ping'),1300); } }
   if(on){ scan.position.set(SPL.c.x,SPL.c.y,SPL.c.z); scan.position.addScaledVector(AX,lo-AX.dot(SPL.c));
     const pulse=.75+.25*Math.sin(now/380); const moving=sp<1?1:pulse;
     scanMat.opacity=.10*moving*(1-T); scanEdgeMat.opacity=.85*moving*(1-T); }

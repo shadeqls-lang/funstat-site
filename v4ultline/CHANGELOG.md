@@ -5,6 +5,38 @@ Live: http://funstat.xyz/v4ultline/
 
 ---
 
+## 2026-11-13 · Liquid PIPELINE, glowing share grid, smoothness, spacing
+
+### PIPELINE fill (stronger)
+- Each letter of PIPELINE now fills one after another with liquid light. The surface is a rolling wave that moves sideways while a letter fills.
+- A filled letter flashes, pops slightly larger, keeps a soft glow and its outline brightens.
+- Once the whole word is full, a wave of light runs across the letters on a loop.
+- The fill is eased toward the scroll position, so it glides instead of jumping on fast scrolls. The step scale under it uses the same easing.
+
+### Share grid (hero)
+- A glowing band sits on the grid lines right at the edge of your 10%. It is bright during the scan and breathes afterwards.
+- After the first scan, a pulse of light runs through the grid from the back of the car into your 10% every ~4.6 s.
+- The **Your share** chip lights up while the scan runs and every time a pulse reaches your 10%. It brightens, lifts and glows. The "Your 10%" key under the car lights up with it.
+- Pipeline step 2: the share bar fills from 0 to 10% with a glow, a light runs across the grid part of the bar, and the 10% number counts up when the step opens.
+
+### Smooth everywhere
+- Cross-fade when moving between pages (home, explore, profile, roadmap, marketplace) in browsers that support it.
+- Smooth wheel scrolling (Lenis) and gliding anchor links now also on profile, roadmap and marketplace (new shared file `soft.js`).
+- Fade-up reveals added to the new blocks (tiles, roadmap window, page head, bay card) and to the profile and marketplace sections.
+- Roadmap window bars fill up one after another when the block scrolls into view.
+- Softer, longer easing on the step crossfade, buttons, hotspots and tooltips.
+
+### Spacing
+- One vertical rhythm for all sections: section padding `clamp(84px, 9vw, 128px)` (76px on phones), the same gap under every section head, and the same gap under title + button rows.
+- Explore: tighter page head → first section, and the Spin sits right under the Vault picker.
+- Profile and marketplace sections use the same rhythm.
+- "Everything else" and "The roadmap" heads now break the same way (title, then the grey line under it).
+
+### Bug fixes
+- Project card on explore: "Your share 10% · $..." was cut off. The dollar amount now sits on its own line.
+
+---
+
 ## 2026-11-13 · Two pages, roadmap window, button layout, cleanup (boss edits 6–8)
 
 ### New page: explore.html (How it works)
